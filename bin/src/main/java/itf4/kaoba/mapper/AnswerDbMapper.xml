@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="itf4.kaoba.mapper.AnswerDbMapper" >
+  <resultMap id="BaseResultMap" type="itf4.kaoba.pojo.AnswerDb" >
+    <id column="answerdb_id" property="answerdbId" jdbcType="INTEGER" />
+    <result column="db_id int" property="dbIdInt" jdbcType="INTEGER" />
+    <result column="answerdb_ans_key" property="answerdbAnsKey" jdbcType="VARCHAR" />
+    <result column="answerdb_detail" property="answerdbDetail" jdbcType="VARCHAR" />
+    <result column="answerdb_detail_pic_path" property="answerdbDetailPicPath" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    answerdb_id, "db_id int", answerdb_ans_key, answerdb_detail, answerdb_detail_pic_path
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="itf4.kaoba.pojo.AnswerDbExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from answer_db
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from answer_db
+    where answerdb_id = #{answerdbId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from answer_db
+    where answerdb_id = #{answerdbId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="itf4.kaoba.pojo.AnswerDbExample" >
+    delete from answer_db
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="itf4.kaoba.pojo.AnswerDb" >
+    insert into answer_db (answerdb_id, "db_id int", answerdb_ans_key, 
+      answerdb_detail, answerdb_detail_pic_path)
+    values (#{answerdbId,jdbcType=INTEGER}, #{dbIdInt,jdbcType=INTEGER}, #{answerdbAnsKey,jdbcType=VARCHAR}, 
+      #{answerdbDetail,jdbcType=VARCHAR}, #{answerdbDetailPicPath,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="itf4.kaoba.pojo.AnswerDb" >
+    insert into answer_db
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="answerdbId != null" >
+        answerdb_id,
+      </if>
+      <if test="dbIdInt != null" >
+        "db_id int",
+      </if>
+      <if test="answerdbAnsKey != null" >
+        answerdb_ans_key,
+      </if>
+      <if test="answerdbDetail != null" >
+        answerdb_detail,
+      </if>
+      <if test="answerdbDetailPicPath != null" >
+        answerdb_detail_pic_path,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="answerdbId != null" >
+        #{answerdbId,jdbcType=INTEGER},
+      </if>
+      <if test="dbIdInt != null" >
+        #{dbIdInt,jdbcType=INTEGER},
+      </if>
+      <if test="answerdbAnsKey != null" >
+        #{answerdbAnsKey,jdbcType=VARCHAR},
+      </if>
+      <if test="answerdbDetail != null" >
+        #{answerdbDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="answerdbDetailPicPath != null" >
+        #{answerdbDetailPicPath,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="itf4.kaoba.pojo.AnswerDbExample" resultType="java.lang.Integer" >
+    select count(*) from answer_db
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update answer_db
+    <set >
+      <if test="record.answerdbId != null" >
+        answerdb_id = #{record.answerdbId,jdbcType=INTEGER},
+      </if>
+      <if test="record.dbIdInt != null" >
+        "db_id int" = #{record.dbIdInt,jdbcType=INTEGER},
+      </if>
+      <if test="record.answerdbAnsKey != null" >
+        answerdb_ans_key = #{record.answerdbAnsKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.answerdbDetail != null" >
+        answerdb_detail = #{record.answerdbDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="record.answerdbDetailPicPath != null" >
+        answerdb_detail_pic_path = #{record.answerdbDetailPicPath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update answer_db
+    set answerdb_id = #{record.answerdbId,jdbcType=INTEGER},
+      "db_id int" = #{record.dbIdInt,jdbcType=INTEGER},
+      answerdb_ans_key = #{record.answerdbAnsKey,jdbcType=VARCHAR},
+      answerdb_detail = #{record.answerdbDetail,jdbcType=VARCHAR},
+      answerdb_detail_pic_path = #{record.answerdbDetailPicPath,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="itf4.kaoba.pojo.AnswerDb" >
+    update answer_db
+    <set >
+      <if test="dbIdInt != null" >
+        "db_id int" = #{dbIdInt,jdbcType=INTEGER},
+      </if>
+      <if test="answerdbAnsKey != null" >
+        answerdb_ans_key = #{answerdbAnsKey,jdbcType=VARCHAR},
+      </if>
+      <if test="answerdbDetail != null" >
+        answerdb_detail = #{answerdbDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="answerdbDetailPicPath != null" >
+        answerdb_detail_pic_path = #{answerdbDetailPicPath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where answerdb_id = #{answerdbId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="itf4.kaoba.pojo.AnswerDb" >
+    update answer_db
+    set "db_id int" = #{dbIdInt,jdbcType=INTEGER},
+      answerdb_ans_key = #{answerdbAnsKey,jdbcType=VARCHAR},
+      answerdb_detail = #{answerdbDetail,jdbcType=VARCHAR},
+      answerdb_detail_pic_path = #{answerdbDetailPicPath,jdbcType=VARCHAR}
+    where answerdb_id = #{answerdbId,jdbcType=INTEGER}
+  </update>
+</mapper>

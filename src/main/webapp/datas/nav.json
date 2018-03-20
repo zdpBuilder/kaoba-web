@@ -1,0 +1,45 @@
+[
+  {
+    "title": "系统管理",
+    "icon": "fa-cubes",
+    "spread": true,
+    "children": [
+      {
+        "title": "管理员",
+        "icon": "fa fa-user-circle-o",
+        "href": "admin/usersList.jsp",
+        "spread": false
+      }
+      ]
+  },{
+    "title": "用户管理",
+    "icon": "fa-cubes",
+    "spread": true,
+    "children": [
+      {
+        "title": "老师",
+        "icon": "fa fa-user-circle-o",
+        "href": "admin/list_teacher.jsp",
+        "spread": false
+      },{
+        "title": "学生",
+        "icon": "fa fa-user-circle-o",
+        "href": "admin/studentsList.jsp",
+        "spread": false
+      }
+    ]
+  }, 
+  {
+    "title": "课程管理",
+    "icon": "fa-cubes",
+    "spread": true,
+    "children": [
+      {
+        "title": "课程管理", 
+        "icon": "fa fa-user-circle-o",
+        "href": "admin/courseList.jsp",
+        "spread": false
+      }
+    ]
+  }
+  ]

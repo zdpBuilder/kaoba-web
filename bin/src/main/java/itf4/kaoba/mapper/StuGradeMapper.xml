@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="itf4.kaoba.mapper.StuGradeMapper" >
+  <resultMap id="BaseResultMap" type="itf4.kaoba.pojo.StuGrade" >
+    <id column="stugrade_id" property="stugradeId" jdbcType="INTEGER" />
+    <result column="users_id" property="usersId" jdbcType="INTEGER" />
+    <result column="midtest_id" property="midtestId" jdbcType="INTEGER" />
+    <result column="stugrade_grade" property="stugradeGrade" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    stugrade_id, users_id, midtest_id, stugrade_grade
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="itf4.kaoba.pojo.StuGradeExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from stu_grade
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from stu_grade
+    where stugrade_id = #{stugradeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from stu_grade
+    where stugrade_id = #{stugradeId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="itf4.kaoba.pojo.StuGradeExample" >
+    delete from stu_grade
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="itf4.kaoba.pojo.StuGrade" >
+    insert into stu_grade (stugrade_id, users_id, midtest_id, 
+      stugrade_grade)
+    values (#{stugradeId,jdbcType=INTEGER}, #{usersId,jdbcType=INTEGER}, #{midtestId,jdbcType=INTEGER}, 
+      #{stugradeGrade,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="itf4.kaoba.pojo.StuGrade" >
+    insert into stu_grade
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="stugradeId != null" >
+        stugrade_id,
+      </if>
+      <if test="usersId != null" >
+        users_id,
+      </if>
+      <if test="midtestId != null" >
+        midtest_id,
+      </if>
+      <if test="stugradeGrade != null" >
+        stugrade_grade,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="stugradeId != null" >
+        #{stugradeId,jdbcType=INTEGER},
+      </if>
+      <if test="usersId != null" >
+        #{usersId,jdbcType=INTEGER},
+      </if>
+      <if test="midtestId != null" >
+        #{midtestId,jdbcType=INTEGER},
+      </if>
+      <if test="stugradeGrade != null" >
+        #{stugradeGrade,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="itf4.kaoba.pojo.StuGradeExample" resultType="java.lang.Integer" >
+    select count(*) from stu_grade
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update stu_grade
+    <set >
+      <if test="record.stugradeId != null" >
+        stugrade_id = #{record.stugradeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.usersId != null" >
+        users_id = #{record.usersId,jdbcType=INTEGER},
+      </if>
+      <if test="record.midtestId != null" >
+        midtest_id = #{record.midtestId,jdbcType=INTEGER},
+      </if>
+      <if test="record.stugradeGrade != null" >
+        stugrade_grade = #{record.stugradeGrade,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update stu_grade
+    set stugrade_id = #{record.stugradeId,jdbcType=INTEGER},
+      users_id = #{record.usersId,jdbcType=INTEGER},
+      midtest_id = #{record.midtestId,jdbcType=INTEGER},
+      stugrade_grade = #{record.stugradeGrade,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="itf4.kaoba.pojo.StuGrade" >
+    update stu_grade
+    <set >
+      <if test="usersId != null" >
+        users_id = #{usersId,jdbcType=INTEGER},
+      </if>
+      <if test="midtestId != null" >
+        midtest_id = #{midtestId,jdbcType=INTEGER},
+      </if>
+      <if test="stugradeGrade != null" >
+        stugrade_grade = #{stugradeGrade,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where stugrade_id = #{stugradeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="itf4.kaoba.pojo.StuGrade" >
+    update stu_grade
+    set users_id = #{usersId,jdbcType=INTEGER},
+      midtest_id = #{midtestId,jdbcType=INTEGER},
+      stugrade_grade = #{stugradeGrade,jdbcType=VARCHAR}
+    where stugrade_id = #{stugradeId,jdbcType=INTEGER}
+  </update>
+</mapper>

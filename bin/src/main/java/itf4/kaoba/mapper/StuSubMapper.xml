@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="itf4.kaoba.mapper.StuSubMapper" >
+  <resultMap id="BaseResultMap" type="itf4.kaoba.pojo.StuSub" >
+    <id column="stusub_id" property="stusubId" jdbcType="INTEGER" />
+    <result column="users_id" property="usersId" jdbcType="INTEGER" />
+    <result column="db_id" property="dbId" jdbcType="INTEGER" />
+    <result column="stusub_answer" property="stusubAnswer" jdbcType="INTEGER" />
+    <result column="stusub_typeid" property="stusubTypeid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    stusub_id, users_id, db_id, stusub_answer, stusub_typeid
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="itf4.kaoba.pojo.StuSubExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from stu_sub
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from stu_sub
+    where stusub_id = #{stusubId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from stu_sub
+    where stusub_id = #{stusubId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="itf4.kaoba.pojo.StuSubExample" >
+    delete from stu_sub
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="itf4.kaoba.pojo.StuSub" >
+    insert into stu_sub (stusub_id, users_id, db_id, 
+      stusub_answer, stusub_typeid)
+    values (#{stusubId,jdbcType=INTEGER}, #{usersId,jdbcType=INTEGER}, #{dbId,jdbcType=INTEGER}, 
+      #{stusubAnswer,jdbcType=INTEGER}, #{stusubTypeid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="itf4.kaoba.pojo.StuSub" >
+    insert into stu_sub
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="stusubId != null" >
+        stusub_id,
+      </if>
+      <if test="usersId != null" >
+        users_id,
+      </if>
+      <if test="dbId != null" >
+        db_id,
+      </if>
+      <if test="stusubAnswer != null" >
+        stusub_answer,
+      </if>
+      <if test="stusubTypeid != null" >
+        stusub_typeid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="stusubId != null" >
+        #{stusubId,jdbcType=INTEGER},
+      </if>
+      <if test="usersId != null" >
+        #{usersId,jdbcType=INTEGER},
+      </if>
+      <if test="dbId != null" >
+        #{dbId,jdbcType=INTEGER},
+      </if>
+      <if test="stusubAnswer != null" >
+        #{stusubAnswer,jdbcType=INTEGER},
+      </if>
+      <if test="stusubTypeid != null" >
+        #{stusubTypeid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="itf4.kaoba.pojo.StuSubExample" resultType="java.lang.Integer" >
+    select count(*) from stu_sub
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update stu_sub
+    <set >
+      <if test="record.stusubId != null" >
+        stusub_id = #{record.stusubId,jdbcType=INTEGER},
+      </if>
+      <if test="record.usersId != null" >
+        users_id = #{record.usersId,jdbcType=INTEGER},
+      </if>
+      <if test="record.dbId != null" >
+        db_id = #{record.dbId,jdbcType=INTEGER},
+      </if>
+      <if test="record.stusubAnswer != null" >
+        stusub_answer = #{record.stusubAnswer,jdbcType=INTEGER},
+      </if>
+      <if test="record.stusubTypeid != null" >
+        stusub_typeid = #{record.stusubTypeid,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update stu_sub
+    set stusub_id = #{record.stusubId,jdbcType=INTEGER},
+      users_id = #{record.usersId,jdbcType=INTEGER},
+      db_id = #{record.dbId,jdbcType=INTEGER},
+      stusub_answer = #{record.stusubAnswer,jdbcType=INTEGER},
+      stusub_typeid = #{record.stusubTypeid,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="itf4.kaoba.pojo.StuSub" >
+    update stu_sub
+    <set >
+      <if test="usersId != null" >
+        users_id = #{usersId,jdbcType=INTEGER},
+      </if>
+      <if test="dbId != null" >
+        db_id = #{dbId,jdbcType=INTEGER},
+      </if>
+      <if test="stusubAnswer != null" >
+        stusub_answer = #{stusubAnswer,jdbcType=INTEGER},
+      </if>
+      <if test="stusubTypeid != null" >
+        stusub_typeid = #{stusubTypeid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where stusub_id = #{stusubId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="itf4.kaoba.pojo.StuSub" >
+    update stu_sub
+    set users_id = #{usersId,jdbcType=INTEGER},
+      db_id = #{dbId,jdbcType=INTEGER},
+      stusub_answer = #{stusubAnswer,jdbcType=INTEGER},
+      stusub_typeid = #{stusubTypeid,jdbcType=INTEGER}
+    where stusub_id = #{stusubId,jdbcType=INTEGER}
+  </update>
+</mapper>

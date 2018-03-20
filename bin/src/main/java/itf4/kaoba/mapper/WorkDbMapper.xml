@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="itf4.kaoba.mapper.WorkDbMapper" >
+  <resultMap id="BaseResultMap" type="itf4.kaoba.pojo.WorkDb" >
+    <id column="workdb_id" property="workdbId" jdbcType="INTEGER" />
+    <result column="workdb_title_pic" property="workdbTitlePic" jdbcType="VARCHAR" />
+    <result column="workdb_answer _pic" property="workdbAnswerPic" jdbcType="VARCHAR" />
+    <result column="workdb_date" property="workdbDate" jdbcType="VARCHAR" />
+    <result column="course_name" property="courseName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    workdb_id, workdb_title_pic, "workdb_answer _pic", workdb_date, course_name
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="itf4.kaoba.pojo.WorkDbExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from work_db
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from work_db
+    where workdb_id = #{workdbId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from work_db
+    where workdb_id = #{workdbId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="itf4.kaoba.pojo.WorkDbExample" >
+    delete from work_db
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="itf4.kaoba.pojo.WorkDb" >
+    insert into work_db (workdb_id, workdb_title_pic, "workdb_answer _pic", 
+      workdb_date, course_name)
+    values (#{workdbId,jdbcType=INTEGER}, #{workdbTitlePic,jdbcType=VARCHAR}, #{workdbAnswerPic,jdbcType=VARCHAR}, 
+      #{workdbDate,jdbcType=VARCHAR}, #{courseName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="itf4.kaoba.pojo.WorkDb" >
+    insert into work_db
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workdbId != null" >
+        workdb_id,
+      </if>
+      <if test="workdbTitlePic != null" >
+        workdb_title_pic,
+      </if>
+      <if test="workdbAnswerPic != null" >
+        "workdb_answer _pic",
+      </if>
+      <if test="workdbDate != null" >
+        workdb_date,
+      </if>
+      <if test="courseName != null" >
+        course_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workdbId != null" >
+        #{workdbId,jdbcType=INTEGER},
+      </if>
+      <if test="workdbTitlePic != null" >
+        #{workdbTitlePic,jdbcType=VARCHAR},
+      </if>
+      <if test="workdbAnswerPic != null" >
+        #{workdbAnswerPic,jdbcType=VARCHAR},
+      </if>
+      <if test="workdbDate != null" >
+        #{workdbDate,jdbcType=VARCHAR},
+      </if>
+      <if test="courseName != null" >
+        #{courseName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="itf4.kaoba.pojo.WorkDbExample" resultType="java.lang.Integer" >
+    select count(*) from work_db
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update work_db
+    <set >
+      <if test="record.workdbId != null" >
+        workdb_id = #{record.workdbId,jdbcType=INTEGER},
+      </if>
+      <if test="record.workdbTitlePic != null" >
+        workdb_title_pic = #{record.workdbTitlePic,jdbcType=VARCHAR},
+      </if>
+      <if test="record.workdbAnswerPic != null" >
+        "workdb_answer _pic" = #{record.workdbAnswerPic,jdbcType=VARCHAR},
+      </if>
+      <if test="record.workdbDate != null" >
+        workdb_date = #{record.workdbDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.courseName != null" >
+        course_name = #{record.courseName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update work_db
+    set workdb_id = #{record.workdbId,jdbcType=INTEGER},
+      workdb_title_pic = #{record.workdbTitlePic,jdbcType=VARCHAR},
+      "workdb_answer _pic" = #{record.workdbAnswerPic,jdbcType=VARCHAR},
+      workdb_date = #{record.workdbDate,jdbcType=VARCHAR},
+      course_name = #{record.courseName,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="itf4.kaoba.pojo.WorkDb" >
+    update work_db
+    <set >
+      <if test="workdbTitlePic != null" >
+        workdb_title_pic = #{workdbTitlePic,jdbcType=VARCHAR},
+      </if>
+      <if test="workdbAnswerPic != null" >
+        "workdb_answer _pic" = #{workdbAnswerPic,jdbcType=VARCHAR},
+      </if>
+      <if test="workdbDate != null" >
+        workdb_date = #{workdbDate,jdbcType=VARCHAR},
+      </if>
+      <if test="courseName != null" >
+        course_name = #{courseName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where workdb_id = #{workdbId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="itf4.kaoba.pojo.WorkDb" >
+    update work_db
+    set workdb_title_pic = #{workdbTitlePic,jdbcType=VARCHAR},
+      "workdb_answer _pic" = #{workdbAnswerPic,jdbcType=VARCHAR},
+      workdb_date = #{workdbDate,jdbcType=VARCHAR},
+      course_name = #{courseName,jdbcType=VARCHAR}
+    where workdb_id = #{workdbId,jdbcType=INTEGER}
+  </update>
+</mapper>

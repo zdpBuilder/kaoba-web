@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="itf4.kaoba.mapper.UsersMapper" >
+  <resultMap id="BaseResultMap" type="itf4.kaoba.pojo.Users" >
+    <id column="users_id" property="usersId" jdbcType="INTEGER" />
+    <result column="users_ numbers" property="usersNumbers" jdbcType="VARCHAR" />
+    <result column="users_name" property="usersName" jdbcType="VARCHAR" />
+    <result column="users_password" property="usersPassword" jdbcType="VARCHAR" />
+    <result column="users_status" property="usersStatus" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    users_id, "users_ numbers", users_name, users_password, users_status
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="itf4.kaoba.pojo.UsersExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from users
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from users
+    where users_id = #{usersId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from users
+    where users_id = #{usersId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="itf4.kaoba.pojo.UsersExample" >
+    delete from users
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="itf4.kaoba.pojo.Users" >
+    insert into users (users_id, "users_ numbers", users_name, 
+      users_password, users_status)
+    values (#{usersId,jdbcType=INTEGER}, #{usersNumbers,jdbcType=VARCHAR}, #{usersName,jdbcType=VARCHAR}, 
+      #{usersPassword,jdbcType=VARCHAR}, #{usersStatus,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="itf4.kaoba.pojo.Users" >
+    insert into users
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="usersId != null" >
+        users_id,
+      </if>
+      <if test="usersNumbers != null" >
+        "users_ numbers",
+      </if>
+      <if test="usersName != null" >
+        users_name,
+      </if>
+      <if test="usersPassword != null" >
+        users_password,
+      </if>
+      <if test="usersStatus != null" >
+        users_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="usersId != null" >
+        #{usersId,jdbcType=INTEGER},
+      </if>
+      <if test="usersNumbers != null" >
+        #{usersNumbers,jdbcType=VARCHAR},
+      </if>
+      <if test="usersName != null" >
+        #{usersName,jdbcType=VARCHAR},
+      </if>
+      <if test="usersPassword != null" >
+        #{usersPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="usersStatus != null" >
+        #{usersStatus,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="itf4.kaoba.pojo.UsersExample" resultType="java.lang.Integer" >
+    select count(*) from users
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update users
+    <set >
+      <if test="record.usersId != null" >
+        users_id = #{record.usersId,jdbcType=INTEGER},
+      </if>
+      <if test="record.usersNumbers != null" >
+        "users_ numbers" = #{record.usersNumbers,jdbcType=VARCHAR},
+      </if>
+      <if test="record.usersName != null" >
+        users_name = #{record.usersName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.usersPassword != null" >
+        users_password = #{record.usersPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="record.usersStatus != null" >
+        users_status = #{record.usersStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update users
+    set users_id = #{record.usersId,jdbcType=INTEGER},
+      "users_ numbers" = #{record.usersNumbers,jdbcType=VARCHAR},
+      users_name = #{record.usersName,jdbcType=VARCHAR},
+      users_password = #{record.usersPassword,jdbcType=VARCHAR},
+      users_status = #{record.usersStatus,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="itf4.kaoba.pojo.Users" >
+    update users
+    <set >
+      <if test="usersNumbers != null" >
+        "users_ numbers" = #{usersNumbers,jdbcType=VARCHAR},
+      </if>
+      <if test="usersName != null" >
+        users_name = #{usersName,jdbcType=VARCHAR},
+      </if>
+      <if test="usersPassword != null" >
+        users_password = #{usersPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="usersStatus != null" >
+        users_status = #{usersStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where users_id = #{usersId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="itf4.kaoba.pojo.Users" >
+    update users
+    set "users_ numbers" = #{usersNumbers,jdbcType=VARCHAR},
+      users_name = #{usersName,jdbcType=VARCHAR},
+      users_password = #{usersPassword,jdbcType=VARCHAR},
+      users_status = #{usersStatus,jdbcType=INTEGER}
+    where users_id = #{usersId,jdbcType=INTEGER}
+  </update>
+</mapper>

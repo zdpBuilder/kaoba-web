@@ -1,0 +1,10 @@
+eclipse.preferences.version=1
+encoding//src/main/java/itf4/kaoba/common/ResponseJsonPageListBean.java=UTF-8
+encoding//src/main/java/itf4/kaoba/inteceptor/LoginInteceptor.java=UTF-8
+encoding//src/main/java/itf4/kaoba/model/BaseExample.java=UTF-8
+encoding//src/main/java/itf4/kaoba/util/Const.java=UTF-8
+encoding//src/main/java/itf4/kaoba/util/JsonDateTimeValueProcessor.java=UTF-8
+encoding//src/main/java/itf4/kaoba/util/JsonDateValueProcessor.java=UTF-8
+encoding//src/main/java/itf4/kaoba/util/JsonPrintUtil.java=UTF-8
+encoding//src/main/java/itf4/kaoba/util/JsonUtils.java=UTF-8
+encoding//src/main/webapp/datas/nav.json=UTF-8

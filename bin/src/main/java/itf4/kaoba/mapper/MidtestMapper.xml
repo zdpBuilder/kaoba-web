@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="itf4.kaoba.mapper.MidtestMapper" >
+  <resultMap id="BaseResultMap" type="itf4.kaoba.pojo.Midtest" >
+    <id column="midtest_id" property="midtestId" jdbcType="INTEGER" />
+    <result column="paper_id" property="paperId" jdbcType="INTEGER" />
+    <result column="users_name" property="usersName" jdbcType="VARCHAR" />
+    <result column="course_name" property="courseName" jdbcType="VARCHAR" />
+    <result column="midtest _qrcode" property="midtestQrcode" jdbcType="VARCHAR" />
+    <result column="midtest_date" property="midtestDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    midtest_id, paper_id, users_name, course_name, "midtest _qrcode", midtest_date
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="itf4.kaoba.pojo.MidtestExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from midtest
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from midtest
+    where midtest_id = #{midtestId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from midtest
+    where midtest_id = #{midtestId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="itf4.kaoba.pojo.MidtestExample" >
+    delete from midtest
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="itf4.kaoba.pojo.Midtest" >
+    insert into midtest (midtest_id, paper_id, users_name, 
+      course_name, "midtest _qrcode", midtest_date
+      )
+    values (#{midtestId,jdbcType=INTEGER}, #{paperId,jdbcType=INTEGER}, #{usersName,jdbcType=VARCHAR}, 
+      #{courseName,jdbcType=VARCHAR}, #{midtestQrcode,jdbcType=VARCHAR}, #{midtestDate,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="itf4.kaoba.pojo.Midtest" >
+    insert into midtest
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="midtestId != null" >
+        midtest_id,
+      </if>
+      <if test="paperId != null" >
+        paper_id,
+      </if>
+      <if test="usersName != null" >
+        users_name,
+      </if>
+      <if test="courseName != null" >
+        course_name,
+      </if>
+      <if test="midtestQrcode != null" >
+        "midtest _qrcode",
+      </if>
+      <if test="midtestDate != null" >
+        midtest_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="midtestId != null" >
+        #{midtestId,jdbcType=INTEGER},
+      </if>
+      <if test="paperId != null" >
+        #{paperId,jdbcType=INTEGER},
+      </if>
+      <if test="usersName != null" >
+        #{usersName,jdbcType=VARCHAR},
+      </if>
+      <if test="courseName != null" >
+        #{courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="midtestQrcode != null" >
+        #{midtestQrcode,jdbcType=VARCHAR},
+      </if>
+      <if test="midtestDate != null" >
+        #{midtestDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="itf4.kaoba.pojo.MidtestExample" resultType="java.lang.Integer" >
+    select count(*) from midtest
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update midtest
+    <set >
+      <if test="record.midtestId != null" >
+        midtest_id = #{record.midtestId,jdbcType=INTEGER},
+      </if>
+      <if test="record.paperId != null" >
+        paper_id = #{record.paperId,jdbcType=INTEGER},
+      </if>
+      <if test="record.usersName != null" >
+        users_name = #{record.usersName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.courseName != null" >
+        course_name = #{record.courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.midtestQrcode != null" >
+        "midtest _qrcode" = #{record.midtestQrcode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.midtestDate != null" >
+        midtest_date = #{record.midtestDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update midtest
+    set midtest_id = #{record.midtestId,jdbcType=INTEGER},
+      paper_id = #{record.paperId,jdbcType=INTEGER},
+      users_name = #{record.usersName,jdbcType=VARCHAR},
+      course_name = #{record.courseName,jdbcType=VARCHAR},
+      "midtest _qrcode" = #{record.midtestQrcode,jdbcType=VARCHAR},
+      midtest_date = #{record.midtestDate,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="itf4.kaoba.pojo.Midtest" >
+    update midtest
+    <set >
+      <if test="paperId != null" >
+        paper_id = #{paperId,jdbcType=INTEGER},
+      </if>
+      <if test="usersName != null" >
+        users_name = #{usersName,jdbcType=VARCHAR},
+      </if>
+      <if test="courseName != null" >
+        course_name = #{courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="midtestQrcode != null" >
+        "midtest _qrcode" = #{midtestQrcode,jdbcType=VARCHAR},
+      </if>
+      <if test="midtestDate != null" >
+        midtest_date = #{midtestDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where midtest_id = #{midtestId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="itf4.kaoba.pojo.Midtest" >
+    update midtest
+    set paper_id = #{paperId,jdbcType=INTEGER},
+      users_name = #{usersName,jdbcType=VARCHAR},
+      course_name = #{courseName,jdbcType=VARCHAR},
+      "midtest _qrcode" = #{midtestQrcode,jdbcType=VARCHAR},
+      midtest_date = #{midtestDate,jdbcType=VARCHAR}
+    where midtest_id = #{midtestId,jdbcType=INTEGER}
+  </update>
+</mapper>

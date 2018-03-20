@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+		PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+		"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+ <classPathEntry  location="C:\Users\zdp\.m2\repository\mysql\mysql-connector-java\5.1.32\mysql-connector-java-5.1.32.jar"/>   
+	<context id="testTables" targetRuntime="MyBatis3">
+		<commentGenerator>
+			<!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+		<!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/kaoba" userId="root"
+			password="root">
+		</jdbcConnection>
+		<!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和 
+			NUMERIC 类型解析为java.math.BigDecimal -->
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<!-- targetProject:生成PO类的位置 -->
+		<javaModelGenerator targetPackage="itf4.kaoba.pojo"
+			targetProject="kaoba">
+			<!-- enableSubPackages:是否让schema作为包的后缀 -->
+			<property name="enableSubPackages" value="false" />
+			<!-- 从数据库返回的值被清理前后的空格 -->
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+        <!-- targetProject:mapper映射文件生成的位置 -->
+		<sqlMapGenerator targetPackage="itf4.kaoba.mapper"
+			targetProject="kaoba">
+			<!-- enableSubPackages:是否让schema作为包的后缀 -->
+			<property name="enableSubPackages" value="false" />
+		</sqlMapGenerator>
+		<!-- targetPackage：mapper接口生成的位置 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="itf4.kaoba.mapper"
+			targetProject="kaoba">
+			<!-- enableSubPackages:是否让schema作为包的后缀 -->
+			<property name="enableSubPackages" value="false" />
+		</javaClientGenerator>
+		<!-- 指定数据库表 -->
+		<!-- <table schema="" tableName="answer_db"></table>
+		<table schema="" tableName="authorization"></table>
+		<table schema="" tableName="chapter"></table>
+		<table schema="" tableName="course"></table>
+		<table schema="" tableName="jfs_db"></table>
+		<table schema="" tableName="midtest"></table>
+		<table schema="" tableName="midtest_detail"></table>
+		<table schema="" tableName="midtest_paper"></table>
+		<table schema="" tableName="single_db"></table>
+		<table schema="" tableName="stu_grade"></table>
+		<table schema="" tableName="stu_pro"></table>
+		<table schema="" tableName="stu_sub"></table> -->
+		<table schema="" tableName="users"></table>
+	<!-- 	<table schema="" tableName="work_db"></table> -->
+
+	</context>
+</generatorConfiguration>

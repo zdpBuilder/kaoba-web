@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="itf4.kaoba.mapper.MidtestPaperMapper" >
+  <resultMap id="BaseResultMap" type="itf4.kaoba.pojo.MidtestPaper" >
+    <id column="midtestpaper_id" property="midtestpaperId" jdbcType="INTEGER" />
+    <result column="midtestdetail_id" property="midtestdetailId" jdbcType="INTEGER" />
+    <result column="midtestpaper_dbtitle" property="midtestpaperDbtitle" jdbcType="VARCHAR" />
+    <result column="midtestpaper_answer" property="midtestpaperAnswer" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    midtestpaper_id, midtestdetail_id, midtestpaper_dbtitle, midtestpaper_answer
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="itf4.kaoba.pojo.MidtestPaperExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from midtest_paper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from midtest_paper
+    where midtestpaper_id = #{midtestpaperId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from midtest_paper
+    where midtestpaper_id = #{midtestpaperId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="itf4.kaoba.pojo.MidtestPaperExample" >
+    delete from midtest_paper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="itf4.kaoba.pojo.MidtestPaper" >
+    insert into midtest_paper (midtestpaper_id, midtestdetail_id, 
+      midtestpaper_dbtitle, midtestpaper_answer
+      )
+    values (#{midtestpaperId,jdbcType=INTEGER}, #{midtestdetailId,jdbcType=INTEGER}, 
+      #{midtestpaperDbtitle,jdbcType=VARCHAR}, #{midtestpaperAnswer,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="itf4.kaoba.pojo.MidtestPaper" >
+    insert into midtest_paper
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="midtestpaperId != null" >
+        midtestpaper_id,
+      </if>
+      <if test="midtestdetailId != null" >
+        midtestdetail_id,
+      </if>
+      <if test="midtestpaperDbtitle != null" >
+        midtestpaper_dbtitle,
+      </if>
+      <if test="midtestpaperAnswer != null" >
+        midtestpaper_answer,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="midtestpaperId != null" >
+        #{midtestpaperId,jdbcType=INTEGER},
+      </if>
+      <if test="midtestdetailId != null" >
+        #{midtestdetailId,jdbcType=INTEGER},
+      </if>
+      <if test="midtestpaperDbtitle != null" >
+        #{midtestpaperDbtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="midtestpaperAnswer != null" >
+        #{midtestpaperAnswer,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="itf4.kaoba.pojo.MidtestPaperExample" resultType="java.lang.Integer" >
+    select count(*) from midtest_paper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update midtest_paper
+    <set >
+      <if test="record.midtestpaperId != null" >
+        midtestpaper_id = #{record.midtestpaperId,jdbcType=INTEGER},
+      </if>
+      <if test="record.midtestdetailId != null" >
+        midtestdetail_id = #{record.midtestdetailId,jdbcType=INTEGER},
+      </if>
+      <if test="record.midtestpaperDbtitle != null" >
+        midtestpaper_dbtitle = #{record.midtestpaperDbtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.midtestpaperAnswer != null" >
+        midtestpaper_answer = #{record.midtestpaperAnswer,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update midtest_paper
+    set midtestpaper_id = #{record.midtestpaperId,jdbcType=INTEGER},
+      midtestdetail_id = #{record.midtestdetailId,jdbcType=INTEGER},
+      midtestpaper_dbtitle = #{record.midtestpaperDbtitle,jdbcType=VARCHAR},
+      midtestpaper_answer = #{record.midtestpaperAnswer,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="itf4.kaoba.pojo.MidtestPaper" >
+    update midtest_paper
+    <set >
+      <if test="midtestdetailId != null" >
+        midtestdetail_id = #{midtestdetailId,jdbcType=INTEGER},
+      </if>
+      <if test="midtestpaperDbtitle != null" >
+        midtestpaper_dbtitle = #{midtestpaperDbtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="midtestpaperAnswer != null" >
+        midtestpaper_answer = #{midtestpaperAnswer,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where midtestpaper_id = #{midtestpaperId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="itf4.kaoba.pojo.MidtestPaper" >
+    update midtest_paper
+    set midtestdetail_id = #{midtestdetailId,jdbcType=INTEGER},
+      midtestpaper_dbtitle = #{midtestpaperDbtitle,jdbcType=VARCHAR},
+      midtestpaper_answer = #{midtestpaperAnswer,jdbcType=VARCHAR}
+    where midtestpaper_id = #{midtestpaperId,jdbcType=INTEGER}
+  </update>
+</mapper>
