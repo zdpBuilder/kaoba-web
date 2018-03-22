@@ -104,9 +104,10 @@ public class TeacherController {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		//±à¼­
 		if(teacher.getId()!=null &&teacher.getId()>0) {
+ 			Teacher userOld = teacherMapper.selectByPrimaryKey(teacher.getId());
 			teacher.setUpdater(CurrentUserName);
  			teacher.setUpdateTime(sdf.format(new Date()));
- 			if(teacher.getTeaPassword() !=null) {
+ 			if(!userOld.getTeaPassword().equals(teacher.getTeaPassword())) {
  				teacher.setTeaPassword(DigestUtils.md5DigestAsHex(teacher.getTeaPassword().getBytes()));
  			}
 			count = teacherMapper.updateByPrimaryKeySelective(teacher);

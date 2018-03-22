@@ -4,7 +4,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>考吧老师管理端系统</title>
+		<title>考吧管理端系统</title>
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -25,7 +25,7 @@
 					<div class="admin-login-box">
                         <!--logo-->
 						<a class="logo" style="left: 0;" href="">
-							<span style="font-size: 22px;">考吧老师管理端系统</span>
+							<span style="font-size: 22px;">考吧管理端系统</span>
 						</a>
 						<div class="admin-side-toggle">
 							<i class="fa fa-bars" aria-hidden="true"></i>
@@ -139,7 +139,7 @@
 			      	$("#editTeacherPassword").click(function(){
 			      		layer.open({
 			      		  type: 2 //Page层类型
-			      		  ,area: ['680px', '388px']
+			      		  ,area: ['390px', '233px']
 			      		  ,title:  ['修改密码', '']
 			      		  ,shade: 0.6 //遮罩透明度
 			      		  ,fixed: true //位置固定

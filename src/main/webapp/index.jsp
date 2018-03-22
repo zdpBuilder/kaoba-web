@@ -54,7 +54,7 @@ SysUser currentLoginUser = (SysUser) session.getAttribute("CurrentLoginUserInfo"
 						<li class="layui-nav-item" >
 							<a href="javascript:;" class="admin-header-user"  style="padding-left:80px;">
 					<!--	<img src="images/0.jpg" />-->
-								<span>Admin</span>
+								<span>${CurrentLoginUserInfo.userName}</span>
 							</a>
 							<dl class="layui-nav-child">
 								<dd>
@@ -156,7 +156,7 @@ SysUser currentLoginUser = (SysUser) session.getAttribute("CurrentLoginUserInfo"
 			      	$("#editSysUserPassword").click(function(){
 			      		layer.open({
 			      		  type: 2 //Page层类型
-			      		  ,area: ['680px', '388px']
+			      		  ,area: ['390px', '233px']
 			      		  ,title:  ['修改密码', '']
 			      		  ,shade: 0.6 //遮罩透明度
 			      		  ,fixed: true //位置固定

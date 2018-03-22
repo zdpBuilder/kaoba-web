@@ -63,7 +63,7 @@ layui.config({
         elem: '#admin-navbar-side',
         cached: true,
        // data: navs
-		/*cached:true,*/
+		cached:false,
 		url: 'datas/navTea.json'
     });
     //渲染navbar
