@@ -34,6 +34,7 @@ import itf4.kaoba.model.TeacherCourse;
 import itf4.kaoba.model.TeacherCourseExample;
 import itf4.kaoba.pojo.SelectCourseTreeJsonListPojo;
 import itf4.kaoba.pojo.TreePojo;
+import itf4.kaoba.util.Const;
 import itf4.kaoba.util.DateUtil;
 import itf4.kaoba.util.JsonPrintUtil;
 import lombok.extern.log4j.Log4j;
@@ -115,12 +116,20 @@ public class QuestionBankController {
 	@RequestMapping("addTreeNode")
 	@ResponseBody
 	public void addTreeNode( HttpServletRequest request, HttpServletResponse response,Integer pid,String nodeName) {
-		SysUser user = (SysUser)request.getSession().getAttribute("CurrentLoginUserInfo");
+		String CurrentUserName ="";
+		if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("1")) { 
+			  SysUser user = (SysUser)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= user.getUserName();
+		 }else if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("2")) {
+			 Teacher teacher = (Teacher)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= teacher.getTeaName();
+		 }
+		
 		Course record = new Course();
 		record.setPid(pid);
 		record.setCourseName(nodeName);
-		record.setStatus(1);//正常状态
-		record.setCreater(user.getUserName()+"");
+		record.setStatus(1);//正常状态	 
+		 record.setCreater(CurrentUserName);
 		record.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
 		int count = courseMapper.insert(record);
 		if(count>0){
@@ -135,12 +144,19 @@ public class QuestionBankController {
 	@RequestMapping("editTreeNode")
 	@ResponseBody
 	public void editTreeNode(HttpServletRequest request, HttpServletResponse response,Integer id,String nodeName) {
-		SysUser user = (SysUser)request.getSession().getAttribute("CurrentLoginUserInfo");
+		String CurrentUserName ="";
+		if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("1")) { 
+			  SysUser user = (SysUser)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= user.getUserName();
+		 }else if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("2")) {
+			 Teacher teacher = (Teacher)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= teacher.getTeaName();
+		 }
 		Course record = new Course();
 		record = courseMapper.selectByPrimaryKey(id);
 		String oldNodeName = record.getCourseName(); 
 		record.setCourseName(nodeName);
-		record.setUpdater(user.getUserName()+"");
+		record.setUpdater(CurrentUserName);
 		record.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
 		int count = courseMapper.updateByPrimaryKey(record);
 		if(count>0){
@@ -155,11 +171,18 @@ public class QuestionBankController {
 	@RequestMapping("deleteTreeNode")
 	@ResponseBody
 	public void deleteTreeNode(HttpServletRequest request, HttpServletResponse response,Integer id) {
-		SysUser user = (SysUser)request.getSession().getAttribute("CurrentLoginUserInfo");
+		String CurrentUserName ="";
+		if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("1")) { 
+			  SysUser user = (SysUser)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= user.getUserName();
+		 }else if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("2")) {
+			 Teacher teacher = (Teacher)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= teacher.getTeaName();
+		 }
 		Course record = new Course();
 		record = courseMapper.selectByPrimaryKey(id);
 		record.setStatus(0);//删除状态
-		record.setUpdater(user.getUserName()+"");
+		record.setUpdater(CurrentUserName);
 		record.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
 		int count = courseMapper.updateByPrimaryKey(record);
 		SingleDbExample example= new SingleDbExample();
@@ -251,7 +274,7 @@ public class QuestionBankController {
 		listBean.setData(list);
 		
 		//列表查询日志记录
-		SysUser currentLoginUser = (SysUser) request.getSession().getAttribute("CurrentLoginUserInfo");
+		//SysUser currentLoginUser = (SysUser) request.getSession().getAttribute("CurrentLoginUserInfo");
 		//SysLog sysLog = SysLogUtil.getSysLog(request, currentLoginUser, SysModuleConstant.M_EQUIPMENT_TYPE, SysLogConstant.SELECT_LIST, "", "emergency_equipment", "列表查询共 "+typeJsonBeanList.size()+" 条");
 		//sysLogMapper.insertSelective(sysLog);
 		JsonPrintUtil.printObjDataWithoutKey(response, listBean);
@@ -259,7 +282,7 @@ public class QuestionBankController {
 	}
 	
 	
-	//课程类型和分类名称下拉菜单查询
+	/*//课程类型和分类名称下拉菜单查询
 	@RequestMapping("selectList")
 	@ResponseBody
 	public void selectList( HttpServletRequest request,HttpServletResponse response) {
@@ -296,7 +319,7 @@ public class QuestionBankController {
 		//log.info(selectBeanListJson);
 		JsonPrintUtil.printJsonArrayWithoutKey(response, selectBeanList);
 	}
-
+*/
 	//查看单条题库分类信息
 	@RequestMapping(value = "show", method = RequestMethod.POST)
 	@ResponseBody
@@ -320,7 +343,14 @@ public class QuestionBankController {
 	@ResponseBody
 	public void saveEE(SingleDb ee,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
 		int count = 0;
-		SysUser currentLoginUser = (SysUser) session.getAttribute("CurrentLoginUserInfo");
+		String CurrentUserName ="";
+		if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("1")) { 
+			  SysUser user = (SysUser)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= user.getUserName();
+		 }else if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("2")) {
+			 Teacher teacher = (Teacher)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= teacher.getTeaName();
+		 }		
 		if(null!=ee.getId() && ee.getId()>0){
 			//主键不为空 则编辑课程信息
 			SingleDb eeOld = singleDbMapper.selectByPrimaryKey(ee.getId());
@@ -328,7 +358,7 @@ public class QuestionBankController {
 			//String eeOldJson = gson.toJson(eeOld);
 			//BeanUtil.copyProperties(ee, eeOld);
 			//String eeJson = gson.toJson(eeOld);
-			eeOld.setUpdater(currentLoginUser.getUserName()+"");
+			eeOld.setUpdater(CurrentUserName);
 			eeOld.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
 			count = singleDbMapper.updateByPrimaryKeySelective(eeOld);
 			//updateByPrimaryKeySelective 前者只是更新新的model中不为空的字段
@@ -343,7 +373,7 @@ public class QuestionBankController {
 		}else{
 			//主键为空 则添加课程分类信息
 			ee.setStatus(1);
-			ee.setCreater(currentLoginUser.getUserName()+"");
+			ee.setCreater(CurrentUserName);
 			ee.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
 			count = singleDbMapper.insert(ee);
 			//记录添加日志
@@ -362,7 +392,14 @@ public class QuestionBankController {
 	@RequestMapping("deleteBatch")
 	@ResponseBody
 	public void deleteBatch(String eeIds,HttpServletRequest request,HttpSession session,HttpServletResponse response) {
-		SysUser currentLoginUser = (SysUser) session.getAttribute("CurrentLoginUserInfo");
+		String CurrentUserName ="";
+		if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("1")) { 
+			  SysUser user = (SysUser)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= user.getUserName();
+		 }else if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("2")) {
+			 Teacher teacher = (Teacher)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= teacher.getTeaName();
+		 }		
 		if(StringUtils.isNotBlank(eeIds)){
 			String[] eeIdArr = eeIds.split(",");
 			for(int i=0;i<eeIdArr.length;i++){
@@ -371,7 +408,7 @@ public class QuestionBankController {
 				SingleDb ee = singleDbMapper.selectByPrimaryKey(eeId);
 				ee.setStatus(3);//1正常  3已删除 
 				ee.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
-				ee.setUpdater(currentLoginUser.getUserName()+"");
+				ee.setUpdater(CurrentUserName);
 				singleDbMapper.updateByPrimaryKeySelective(ee);
 			}
 			//记录批量删除日志
@@ -389,9 +426,9 @@ public class QuestionBankController {
 	@RequestMapping("uploadEEPhoto")
 	@ResponseBody
 	public void uploadPhoto(String businessType,HttpServletRequest request,HttpServletResponse response,MultipartFile file) {  
-		SysUser currentLoginUser = (SysUser)request.getSession().getAttribute("CurrentLoginUserInfo");
+		//SysUser currentLoginUser = (SysUser)request.getSession().getAttribute("CurrentLoginUserInfo");
 		//仓库照片保存目录
-	/////	String photoUrl = super.uploadToFileUrl("emergency_equipment", file , request);
+	    //String photoUrl = super.uploadToFileUrl("emergency_equipment", file , request);
 		//JsonPrintUtil.printObjDataWithKey(response, photoUrl,"data");
 		
 		//记录日志

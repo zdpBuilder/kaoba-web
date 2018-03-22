@@ -43,11 +43,12 @@ public class LoginController {
 				// µ«¬Ω≥…π¶
 				jsonObject.put("loginStatus", "1");
      session.setAttribute("CurrentLoginUserInfo", sysUsers.get(0));
+     session.setAttribute("CurrUserRoleFlag", "1");
 		} else {
-			jsonObject.put("loginStatus", "2");
+			jsonObject.put("loginStatus", "0");
 		}
 		  }else {
-			  jsonObject.put("loginStatus", "2");
+			  jsonObject.put("loginStatus", "0");
 		  }
   }else if(status==2) {
 	  TeacherExample example=new TeacherExample();
@@ -57,22 +58,22 @@ public class LoginController {
 	   if(teachers.size()>0) {
            if(null!=teachers.get(0)) {
         	// µ«¬Ω≥…π¶
-			jsonObject.put("loginStatus", "1"); 
+			jsonObject.put("loginStatus", "2"); 
 		session.setAttribute("CurrentLoginUserInfo", teachers.get(0));
-
+		session.setAttribute("CurrUserRoleFlag", "2");
            }		   
            else {
-   			jsonObject.put("loginStatus", "2");
+   			jsonObject.put("loginStatus", "0");
    		}
    		  }else {
-   			  jsonObject.put("loginStatus", "2");
+   			  jsonObject.put("loginStatus", "0");
    		  }
   }else {  
      		// ’ ∫≈√‹¬Î¥ÌŒÛ
-			jsonObject.put("loginStatus", "2");
+			jsonObject.put("loginStatus", "0");
   }
 			}else {
-				jsonObject.put("loginStatus", "2");
+				jsonObject.put("loginStatus", "0");
 			}
 			
   JsonPrintUtil.printObjDataWithKey(response, jsonObject, "data");

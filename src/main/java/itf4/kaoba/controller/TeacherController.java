@@ -30,6 +30,7 @@ import itf4.kaoba.model.TeacherCourseExample;
 import itf4.kaoba.model.TeacherExample;
 import itf4.kaoba.model.TeacherExample.Criteria;
 import itf4.kaoba.service.TeacherService;
+import itf4.kaoba.util.Const;
 import itf4.kaoba.util.JsonPrintUtil;
 /**
  * 老师管理
@@ -89,13 +90,21 @@ public class TeacherController {
 	@RequestMapping("save")
 	@ResponseBody
 	public void save(Teacher teacher,HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		String CurrentUserName ="";
+		if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("1")) { 
+			  SysUser user = (SysUser)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= user.getUserName();
+		 }else if(request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("2")) {
+			 Teacher Currteacher = (Teacher)request.getSession().getAttribute(Const.SESSION_USER);  
+			  CurrentUserName= Currteacher.getTeaName();
+		 }
+		
 		
 		int count = 0;
-		SysUser currentLoginUser = (SysUser) session.getAttribute("CurrentLoginUserInfo");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		//编辑
 		if(teacher.getId()!=null &&teacher.getId()>0) {
-			teacher.setUpdater(currentLoginUser.getUserName() + "");
+			teacher.setUpdater(CurrentUserName);
  			teacher.setUpdateTime(sdf.format(new Date()));
  			if(teacher.getTeaPassword() !=null) {
  				teacher.setTeaPassword(DigestUtils.md5DigestAsHex(teacher.getTeaPassword().getBytes()));
@@ -109,7 +118,7 @@ public class TeacherController {
 		}else {
 			teacher.setStatus(1);//正常为1
 			teacher.setTeaPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
-			teacher.setCreater(currentLoginUser.getUserName()+ "");
+			teacher.setCreater(CurrentUserName);
  			teacher.setCreateTime(sdf.format(new Date()));
  			count = teacherMapper.insert(teacher);
  			

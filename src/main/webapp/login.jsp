@@ -63,8 +63,11 @@
 			   			success:function(result){	 	  			 		
                        	var datas = result.data;
                        	if(datas){
-	               	if(datas.loginStatus==1){			               		              		
+	               	if(datas.loginStatus==1){
+	               		  
 			               		location.href='index.jsp';        		
+			               	}else if(datas.loginStatus==2){
+			               		location.href='indexTeacher.jsp'; 
 			               	}else{ 
 			               	 setTimeout(function () {                			                       
 			                   layer.msg("用户名或密码错误！",{title:'提示消息',icon: 2, time: 1500});   

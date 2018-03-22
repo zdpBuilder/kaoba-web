@@ -8,6 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import itf4.kaoba.model.SysUser;
+import itf4.kaoba.model.Teacher;
 import itf4.kaoba.util.Const;
 
 /**
@@ -25,13 +26,35 @@ public class LoginInteceptor implements HandlerInterceptor {
 			return true;
 		}else{
 			HttpSession session = request.getSession();
-			SysUser users = (SysUser)session.getAttribute(Const.SESSION_USER);
-			if(users!=null){
-				return true;
+			if(session.getAttribute(Const.SESSION_USER_STATUS)!=null&&session.getAttribute(Const.SESSION_USER_STATUS)!="") {
+				
+			
+			if(session.getAttribute(Const.SESSION_USER_STATUS).equals("1")) {
+				
+				SysUser users = (SysUser)session.getAttribute(Const.SESSION_USER);
+				if(users!=null){
+					return true;
+				}else{
+					response.sendRedirect(request.getContextPath()+"/login.jsp");
+					return false;
+				}	
 			}else{
+				Teacher users = (Teacher)session.getAttribute(Const.SESSION_USER);
+				if(users!=null){
+					return true;
+				}else{
+					response.sendRedirect(request.getContextPath()+"/login.jsp");
+					return false;
+				}	
+			 
+			}
+			
+			}
+			else{
 				response.sendRedirect(request.getContextPath()+"/login.jsp");
 				return false;
-			}
+			}	
+			
 		}
 	}
 

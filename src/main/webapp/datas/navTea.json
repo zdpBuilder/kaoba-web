@@ -1,0 +1,15 @@
+[
+  {
+    "title": "题库管理",
+    "icon": "fa-cubes",
+    "spread": true,
+    "children": [
+      {
+        "title": "题库",
+        "icon": "fa fa-user-circle-o",
+        "href": "admin/tree_db_course.jsp",
+        "spread": false
+      }
+      ]
+  }
+  ]
