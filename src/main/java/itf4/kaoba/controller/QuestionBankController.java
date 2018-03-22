@@ -61,11 +61,14 @@ public class QuestionBankController {
 	@ResponseBody
 	public void treeList( HttpServletRequest request,HttpServletResponse response) {
 		Teacher teacher = (Teacher)request.getSession().getAttribute("CurrentLoginUserInfo");
-        TeacherCourseExample example0 = new TeacherCourseExample();
+       
         List<TreePojo> treePojos=new ArrayList<TreePojo>();
+        
+        TeacherCourseExample example0 = new TeacherCourseExample();
         itf4.kaoba.model.TeacherCourseExample.Criteria critria0 = example0.createCriteria();
         critria0.andTeaIdEqualTo(teacher.getId());
         List<TeacherCourse> teaCourseList = teacherCourseMapper.selectByExample(example0);
+        
         if(teaCourseList !=null &&teaCourseList.size()>0 ) {
         	String courseIds = teaCourseList.get(0).getCourseId();
         	if(courseIds !=null && courseIds!="") {
@@ -76,18 +79,36 @@ public class QuestionBankController {
             		Criteria criteria = example.createCriteria();
         			criteria.andIdEqualTo(Integer.parseInt(courseId)).andStatusEqualTo(1);//正常状态节点
         			List<Course> list = courseMapper.selectByExample(example);
-        			//log.debug("此次查询树节点数目: "+list.size());
-        			//列表查询日志记录
-        			//SysUser currentLoginUser = (SysUser) request.getSession().getAttribute("CurrentLoginUserInfo");
-        			//SysLog sysLog = SysLogUtil.getSysLog(request, currentLoginUser, SysModuleConstant.M_EQUIPMENT_TYPE, SysLogConstant.SELECT_LIST, "", "emergency_equipment", "课程分类树型菜单查询共 "+list.size()+" 条");
-        			///sysLogMapper.insertSelective(sysLog);
-        			for (Course course : list) {
+        			//放入课程
+        			if(list !=null && list.size()>0) {
+        				Course course =new Course();
+        				course = list.get(0);
         				TreePojo treePojo=new TreePojo();
         				treePojo.setId(course.getId());
         				treePojo.setName(course.getCourseName());
         				treePojo.setPid(course.getPid());
         				treePojos.add(treePojo);
+        				
+        				//查章节
+        				CourseExample example2 = new CourseExample();
+        				Criteria criteria2 = example2.createCriteria();
+        				criteria2.andPidEqualTo(course.getId()).andStatusEqualTo(1);
+        				List<Course> courseList = courseMapper.selectByExample(example2);
+        				if(courseList!=null && courseList.size()>0) {
+        					for (Course course2 : courseList) {
+        						TreePojo treePojo2=new TreePojo();
+        						treePojo2.setId(course2.getId());
+        						treePojo2.setName(course2.getCourseName());
+        						treePojo2.setPid(course2.getPid());
+                				treePojos.add(treePojo2);
+							}
+        				}
         			}
+        			//log.debug("此次查询树节点数目: "+list.size());
+        			//列表查询日志记录
+        			//SysUser currentLoginUser = (SysUser) request.getSession().getAttribute("CurrentLoginUserInfo");
+        			//SysLog sysLog = SysLogUtil.getSysLog(request, currentLoginUser, SysModuleConstant.M_EQUIPMENT_TYPE, SysLogConstant.SELECT_LIST, "", "emergency_equipment", "课程分类树型菜单查询共 "+list.size()+" 条");
+        			///sysLogMapper.insertSelective(sysLog);
 				}
         	}
         	
