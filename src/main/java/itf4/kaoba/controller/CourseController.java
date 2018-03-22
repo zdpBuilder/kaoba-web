@@ -60,9 +60,9 @@ public class CourseController {
 	 			keywords = keywords.trim();
 	 			keywords = "%" + keywords + "%";
 	 			// and or联合查询
-	 			example.or().andCourseNameLike(keywords).andStatusEqualTo(1);
+	 			example.or().andPidEqualTo(0).andCourseNameLike(keywords).andStatusEqualTo(1);
 	 		} else {
-	 			criteria.andStatusEqualTo(1);// 正常状态
+	 			criteria.andPidEqualTo(0).andStatusEqualTo(1);// 正常状态
 	 		}
 	 		// 分页查询
 	 		List<Course> courses = courseMapper.selectByExample(example);
