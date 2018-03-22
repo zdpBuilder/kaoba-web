@@ -4,7 +4,8 @@
 		"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
- <classPathEntry  location="C:\Users\zdp\.m2\repository\mysql\mysql-connector-java\5.1.32\mysql-connector-java-5.1.32.jar"/>   
+
+ <classPathEntry  location="C:\Users\yangfan\.m2\repository\mysql\mysql-connector-java\5.1.32\mysql-connector-java-5.1.32.jar"/>   
 	<context id="testTables" targetRuntime="MyBatis3">
 		<commentGenerator>
 			<!-- 是否去除自动生成的注释 true：是 ： false:否 -->
@@ -22,8 +23,8 @@
 		</javaTypeResolver>
 
 		<!-- targetProject:生成PO类的位置 -->
-		<javaModelGenerator targetPackage="itf4.kaoba.pojo"
-			targetProject="kaoba">
+		<javaModelGenerator targetPackage="itf4.kaoba.model"
+			targetProject="kaoba-web">
 			<!-- enableSubPackages:是否让schema作为包的后缀 -->
 			<property name="enableSubPackages" value="false" />
 			<!-- 从数据库返回的值被清理前后的空格 -->
@@ -31,14 +32,14 @@
 		</javaModelGenerator>
         <!-- targetProject:mapper映射文件生成的位置 -->
 		<sqlMapGenerator targetPackage="itf4.kaoba.mapper"
-			targetProject="kaoba">
+			targetProject="kaoba-web">
 			<!-- enableSubPackages:是否让schema作为包的后缀 -->
 			<property name="enableSubPackages" value="false" />
 		</sqlMapGenerator>
 		<!-- targetPackage：mapper接口生成的位置 -->
 		<javaClientGenerator type="XMLMAPPER"
 			targetPackage="itf4.kaoba.mapper"
-			targetProject="kaoba">
+			targetProject="kaoba-web">
 			<!-- enableSubPackages:是否让schema作为包的后缀 -->
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
@@ -54,9 +55,12 @@
 		<table schema="" tableName="single_db"></table>
 		<table schema="" tableName="stu_grade"></table>
 		<table schema="" tableName="stu_pro"></table>
-		<table schema="" tableName="stu_sub"></table> -->
-		<table schema="" tableName="users"></table>
-	<!-- 	<table schema="" tableName="work_db"></table> -->
+		<table schema="" tableName="stu_sub"></table>
+	    <table schema="" tableName="users"></table> 
+	    <table schema="" tableName="work_db"></table> -->
+	    <table schema="" tableName="answer_db"></table>
+	    <table schema="" tableName="single_db"></table>
+	    <table schema="" tableName="course"></table>
 
 	</context>
 </generatorConfiguration>

@@ -3,14 +3,14 @@ package itf4.kaoba.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseExample extends BaseExample {
+public class SingleDbExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public CourseExample() {
+    public SingleDbExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -164,73 +164,413 @@ public class CourseExample extends BaseExample {
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameIsNull() {
-            addCriterion("course_name is null");
+        public Criteria andCourseIdIsNull() {
+            addCriterion("course_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameIsNotNull() {
-            addCriterion("course_name is not null");
+        public Criteria andCourseIdIsNotNull() {
+            addCriterion("course_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameEqualTo(String value) {
-            addCriterion("course_name =", value, "courseName");
+        public Criteria andCourseIdEqualTo(Integer value) {
+            addCriterion("course_id =", value, "courseId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameNotEqualTo(String value) {
-            addCriterion("course_name <>", value, "courseName");
+        public Criteria andCourseIdNotEqualTo(Integer value) {
+            addCriterion("course_id <>", value, "courseId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameGreaterThan(String value) {
-            addCriterion("course_name >", value, "courseName");
+        public Criteria andCourseIdGreaterThan(Integer value) {
+            addCriterion("course_id >", value, "courseId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameGreaterThanOrEqualTo(String value) {
-            addCriterion("course_name >=", value, "courseName");
+        public Criteria andCourseIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("course_id >=", value, "courseId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameLessThan(String value) {
-            addCriterion("course_name <", value, "courseName");
+        public Criteria andCourseIdLessThan(Integer value) {
+            addCriterion("course_id <", value, "courseId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameLessThanOrEqualTo(String value) {
-            addCriterion("course_name <=", value, "courseName");
+        public Criteria andCourseIdLessThanOrEqualTo(Integer value) {
+            addCriterion("course_id <=", value, "courseId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameLike(String value) {
-            addCriterion("course_name like", value, "courseName");
+        public Criteria andCourseIdIn(List<Integer> values) {
+            addCriterion("course_id in", values, "courseId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameNotLike(String value) {
-            addCriterion("course_name not like", value, "courseName");
+        public Criteria andCourseIdNotIn(List<Integer> values) {
+            addCriterion("course_id not in", values, "courseId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameIn(List<String> values) {
-            addCriterion("course_name in", values, "courseName");
+        public Criteria andCourseIdBetween(Integer value1, Integer value2) {
+            addCriterion("course_id between", value1, value2, "courseId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameNotIn(List<String> values) {
-            addCriterion("course_name not in", values, "courseName");
+        public Criteria andCourseIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("course_id not between", value1, value2, "courseId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameBetween(String value1, String value2) {
-            addCriterion("course_name between", value1, value2, "courseName");
+        public Criteria andSingledbTitleIsNull() {
+            addCriterion("singledb_title is null");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameNotBetween(String value1, String value2) {
-            addCriterion("course_name not between", value1, value2, "courseName");
+        public Criteria andSingledbTitleIsNotNull() {
+            addCriterion("singledb_title is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleEqualTo(String value) {
+            addCriterion("singledb_title =", value, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleNotEqualTo(String value) {
+            addCriterion("singledb_title <>", value, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleGreaterThan(String value) {
+            addCriterion("singledb_title >", value, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleGreaterThanOrEqualTo(String value) {
+            addCriterion("singledb_title >=", value, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleLessThan(String value) {
+            addCriterion("singledb_title <", value, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleLessThanOrEqualTo(String value) {
+            addCriterion("singledb_title <=", value, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleLike(String value) {
+            addCriterion("singledb_title like", value, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleNotLike(String value) {
+            addCriterion("singledb_title not like", value, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleIn(List<String> values) {
+            addCriterion("singledb_title in", values, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleNotIn(List<String> values) {
+            addCriterion("singledb_title not in", values, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleBetween(String value1, String value2) {
+            addCriterion("singledb_title between", value1, value2, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbTitleNotBetween(String value1, String value2) {
+            addCriterion("singledb_title not between", value1, value2, "singledbTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaIsNull() {
+            addCriterion("singledb_optionA is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaIsNotNull() {
+            addCriterion("singledb_optionA is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaEqualTo(String value) {
+            addCriterion("singledb_optionA =", value, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaNotEqualTo(String value) {
+            addCriterion("singledb_optionA <>", value, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaGreaterThan(String value) {
+            addCriterion("singledb_optionA >", value, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaGreaterThanOrEqualTo(String value) {
+            addCriterion("singledb_optionA >=", value, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaLessThan(String value) {
+            addCriterion("singledb_optionA <", value, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaLessThanOrEqualTo(String value) {
+            addCriterion("singledb_optionA <=", value, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaLike(String value) {
+            addCriterion("singledb_optionA like", value, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaNotLike(String value) {
+            addCriterion("singledb_optionA not like", value, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaIn(List<String> values) {
+            addCriterion("singledb_optionA in", values, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaNotIn(List<String> values) {
+            addCriterion("singledb_optionA not in", values, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaBetween(String value1, String value2) {
+            addCriterion("singledb_optionA between", value1, value2, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionaNotBetween(String value1, String value2) {
+            addCriterion("singledb_optionA not between", value1, value2, "singledbOptiona");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbIsNull() {
+            addCriterion("singledb_optionB is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbIsNotNull() {
+            addCriterion("singledb_optionB is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbEqualTo(String value) {
+            addCriterion("singledb_optionB =", value, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbNotEqualTo(String value) {
+            addCriterion("singledb_optionB <>", value, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbGreaterThan(String value) {
+            addCriterion("singledb_optionB >", value, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbGreaterThanOrEqualTo(String value) {
+            addCriterion("singledb_optionB >=", value, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbLessThan(String value) {
+            addCriterion("singledb_optionB <", value, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbLessThanOrEqualTo(String value) {
+            addCriterion("singledb_optionB <=", value, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbLike(String value) {
+            addCriterion("singledb_optionB like", value, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbNotLike(String value) {
+            addCriterion("singledb_optionB not like", value, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbIn(List<String> values) {
+            addCriterion("singledb_optionB in", values, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbNotIn(List<String> values) {
+            addCriterion("singledb_optionB not in", values, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbBetween(String value1, String value2) {
+            addCriterion("singledb_optionB between", value1, value2, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptionbNotBetween(String value1, String value2) {
+            addCriterion("singledb_optionB not between", value1, value2, "singledbOptionb");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncIsNull() {
+            addCriterion("singledb_optionC is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncIsNotNull() {
+            addCriterion("singledb_optionC is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncEqualTo(String value) {
+            addCriterion("singledb_optionC =", value, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncNotEqualTo(String value) {
+            addCriterion("singledb_optionC <>", value, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncGreaterThan(String value) {
+            addCriterion("singledb_optionC >", value, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncGreaterThanOrEqualTo(String value) {
+            addCriterion("singledb_optionC >=", value, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncLessThan(String value) {
+            addCriterion("singledb_optionC <", value, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncLessThanOrEqualTo(String value) {
+            addCriterion("singledb_optionC <=", value, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncLike(String value) {
+            addCriterion("singledb_optionC like", value, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncNotLike(String value) {
+            addCriterion("singledb_optionC not like", value, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncIn(List<String> values) {
+            addCriterion("singledb_optionC in", values, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncNotIn(List<String> values) {
+            addCriterion("singledb_optionC not in", values, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncBetween(String value1, String value2) {
+            addCriterion("singledb_optionC between", value1, value2, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptioncNotBetween(String value1, String value2) {
+            addCriterion("singledb_optionC not between", value1, value2, "singledbOptionc");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondIsNull() {
+            addCriterion("singledb_optionD is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondIsNotNull() {
+            addCriterion("singledb_optionD is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondEqualTo(String value) {
+            addCriterion("singledb_optionD =", value, "singledbOptiond");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondNotEqualTo(String value) {
+            addCriterion("singledb_optionD <>", value, "singledbOptiond");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondGreaterThan(String value) {
+            addCriterion("singledb_optionD >", value, "singledbOptiond");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondGreaterThanOrEqualTo(String value) {
+            addCriterion("singledb_optionD >=", value, "singledbOptiond");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondLessThan(String value) {
+            addCriterion("singledb_optionD <", value, "singledbOptiond");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondLessThanOrEqualTo(String value) {
+            addCriterion("singledb_optionD <=", value, "singledbOptiond");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondLike(String value) {
+            addCriterion("singledb_optionD like", value, "singledbOptiond");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondNotLike(String value) {
+            addCriterion("singledb_optionD not like", value, "singledbOptiond");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondIn(List<String> values) {
+            addCriterion("singledb_optionD in", values, "singledbOptiond");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondNotIn(List<String> values) {
+            addCriterion("singledb_optionD not in", values, "singledbOptiond");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondBetween(String value1, String value2) {
+            addCriterion("singledb_optionD between", value1, value2, "singledbOptiond");
+            return (Criteria) this;
+        }
+
+        public Criteria andSingledbOptiondNotBetween(String value1, String value2) {
+            addCriterion("singledb_optionD not between", value1, value2, "singledbOptiond");
             return (Criteria) this;
         }
 
@@ -571,66 +911,6 @@ public class CourseExample extends BaseExample {
 
         public Criteria andUpdateTimeNotBetween(String value1, String value2) {
             addCriterion("update_time not between", value1, value2, "updateTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidIsNull() {
-            addCriterion("pid is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidIsNotNull() {
-            addCriterion("pid is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidEqualTo(Integer value) {
-            addCriterion("pid =", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidNotEqualTo(Integer value) {
-            addCriterion("pid <>", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidGreaterThan(Integer value) {
-            addCriterion("pid >", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidGreaterThanOrEqualTo(Integer value) {
-            addCriterion("pid >=", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidLessThan(Integer value) {
-            addCriterion("pid <", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidLessThanOrEqualTo(Integer value) {
-            addCriterion("pid <=", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidIn(List<Integer> values) {
-            addCriterion("pid in", values, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidNotIn(List<Integer> values) {
-            addCriterion("pid not in", values, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidBetween(Integer value1, Integer value2) {
-            addCriterion("pid between", value1, value2, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidNotBetween(Integer value1, Integer value2) {
-            addCriterion("pid not between", value1, value2, "pid");
             return (Criteria) this;
         }
     }

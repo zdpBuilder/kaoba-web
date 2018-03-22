@@ -1,9 +1,17 @@
 package itf4.kaoba.model;
 
-public class Course {
+public class AnswerDb {
     private Integer id;
 
-    private String courseName;
+    private Integer dbId;
+
+    private String answerdbKey;
+
+    private String answerdbDetail;
+
+    private String answerdbDetailPicPath;
+
+    private Integer answerdbDbtype;
 
     private Integer status;
 
@@ -15,8 +23,6 @@ public class Course {
 
     private String updateTime;
 
-    private Integer pid;
-
     public Integer getId() {
         return id;
     }
@@ -25,12 +31,44 @@ public class Course {
         this.id = id;
     }
 
-    public String getCourseName() {
-        return courseName;
+    public Integer getDbId() {
+        return dbId;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName == null ? null : courseName.trim();
+    public void setDbId(Integer dbId) {
+        this.dbId = dbId;
+    }
+
+    public String getAnswerdbKey() {
+        return answerdbKey;
+    }
+
+    public void setAnswerdbKey(String answerdbKey) {
+        this.answerdbKey = answerdbKey == null ? null : answerdbKey.trim();
+    }
+
+    public String getAnswerdbDetail() {
+        return answerdbDetail;
+    }
+
+    public void setAnswerdbDetail(String answerdbDetail) {
+        this.answerdbDetail = answerdbDetail == null ? null : answerdbDetail.trim();
+    }
+
+    public String getAnswerdbDetailPicPath() {
+        return answerdbDetailPicPath;
+    }
+
+    public void setAnswerdbDetailPicPath(String answerdbDetailPicPath) {
+        this.answerdbDetailPicPath = answerdbDetailPicPath == null ? null : answerdbDetailPicPath.trim();
+    }
+
+    public Integer getAnswerdbDbtype() {
+        return answerdbDbtype;
+    }
+
+    public void setAnswerdbDbtype(Integer answerdbDbtype) {
+        this.answerdbDbtype = answerdbDbtype;
     }
 
     public Integer getStatus() {
@@ -71,13 +109,5 @@ public class Course {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime == null ? null : updateTime.trim();
-    }
-
-    public Integer getPid() {
-        return pid;
-    }
-
-    public void setPid(Integer pid) {
-        this.pid = pid;
     }
 }

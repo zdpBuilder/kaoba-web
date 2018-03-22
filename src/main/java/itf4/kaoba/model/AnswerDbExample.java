@@ -3,14 +3,14 @@ package itf4.kaoba.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseExample extends BaseExample {
+public class AnswerDbExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public CourseExample() {
+    public AnswerDbExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -164,73 +164,333 @@ public class CourseExample extends BaseExample {
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameIsNull() {
-            addCriterion("course_name is null");
+        public Criteria andDbIdIsNull() {
+            addCriterion("db_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameIsNotNull() {
-            addCriterion("course_name is not null");
+        public Criteria andDbIdIsNotNull() {
+            addCriterion("db_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameEqualTo(String value) {
-            addCriterion("course_name =", value, "courseName");
+        public Criteria andDbIdEqualTo(Integer value) {
+            addCriterion("db_id =", value, "dbId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameNotEqualTo(String value) {
-            addCriterion("course_name <>", value, "courseName");
+        public Criteria andDbIdNotEqualTo(Integer value) {
+            addCriterion("db_id <>", value, "dbId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameGreaterThan(String value) {
-            addCriterion("course_name >", value, "courseName");
+        public Criteria andDbIdGreaterThan(Integer value) {
+            addCriterion("db_id >", value, "dbId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameGreaterThanOrEqualTo(String value) {
-            addCriterion("course_name >=", value, "courseName");
+        public Criteria andDbIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("db_id >=", value, "dbId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameLessThan(String value) {
-            addCriterion("course_name <", value, "courseName");
+        public Criteria andDbIdLessThan(Integer value) {
+            addCriterion("db_id <", value, "dbId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameLessThanOrEqualTo(String value) {
-            addCriterion("course_name <=", value, "courseName");
+        public Criteria andDbIdLessThanOrEqualTo(Integer value) {
+            addCriterion("db_id <=", value, "dbId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameLike(String value) {
-            addCriterion("course_name like", value, "courseName");
+        public Criteria andDbIdIn(List<Integer> values) {
+            addCriterion("db_id in", values, "dbId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameNotLike(String value) {
-            addCriterion("course_name not like", value, "courseName");
+        public Criteria andDbIdNotIn(List<Integer> values) {
+            addCriterion("db_id not in", values, "dbId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameIn(List<String> values) {
-            addCriterion("course_name in", values, "courseName");
+        public Criteria andDbIdBetween(Integer value1, Integer value2) {
+            addCriterion("db_id between", value1, value2, "dbId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameNotIn(List<String> values) {
-            addCriterion("course_name not in", values, "courseName");
+        public Criteria andDbIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("db_id not between", value1, value2, "dbId");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameBetween(String value1, String value2) {
-            addCriterion("course_name between", value1, value2, "courseName");
+        public Criteria andAnswerdbKeyIsNull() {
+            addCriterion("answerdb_key is null");
             return (Criteria) this;
         }
 
-        public Criteria andCourseNameNotBetween(String value1, String value2) {
-            addCriterion("course_name not between", value1, value2, "courseName");
+        public Criteria andAnswerdbKeyIsNotNull() {
+            addCriterion("answerdb_key is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyEqualTo(String value) {
+            addCriterion("answerdb_key =", value, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyNotEqualTo(String value) {
+            addCriterion("answerdb_key <>", value, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyGreaterThan(String value) {
+            addCriterion("answerdb_key >", value, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyGreaterThanOrEqualTo(String value) {
+            addCriterion("answerdb_key >=", value, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyLessThan(String value) {
+            addCriterion("answerdb_key <", value, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyLessThanOrEqualTo(String value) {
+            addCriterion("answerdb_key <=", value, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyLike(String value) {
+            addCriterion("answerdb_key like", value, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyNotLike(String value) {
+            addCriterion("answerdb_key not like", value, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyIn(List<String> values) {
+            addCriterion("answerdb_key in", values, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyNotIn(List<String> values) {
+            addCriterion("answerdb_key not in", values, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyBetween(String value1, String value2) {
+            addCriterion("answerdb_key between", value1, value2, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbKeyNotBetween(String value1, String value2) {
+            addCriterion("answerdb_key not between", value1, value2, "answerdbKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailIsNull() {
+            addCriterion("answerdb_detail is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailIsNotNull() {
+            addCriterion("answerdb_detail is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailEqualTo(String value) {
+            addCriterion("answerdb_detail =", value, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailNotEqualTo(String value) {
+            addCriterion("answerdb_detail <>", value, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailGreaterThan(String value) {
+            addCriterion("answerdb_detail >", value, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailGreaterThanOrEqualTo(String value) {
+            addCriterion("answerdb_detail >=", value, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailLessThan(String value) {
+            addCriterion("answerdb_detail <", value, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailLessThanOrEqualTo(String value) {
+            addCriterion("answerdb_detail <=", value, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailLike(String value) {
+            addCriterion("answerdb_detail like", value, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailNotLike(String value) {
+            addCriterion("answerdb_detail not like", value, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailIn(List<String> values) {
+            addCriterion("answerdb_detail in", values, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailNotIn(List<String> values) {
+            addCriterion("answerdb_detail not in", values, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailBetween(String value1, String value2) {
+            addCriterion("answerdb_detail between", value1, value2, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailNotBetween(String value1, String value2) {
+            addCriterion("answerdb_detail not between", value1, value2, "answerdbDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathIsNull() {
+            addCriterion("answerdb_detail_pic_path is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathIsNotNull() {
+            addCriterion("answerdb_detail_pic_path is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathEqualTo(String value) {
+            addCriterion("answerdb_detail_pic_path =", value, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathNotEqualTo(String value) {
+            addCriterion("answerdb_detail_pic_path <>", value, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathGreaterThan(String value) {
+            addCriterion("answerdb_detail_pic_path >", value, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathGreaterThanOrEqualTo(String value) {
+            addCriterion("answerdb_detail_pic_path >=", value, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathLessThan(String value) {
+            addCriterion("answerdb_detail_pic_path <", value, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathLessThanOrEqualTo(String value) {
+            addCriterion("answerdb_detail_pic_path <=", value, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathLike(String value) {
+            addCriterion("answerdb_detail_pic_path like", value, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathNotLike(String value) {
+            addCriterion("answerdb_detail_pic_path not like", value, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathIn(List<String> values) {
+            addCriterion("answerdb_detail_pic_path in", values, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathNotIn(List<String> values) {
+            addCriterion("answerdb_detail_pic_path not in", values, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathBetween(String value1, String value2) {
+            addCriterion("answerdb_detail_pic_path between", value1, value2, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDetailPicPathNotBetween(String value1, String value2) {
+            addCriterion("answerdb_detail_pic_path not between", value1, value2, "answerdbDetailPicPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeIsNull() {
+            addCriterion("answerdb_dbtype is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeIsNotNull() {
+            addCriterion("answerdb_dbtype is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeEqualTo(Integer value) {
+            addCriterion("answerdb_dbtype =", value, "answerdbDbtype");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeNotEqualTo(Integer value) {
+            addCriterion("answerdb_dbtype <>", value, "answerdbDbtype");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeGreaterThan(Integer value) {
+            addCriterion("answerdb_dbtype >", value, "answerdbDbtype");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("answerdb_dbtype >=", value, "answerdbDbtype");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeLessThan(Integer value) {
+            addCriterion("answerdb_dbtype <", value, "answerdbDbtype");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeLessThanOrEqualTo(Integer value) {
+            addCriterion("answerdb_dbtype <=", value, "answerdbDbtype");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeIn(List<Integer> values) {
+            addCriterion("answerdb_dbtype in", values, "answerdbDbtype");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeNotIn(List<Integer> values) {
+            addCriterion("answerdb_dbtype not in", values, "answerdbDbtype");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeBetween(Integer value1, Integer value2) {
+            addCriterion("answerdb_dbtype between", value1, value2, "answerdbDbtype");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswerdbDbtypeNotBetween(Integer value1, Integer value2) {
+            addCriterion("answerdb_dbtype not between", value1, value2, "answerdbDbtype");
             return (Criteria) this;
         }
 
@@ -571,66 +831,6 @@ public class CourseExample extends BaseExample {
 
         public Criteria andUpdateTimeNotBetween(String value1, String value2) {
             addCriterion("update_time not between", value1, value2, "updateTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidIsNull() {
-            addCriterion("pid is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidIsNotNull() {
-            addCriterion("pid is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidEqualTo(Integer value) {
-            addCriterion("pid =", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidNotEqualTo(Integer value) {
-            addCriterion("pid <>", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidGreaterThan(Integer value) {
-            addCriterion("pid >", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidGreaterThanOrEqualTo(Integer value) {
-            addCriterion("pid >=", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidLessThan(Integer value) {
-            addCriterion("pid <", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidLessThanOrEqualTo(Integer value) {
-            addCriterion("pid <=", value, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidIn(List<Integer> values) {
-            addCriterion("pid in", values, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidNotIn(List<Integer> values) {
-            addCriterion("pid not in", values, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidBetween(Integer value1, Integer value2) {
-            addCriterion("pid between", value1, value2, "pid");
-            return (Criteria) this;
-        }
-
-        public Criteria andPidNotBetween(Integer value1, Integer value2) {
-            addCriterion("pid not between", value1, value2, "pid");
             return (Criteria) this;
         }
     }

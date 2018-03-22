@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="itf4.kaoba.mapper.CourseMapper">
-  <resultMap id="BaseResultMap" type="itf4.kaoba.pojo.Course">
+<mapper namespace="itf4.kaoba.mapper.SingleDbMapper">
+  <resultMap id="BaseResultMap" type="itf4.kaoba.pojo.SingleDb">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="course_name" jdbcType="VARCHAR" property="courseName" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="singledb_title" jdbcType="VARCHAR" property="singledbTitle" />
+    <result column="singledb_optionA" jdbcType="VARCHAR" property="singledbOptiona" />
+    <result column="singledb_optionB" jdbcType="VARCHAR" property="singledbOptionb" />
+    <result column="singledb_optionC" jdbcType="VARCHAR" property="singledbOptionc" />
+    <result column="singledb_optionD" jdbcType="VARCHAR" property="singledbOptiond" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="creater" jdbcType="VARCHAR" property="creater" />
     <result column="create_time" jdbcType="VARCHAR" property="createTime" />
     <result column="updater" jdbcType="VARCHAR" property="updater" />
     <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
-    <result column="pid" jdbcType="INTEGER" property="pid" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -70,57 +74,74 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, course_name, status, creater, create_time, updater, update_time, pid
+    id, course_id, singledb_title, singledb_optionA, singledb_optionB, singledb_optionC, 
+    singledb_optionD, status, creater, create_time, updater, update_time
   </sql>
-  <select id="selectByExample" parameterType="itf4.kaoba.pojo.CourseExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="itf4.kaoba.pojo.SingleDbExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from course
+    from single_db
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
-    <if test="startRow != null and pageSize != null and pageSize != 0">
-	    limit #{startRow},#{pageSize}
-	</if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from course
+    from single_db
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from course
+    delete from single_db
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="itf4.kaoba.pojo.CourseExample">
-    delete from course
+  <delete id="deleteByExample" parameterType="itf4.kaoba.pojo.SingleDbExample">
+    delete from single_db
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="itf4.kaoba.pojo.Course">
-    insert into course (id, course_name, status, 
-      creater, create_time, updater, 
-      update_time, pid)
-    values (#{id,jdbcType=INTEGER}, #{courseName,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
-      #{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER})
+  <insert id="insert" parameterType="itf4.kaoba.pojo.SingleDb">
+    insert into single_db (id, course_id, singledb_title, 
+      singledb_optionA, singledb_optionB, singledb_optionC, 
+      singledb_optionD, status, creater, 
+      create_time, updater, update_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{singledbTitle,jdbcType=VARCHAR}, 
+      #{singledbOptiona,jdbcType=VARCHAR}, #{singledbOptionb,jdbcType=VARCHAR}, #{singledbOptionc,jdbcType=VARCHAR}, 
+      #{singledbOptiond,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{creater,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="itf4.kaoba.pojo.Course">
-    insert into course
+  <insert id="insertSelective" parameterType="itf4.kaoba.pojo.SingleDb">
+    insert into single_db
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="courseName != null">
-        course_name,
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="singledbTitle != null">
+        singledb_title,
+      </if>
+      <if test="singledbOptiona != null">
+        singledb_optionA,
+      </if>
+      <if test="singledbOptionb != null">
+        singledb_optionB,
+      </if>
+      <if test="singledbOptionc != null">
+        singledb_optionC,
+      </if>
+      <if test="singledbOptiond != null">
+        singledb_optionD,
       </if>
       <if test="status != null">
         status,
@@ -137,16 +158,28 @@
       <if test="updateTime != null">
         update_time,
       </if>
-      <if test="pid != null">
-        pid,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="courseName != null">
-        #{courseName,jdbcType=VARCHAR},
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="singledbTitle != null">
+        #{singledbTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="singledbOptiona != null">
+        #{singledbOptiona,jdbcType=VARCHAR},
+      </if>
+      <if test="singledbOptionb != null">
+        #{singledbOptionb,jdbcType=VARCHAR},
+      </if>
+      <if test="singledbOptionc != null">
+        #{singledbOptionc,jdbcType=VARCHAR},
+      </if>
+      <if test="singledbOptiond != null">
+        #{singledbOptiond,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
@@ -163,25 +196,37 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=VARCHAR},
       </if>
-      <if test="pid != null">
-        #{pid,jdbcType=INTEGER},
-      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="itf4.kaoba.pojo.CourseExample" resultType="java.lang.Long">
-    select count(*) from course
+  <select id="countByExample" parameterType="itf4.kaoba.pojo.SingleDbExample" resultType="java.lang.Long">
+    select count(*) from single_db
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update course
+    update single_db
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.courseName != null">
-        course_name = #{record.courseName,jdbcType=VARCHAR},
+      <if test="record.courseId != null">
+        course_id = #{record.courseId,jdbcType=INTEGER},
+      </if>
+      <if test="record.singledbTitle != null">
+        singledb_title = #{record.singledbTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.singledbOptiona != null">
+        singledb_optionA = #{record.singledbOptiona,jdbcType=VARCHAR},
+      </if>
+      <if test="record.singledbOptionb != null">
+        singledb_optionB = #{record.singledbOptionb,jdbcType=VARCHAR},
+      </if>
+      <if test="record.singledbOptionc != null">
+        singledb_optionC = #{record.singledbOptionc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.singledbOptiond != null">
+        singledb_optionD = #{record.singledbOptiond,jdbcType=VARCHAR},
       </if>
       <if test="record.status != null">
         status = #{record.status,jdbcType=INTEGER},
@@ -198,33 +243,49 @@
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=VARCHAR},
       </if>
-      <if test="record.pid != null">
-        pid = #{record.pid,jdbcType=INTEGER},
-      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update course
+    update single_db
     set id = #{record.id,jdbcType=INTEGER},
-      course_name = #{record.courseName,jdbcType=VARCHAR},
+      course_id = #{record.courseId,jdbcType=INTEGER},
+      singledb_title = #{record.singledbTitle,jdbcType=VARCHAR},
+      singledb_optionA = #{record.singledbOptiona,jdbcType=VARCHAR},
+      singledb_optionB = #{record.singledbOptionb,jdbcType=VARCHAR},
+      singledb_optionC = #{record.singledbOptionc,jdbcType=VARCHAR},
+      singledb_optionD = #{record.singledbOptiond,jdbcType=VARCHAR},
       status = #{record.status,jdbcType=INTEGER},
       creater = #{record.creater,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=VARCHAR},
       updater = #{record.updater,jdbcType=VARCHAR},
-      update_time = #{record.updateTime,jdbcType=VARCHAR},
-      pid = #{record.pid,jdbcType=INTEGER}
+      update_time = #{record.updateTime,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="itf4.kaoba.pojo.Course">
-    update course
+  <update id="updateByPrimaryKeySelective" parameterType="itf4.kaoba.pojo.SingleDb">
+    update single_db
     <set>
-      <if test="courseName != null">
-        course_name = #{courseName,jdbcType=VARCHAR},
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="singledbTitle != null">
+        singledb_title = #{singledbTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="singledbOptiona != null">
+        singledb_optionA = #{singledbOptiona,jdbcType=VARCHAR},
+      </if>
+      <if test="singledbOptionb != null">
+        singledb_optionB = #{singledbOptionb,jdbcType=VARCHAR},
+      </if>
+      <if test="singledbOptionc != null">
+        singledb_optionC = #{singledbOptionc,jdbcType=VARCHAR},
+      </if>
+      <if test="singledbOptiond != null">
+        singledb_optionD = #{singledbOptiond,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
@@ -241,34 +302,22 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=VARCHAR},
       </if>
-      <if test="pid != null">
-        pid = #{pid,jdbcType=INTEGER},
-      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="itf4.kaoba.pojo.Course">
-    update course
-    set course_name = #{courseName,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="itf4.kaoba.pojo.SingleDb">
+    update single_db
+    set course_id = #{courseId,jdbcType=INTEGER},
+      singledb_title = #{singledbTitle,jdbcType=VARCHAR},
+      singledb_optionA = #{singledbOptiona,jdbcType=VARCHAR},
+      singledb_optionB = #{singledbOptionb,jdbcType=VARCHAR},
+      singledb_optionC = #{singledbOptionc,jdbcType=VARCHAR},
+      singledb_optionD = #{singledbOptiond,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
       creater = #{creater,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=VARCHAR},
       updater = #{updater,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=VARCHAR},
-      pid = #{pid,jdbcType=INTEGER}
+      update_time = #{updateTime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  
-  <insert id="insertCourseBatch" parameterType="java.util.List">  
-+   insert into course ( id, course_name, 
-+      status, creater, create_time
-+      )
-+    values 
-+    <foreach collection="list" item="item" index="index" separator=",">  
-+     (
-+     #{item.id,jdbcType=INTEGER}, #{item.courseName,jdbcType=VARCHAR}, 
-+      #{item.status,jdbcType=INTEGER}, #{item.creater,jdbcType=VARCHAR}, #{item.createTime,jdbcType=VARCHAR}
-+      ) 
-+    </foreach>  
-+</insert>
 </mapper>

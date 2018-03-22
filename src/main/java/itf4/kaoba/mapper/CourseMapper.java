@@ -1,12 +1,12 @@
 package itf4.kaoba.mapper;
-  
+
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import itf4.kaoba.model.Course;
 import itf4.kaoba.model.CourseExample;
-
-import java.io.InputStream;
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface CourseMapper {
     long countByExample(CourseExample example);
@@ -30,7 +30,6 @@ public interface CourseMapper {
     int updateByPrimaryKeySelective(Course record);
 
     int updateByPrimaryKey(Course record);
-
-	int insertCourseBatch(List<Course> courseList);
-
+    
+    int insertCourseBatch(List<Course> courseList);
 }
