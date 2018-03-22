@@ -185,7 +185,9 @@ public class TeacherController {
 		int count=0;
 		TeacherCourse teacherCourse = new TeacherCourse();
 		//批量授权有问题 
-		if(teacherIds !=null&&courseIds!=null) {
+		
+		
+		if(teacherIds !=""&&courseIds!="") {
 			String []teacherList = teacherIds.split(",");
 			for (String techerId : teacherList) {
 				TeacherCourse teaCourse = showTeacherCourse(Integer.parseInt(techerId));

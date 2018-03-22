@@ -19,27 +19,27 @@ String teacheIds = request.getParameter("idStr");
 </head>
 <body class="body">
 
-<form class="layui-form" action="">
+<div class="layui-form">
 <input type="hidden" id="teacheIds" value="<%=teacheIds %>"/>
     
     <table id="courseTable">
     </table>
     <div class="layui-form-item" style="text-align: center;margin-top:10px;">
-        <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit="" lay-filter="addForm">授权</button>
+        <button class="layui-btn layui-btn-sm layui-btn-normal" id="submit" lay-submit="" lay-filter="addForm">授权</button>
         &nbsp;&nbsp;
         <button class="layui-btn layui-btn-sm layui-btn-normal" id="close">取消</button>
     </div>
-</form>
+</div>
 
 <script src="../plugins/layui2.x/layui.js" charset="utf-8"></script>
 <script type="text/javascript">
 // layui方法
-layui.use(['table', 'form','layer'], function () {
+layui.use(['form','table','layer'], function () {
 	
     // 操作对象
+    var form = layui.form;
     var table = layui.table;
     var layer = layui.layer;
-    var form = layui.form;
     var $ = layui.jquery;
 
     //请求课程列表 
@@ -62,7 +62,7 @@ layui.use(['table', 'form','layer'], function () {
 						string +='<tr align="left">';
 					}
 					string +='<td style="font-size:12px;">'
-					       +'<input type="checkbox" name="courseName" value="'+result[i].id+'" title="'+result[i].teaName+'" lay-skin="primary" /></td>';
+					       +'<input type="checkbox" name="courseName" value="'+result[i].id+'" title="'+result[i].courseName+'" lay-skin="primary" /></td>';
 				}
 				$("#courseTable").html(string);
 				
@@ -96,46 +96,49 @@ layui.use(['table', 'form','layer'], function () {
 	}
  });
     
-    
-    //授权按钮
-    form.on('submit(addForm)', function (data) {
+    //提交
+    $("#submit").click(function(){
     	//获取老师id
     	var teacherIds = $('#teacheIds').val();
     	//获取课程id
+    	var flag = false;
     	var courseIds ="";
     	$('input[type="checkbox"]:checked').each(function(){
+    		flag = true;
     		courseIds +=$(this).val()+",";
     	});
-    	courseIds = courseIds.substring(0,courseIds.length-1);
-    	//teacherIds = teacherIds.substring(0,teacherIds.length-1);
-    	
-    	console.info("courseIds:"+courseIds);
-    	console.info("teacherIds:"+teacherIds);
-    	
-    	
-    	//向后台提交
-    	$.ajax({
-       			method: "post",
-       			url:"../teacher/grantCourse",
-       			data: {
-       				"courseIds":courseIds,
-       				"teacherIds":teacherIds
-       			},
-       			async:false,
-       			success:function(result){
-       				result = result.data;
-        			console.info(result);
-        			if(result>0){
-        				//关闭窗口 并给父页面传值
-                        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                        parent.layer.msg('授权成功！', {title:'提示消息',icon: 1, time: 1500}); //1s后自动关闭);
-                        parent.reloadTable(1);
-                        parent.layer.close(index);
-        			}
-                   	
-       			}
-        });  
-    
+    	if(!flag){
+    		parent.layer.msg('请至少选择一个！', {title:'提示消息',icon: 5, time: 1500}); //1s后自动关闭);
+    	}else{
+    		courseIds = courseIds.substring(0,courseIds.length-1);
+        	//teacherIds = teacherIds.substring(0,teacherIds.length-1);
+        	
+        	console.info("courseIds:"+courseIds);
+        	console.info("teacherIds:"+teacherIds);
+        	//向后台提交
+        	$.ajax({
+           			method: "post",
+           			url:"../teacher/grantCourse",
+           			data: {
+           				"courseIds":courseIds,
+           				"teacherIds":teacherIds
+           			},
+           			async:false,
+           			success:function(result){
+           				result = result.data;
+            			console.info(result);
+            			if(result>0){
+            				//关闭窗口 并给父页面传值
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.msg('授权成功！', {title:'提示消息',icon: 1, time: 1500}); //1s后自动关闭);
+                            parent.reloadTable(1);
+                            parent.layer.close(index);
+            			}
+                       	
+           			}
+            });
+    	}
+    	  
     });
 
    //关闭窗口按钮
