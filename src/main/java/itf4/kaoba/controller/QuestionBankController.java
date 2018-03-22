@@ -90,7 +90,16 @@ public class QuestionBankController {
         				treePojos.add(treePojo);
         				
         				//查章节
-        				CourseExample example2 = new CourseExample();
+        				List<Course> courseList = getCourseTree(course.getId());
+        				for (Course course2 : courseList) {
+        					TreePojo treePojo2=new TreePojo();
+            				treePojo2.setId(course2.getId());
+            				treePojo2.setName(course2.getCourseName());
+            				treePojo2.setPid(course2.getPid());
+            				treePojos.add(treePojo2);
+						}
+        				
+        				/*CourseExample example2 = new CourseExample();
         				Criteria criteria2 = example2.createCriteria();
         				criteria2.andPidEqualTo(course.getId()).andStatusEqualTo(1);
         				List<Course> courseList = courseMapper.selectByExample(example2);
@@ -102,7 +111,7 @@ public class QuestionBankController {
         						treePojo2.setPid(course2.getPid());
                 				treePojos.add(treePojo2);
 							}
-        				}
+        				}*/
         			}
         			//log.debug("此次查询树节点数目: "+list.size());
         			//列表查询日志记录
@@ -116,6 +125,26 @@ public class QuestionBankController {
         }
         
 		JsonPrintUtil.printJsonArrayWithoutKey(response, treePojos);
+	}
+	
+	//递归查出章节
+	public List<Course> getCourseTree(int pid){
+		List<Course> list = new ArrayList();
+		CourseExample example = new CourseExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPidEqualTo(pid).andStatusEqualTo(1);
+		List<Course> courseList = courseMapper.selectByExample(example);
+		if(courseList !=null && courseList.size()>0) {
+			for (Course course : courseList) {
+				list.add(course);
+				List<Course> list2 = new ArrayList();
+				list2=getCourseTree(course.getId());
+				for (Course course2 : list2) {
+					list.add(course2);
+				}
+			}
+		}
+		return list;
 	}
 	
 	//获取节点
