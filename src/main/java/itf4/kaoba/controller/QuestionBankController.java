@@ -22,12 +22,16 @@ import itf4.kaoba.common.ResponseJsonPageListBean;
 import itf4.kaoba.mapper.AnswerDbMapper;
 import itf4.kaoba.mapper.CourseMapper;
 import itf4.kaoba.mapper.SingleDbMapper;
+import itf4.kaoba.mapper.TeacherCourseMapper;
 import itf4.kaoba.model.Course;
 import itf4.kaoba.model.CourseExample;
 import itf4.kaoba.model.CourseExample.Criteria;
 import itf4.kaoba.model.SingleDb;
 import itf4.kaoba.model.SingleDbExample;
 import itf4.kaoba.model.SysUser;
+import itf4.kaoba.model.Teacher;
+import itf4.kaoba.model.TeacherCourse;
+import itf4.kaoba.model.TeacherCourseExample;
 import itf4.kaoba.pojo.SelectCourseTreeJsonListPojo;
 import itf4.kaoba.pojo.TreePojo;
 import itf4.kaoba.util.DateUtil;
@@ -43,6 +47,8 @@ public class QuestionBankController {
 	@Autowired
 	private  CourseMapper courseMapper;
 	@Autowired
+	private TeacherCourseMapper teacherCourseMapper;
+	@Autowired
 	private  SingleDbMapper singleDbMapper;
 	@Autowired
 	private AnswerDbMapper answerDbMapper;
@@ -53,23 +59,40 @@ public class QuestionBankController {
 	@RequestMapping("treeList")
 	@ResponseBody
 	public void treeList( HttpServletRequest request,HttpServletResponse response) {
-        CourseExample example = new CourseExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andStatusEqualTo(1);//正常状态节点
-		List<Course> list = courseMapper.selectByExample(example);
-		//log.debug("此次查询树节点数目: "+list.size());
-		//列表查询日志记录
-		//SysUser currentLoginUser = (SysUser) request.getSession().getAttribute("CurrentLoginUserInfo");
-		//SysLog sysLog = SysLogUtil.getSysLog(request, currentLoginUser, SysModuleConstant.M_EQUIPMENT_TYPE, SysLogConstant.SELECT_LIST, "", "emergency_equipment", "课程分类树型菜单查询共 "+list.size()+" 条");
-		///sysLogMapper.insertSelective(sysLog);
-		List<TreePojo> treePojos=new ArrayList<TreePojo>();
-		for (Course course : list) {
-			TreePojo treePojo=new TreePojo();
-			treePojo.setId(course.getId());
-			treePojo.setName(course.getCourseName());
-			treePojo.setPid(course.getPid());
-			treePojos.add(treePojo);
-		}
+		Teacher teacher = (Teacher)request.getSession().getAttribute("CurrentLoginUserInfo");
+        TeacherCourseExample example0 = new TeacherCourseExample();
+        List<TreePojo> treePojos=new ArrayList<TreePojo>();
+        itf4.kaoba.model.TeacherCourseExample.Criteria critria0 = example0.createCriteria();
+        critria0.andTeaIdEqualTo(teacher.getId());
+        List<TeacherCourse> teaCourseList = teacherCourseMapper.selectByExample(example0);
+        if(teaCourseList !=null &&teaCourseList.size()>0 ) {
+        	String courseIds = teaCourseList.get(0).getCourseId();
+        	if(courseIds !=null && courseIds!="") {
+        		String []courseIdArray = courseIds.split(",");
+        		
+        		for (String courseId : courseIdArray) {
+        			CourseExample example = new CourseExample();
+            		Criteria criteria = example.createCriteria();
+        			criteria.andIdEqualTo(Integer.parseInt(courseId)).andStatusEqualTo(1);//正常状态节点
+        			List<Course> list = courseMapper.selectByExample(example);
+        			//log.debug("此次查询树节点数目: "+list.size());
+        			//列表查询日志记录
+        			//SysUser currentLoginUser = (SysUser) request.getSession().getAttribute("CurrentLoginUserInfo");
+        			//SysLog sysLog = SysLogUtil.getSysLog(request, currentLoginUser, SysModuleConstant.M_EQUIPMENT_TYPE, SysLogConstant.SELECT_LIST, "", "emergency_equipment", "课程分类树型菜单查询共 "+list.size()+" 条");
+        			///sysLogMapper.insertSelective(sysLog);
+        			for (Course course : list) {
+        				TreePojo treePojo=new TreePojo();
+        				treePojo.setId(course.getId());
+        				treePojo.setName(course.getCourseName());
+        				treePojo.setPid(course.getPid());
+        				treePojos.add(treePojo);
+        			}
+				}
+        	}
+        	
+        	
+        }
+        
 		JsonPrintUtil.printJsonArrayWithoutKey(response, treePojos);
 	}
 	

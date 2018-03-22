@@ -34,6 +34,7 @@ public class CourseServiceImpl implements CourseService {
 			course.setCourseName(String.valueOf(ob.get(0)));
 			course.setCreater(String.valueOf(ob.get(1)));
 			course.setStatus(1);
+			course.setPid(0);
 			course.setCreateTime(time.format(nowTime));
 			/*
 			 * users.setLoginId(String.valueOf(ob.get(0)));

@@ -359,7 +359,7 @@ $(document).ready(function(){
 	//是否显示删除按钮
 	function showRemoveBtn(treeId, treeNode){
 		//根节点不允许删除
-		if(treeNode.id=="1"){
+		if(treeNode.id=="0"){
 			return false;
 		}else{
 			return true;
