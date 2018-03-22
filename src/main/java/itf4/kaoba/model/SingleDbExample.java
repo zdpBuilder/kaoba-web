@@ -3,14 +3,14 @@ package itf4.kaoba.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SingleDbExample {
+public class SingleDbExample extends BaseExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public SingleDbExample() {
+    public SingleDbExample()  {
         oredCriteria = new ArrayList<Criteria>();
     }
 

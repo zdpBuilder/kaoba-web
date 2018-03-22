@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="itf4.kaoba.mapper.AnswerDbMapper">
-  <resultMap id="BaseResultMap" type="itf4.kaoba.pojo.AnswerDb">
+  <resultMap id="BaseResultMap" type="itf4.kaoba.model.AnswerDb">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="db_id" jdbcType="INTEGER" property="dbId" />
     <result column="answerdb_key" jdbcType="VARCHAR" property="answerdbKey" />
@@ -76,7 +76,7 @@
     id, db_id, answerdb_key, answerdb_detail, answerdb_detail_pic_path, answerdb_dbtype, 
     status, creater, create_time, updater, update_time
   </sql>
-  <select id="selectByExample" parameterType="itf4.kaoba.pojo.AnswerDbExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="itf4.kaoba.model.AnswerDbExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -100,13 +100,13 @@
     delete from answer_db
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="itf4.kaoba.pojo.AnswerDbExample">
+  <delete id="deleteByExample" parameterType="itf4.kaoba.model.AnswerDbExample">
     delete from answer_db
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="itf4.kaoba.pojo.AnswerDb">
+  <insert id="insert" parameterType="itf4.kaoba.model.AnswerDb">
     insert into answer_db (id, db_id, answerdb_key, 
       answerdb_detail, answerdb_detail_pic_path, 
       answerdb_dbtype, status, creater, 
@@ -118,7 +118,7 @@
       #{createTime,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="itf4.kaoba.pojo.AnswerDb">
+  <insert id="insertSelective" parameterType="itf4.kaoba.model.AnswerDb">
     insert into answer_db
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -191,7 +191,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="itf4.kaoba.pojo.AnswerDbExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="itf4.kaoba.model.AnswerDbExample" resultType="java.lang.Long">
     select count(*) from answer_db
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -255,7 +255,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="itf4.kaoba.pojo.AnswerDb">
+  <update id="updateByPrimaryKeySelective" parameterType="itf4.kaoba.model.AnswerDb">
     update answer_db
     <set>
       <if test="dbId != null">
@@ -291,7 +291,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="itf4.kaoba.pojo.AnswerDb">
+  <update id="updateByPrimaryKey" parameterType="itf4.kaoba.model.AnswerDb">
     update answer_db
     set db_id = #{dbId,jdbcType=INTEGER},
       answerdb_key = #{answerdbKey,jdbcType=VARCHAR},
