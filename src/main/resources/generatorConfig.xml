@@ -57,10 +57,13 @@
 		<table schema="" tableName="stu_pro"></table>
 		<table schema="" tableName="stu_sub"></table>
 	    <table schema="" tableName="users"></table> 
-	    <table schema="" tableName="work_db"></table> -->
+	    <table schema="" tableName="work_db"></table> 
 	    <table schema="" tableName="answer_db"></table>
 	    <table schema="" tableName="single_db"></table>
-	    <table schema="" tableName="course"></table>
+	    <table schema="" tableName="course"></table>-->
+	    <table schema="" tableName="stu_error"></table>
+	    <table schema="" tableName="stu_tea_cou"></table>
+	    <table schema="" tableName="stu_pro"></table>
 
 	</context>
 </generatorConfiguration>
