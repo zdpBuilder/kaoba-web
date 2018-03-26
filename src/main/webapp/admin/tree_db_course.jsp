@@ -301,7 +301,7 @@ function reloadTable(currPageNum){
         		  ,title:  ['编辑设备分类', '']
         		  ,shade: 0.6 //遮罩透明度
         		  ,fixed: true //位置固定
-        		  ,maxmin: false //开启最大化最小化按钮
+        		  ,maxmin: false //开启最大化最小化按钮 
         		  ,anim: 5 //0-6的动画形式，-1不开启
         		  ,content: 'editEquipmentType.jsp?id='+data.id
         	   });
