@@ -294,7 +294,7 @@ function reloadTable(currPageNum){
       	    }
       	  	if(obj.event === 'edit'){
       	      //编辑操作
-      	  	  layer.msg('ID：'+ data.id + ' 的编辑操作');
+      	  	  //layer.msg('ID：'+ data.id + ' 的编辑操作');
       	      layer.open({
         		  type: 2 //Page层类型
         		  ,area: ['680px', '388px']
@@ -312,7 +312,7 @@ function reloadTable(currPageNum){
       	  	  //layer.msg('ID：'+ data.id + ' 的查看操作');
       	      layer.open({
         		  type: 2 //Page层类型
-        		  ,area: ['550px', '310px']
+        		  ,area: ['680px', '388px']
         		  ,title:  ['编辑设备分类', '']
         		  ,shade: 0.6 //遮罩透明度
         		  ,fixed: true //位置固定
