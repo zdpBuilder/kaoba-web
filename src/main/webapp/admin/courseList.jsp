@@ -64,7 +64,11 @@
 		table.reload('courseListTable', {
 		  page: {
 		    curr: pageNum //当前页开始
-		  } 
+		  },
+		  where: {
+    			//查询传参
+    		   keywords: ""
+    		}
 		});
 	}
 
@@ -215,6 +219,10 @@
 	      		table.reload('courseListTable', {
 	      		  page: {
 	      		    curr: 1 //重新从第 1 页开始
+	      		  },
+	      		where: {
+	      			//查询传参
+	      		   keywords: ""
 	      		  }
 	      		});
 	    	});

@@ -40,6 +40,7 @@
 		        <div class="my-btn-box" style="margin-bottom:-10px;">
 		            <span class="fl">
 		                <a class="layui-btn layui-btn-sm" id="btn-add"><i class="layui-icon"></i>新增</a>
+		                <a class="layui-btn layui-btn-sm" id="btn-add-batch"><i class="layui-icon"></i>批量新增</a>
 		                <a class="layui-btn layui-btn-sm" id="btn-delete-all"><i class="layui-icon"></i>删除</a>
 		                <a class="layui-btn layui-btn-sm" id="btn-refresh" data-type="refresh"><i class="layui-icon">&#x1002;</i>刷新</a>
 		            </span>
@@ -70,7 +71,7 @@ var table;
 var currPageNum = 1;//当前页码
 var leftNodeId = 1;//左侧选中的节点id
 
-function reloadTable(pid){
+function reloadTable(currPageNum){
 	//刷新表格内容
 	table.reload('equipmentTypeTable', {
 	  page: {
@@ -105,7 +106,7 @@ function reloadTable(pid){
 		      ,{field: 'singledbOptionb', title: '<span style="color:#000;font-weight:bold;">选项B</span>',align: 'center'}
 		      ,{field: 'singledbOptionc', title: '<span style="color:#000;font-weight:bold;">选项C</span>',align: 'center'}
 		      ,{field: 'singledbOptiond', title: '<span style="color:#000;font-weight:bold;">选项D</span>',align: 'center'}
-		      ,{field: '', title: '<span style="color:#000;font-weight:bold;">操作</span>',align: 'center', width:160 ,toolbar: '#toolbar'}
+		      ,{field: '', title: '<span style="color:#000;font-weight:bold;">操作</span>',align: 'center', width:200 ,toolbar: '#toolbar'}
 		    ]]
         	,url:'${pageContext.request.contextPath}/courseVsSingleDb/list'
         	,id: 'equipmentTypeTable'
@@ -136,13 +137,13 @@ function reloadTable(pid){
       	$("#btn-add").click(function(){
       		layer.open({
       		  type: 2 //Page层类型
-      		  ,area: ['520px', '290px']
+      		  ,area: ['680px', '388px']
       		  ,title:  ['新增题库', 'font-size:13px;font-weight:bold;height:38px;color:#000;background-color:#E5E5E5;']
       		  ,shade: 0.6 //遮罩透明度
       		  ,fixed: true //位置固定
       		  ,maxmin: false //开启最大化最小化按钮
       		  ,anim: 5 //0-6的动画形式，-1不开启
-      		  ,content: 'addEquipmentType.jsp'
+      		  ,content: 'addEquipmentType.jsp?pid='+leftNodeId
       		});
       		
       	});
@@ -215,6 +216,20 @@ function reloadTable(pid){
       		  }
       		});
     	});
+		
+      //批量添加 
+      	$("#btn-add-batch").click(function(){
+      		layer.open({
+      		  type: 2 //Page层类型
+      		  ,area: ['200px', '100px']
+      		  ,title:  ['批量新增试题', '']
+      		  ,shade: 0.6 //遮罩透明度
+      		  ,fixed: true //位置固定
+      		  ,maxmin: false //开启最大化最小化按钮
+      		  ,anim: 5 //0-6的动画形式，-1不开启
+      		  ,content: 'uploadDBExcel.jsp?pid='+leftNodeId
+      	   });
+      	});
       	
       	//多条件查询
       	$("#btn-search").click(function(){
@@ -279,7 +294,22 @@ function reloadTable(pid){
       	    }
       	  	if(obj.event === 'edit'){
       	      //编辑操作
-      	  	  //layer.msg('ID：'+ data.id + ' 的编辑操作');
+      	  	  layer.msg('ID：'+ data.id + ' 的编辑操作');
+      	      layer.open({
+        		  type: 2 //Page层类型
+        		  ,area: ['680px', '388px']
+        		  ,title:  ['编辑设备分类', '']
+        		  ,shade: 0.6 //遮罩透明度
+        		  ,fixed: true //位置固定
+        		  ,maxmin: false //开启最大化最小化按钮
+        		  ,anim: 5 //0-6的动画形式，-1不开启
+        		  ,content: 'editEquipmentType.jsp?id='+data.id
+        	   });
+      	      
+      	    }
+      	  if(obj.event === 'query'){
+      	      //编辑操作
+      	  	  //layer.msg('ID：'+ data.id + ' 的查看操作');
       	      layer.open({
         		  type: 2 //Page层类型
         		  ,area: ['550px', '310px']
@@ -288,7 +318,7 @@ function reloadTable(pid){
         		  ,fixed: true //位置固定
         		  ,maxmin: false //开启最大化最小化按钮
         		  ,anim: 5 //0-6的动画形式，-1不开启
-        		  ,content: 'editEquipmentType.jsp?id='+data.id
+        		  ,content: 'showAnswer.jsp?id='+data.id
         	   });
       	      
       	    }
@@ -303,6 +333,7 @@ function reloadTable(pid){
   <img src="${pageContext.request.contextPath}/img/ee.jpg" style="width:80px;" />
 </script>
 <script type="text/html" id="toolbar">
+	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="query"><i class="layui-icon">&#xe642;</i>查看</a>
 	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>
 	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
 </script>

@@ -107,6 +107,7 @@ public class CourseController {
 	 		} else {
 	 			// 新增用户
 	 			course.setStatus(1);
+	 			course.setPid(0);
 	 			course.setCreateTime(time.format(nowTime));
 	 			//谁创建的
 	 			course.setCreater(currentLoginUser.getUserName());
