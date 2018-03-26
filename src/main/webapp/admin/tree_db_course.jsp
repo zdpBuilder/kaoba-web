@@ -305,7 +305,7 @@ function reloadTable(currPageNum){
         		  ,anim: 5 //0-6的动画形式，-1不开启
         		  ,content: 'editEquipmentType.jsp?id='+data.id
         	   });
-      	        
+      	         
       	    }
       	  if(obj.event === 'query'){
       	      //编辑操作
