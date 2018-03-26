@@ -41,6 +41,8 @@ public class LoginController {
 	@ResponseBody
 	public void login(String loginId, String password, Integer status, HttpServletResponse response,
 			HttpServletRequest request, HttpSession session) {
+		
+		//json对象
 		JSONObject jsonObject = new JSONObject();
 		//获取登录人的信息对象
 		Object object = new Object();
