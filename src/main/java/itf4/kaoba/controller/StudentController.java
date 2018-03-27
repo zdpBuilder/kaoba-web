@@ -21,11 +21,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import itf4.kaoba.common.ResponseJsonPageListBean;
+import itf4.kaoba.mapper.StuTeaCouMapper;
 import itf4.kaoba.mapper.StudentMapper;
+import itf4.kaoba.model.StuTeaCou;
+import itf4.kaoba.model.StuTeaCouExample;
 import itf4.kaoba.model.Student;
 import itf4.kaoba.model.StudentExample;
 import itf4.kaoba.model.StudentExample.Criteria;
 import itf4.kaoba.service.StudentService;
+import itf4.kaoba.util.DateUtil;
 import itf4.kaoba.util.JsonPrintUtil;
 /**
  * 学生管理
@@ -38,6 +42,8 @@ public class StudentController {
 	private StudentMapper studentMapper;
 	@Autowired
 	private StudentService studentService;
+	@Autowired
+	private StuTeaCouMapper stuTeaCouMapper;
 	
 	@RequestMapping("list")
 	public void studentList(HttpServletRequest request, HttpServletResponse response, String keywords, int limit,
@@ -165,6 +171,93 @@ public class StudentController {
 	    int result= studentService.importUsersExcelInfo(session,in, file); 
 	    in.close();  
 	    return result;  
+	}
+	
+	//验证课程是否已经添加到课程表中
+	@RequestMapping("validateCourse")
+	@ResponseBody
+	public void validateCourse(int courseId,HttpServletRequest request, HttpServletResponse response,
+ 			HttpSession session) {
+		
+		//获取登录学生信息
+		Student student = (Student)session.getAttribute("CurrentLoginUserInfo");
+		
+		//拼装查询条件
+		StuTeaCouExample example = new StuTeaCouExample();
+		itf4.kaoba.model.StuTeaCouExample.Criteria criteria = example.createCriteria();
+		criteria.andCouIdEqualTo(courseId).andStuIdEqualTo(student.getId()).andStatusEqualTo(1);
+		
+		//查询
+		List<StuTeaCou> list = stuTeaCouMapper.selectByExample(example);
+		
+		// 输出前台Json
+		if(list.size()>0 && list !=null) {
+ 			JsonPrintUtil.printObjDataWithKey(response, 1, "data");
+		} else {
+			JsonPrintUtil.printObjDataWithKey(response, 0, "data");
+		}
+		
+	}
+	
+	//将课程添加到学生课程表中
+	@RequestMapping("addCourseToStuTeaCou")
+	@ResponseBody
+	public void addCourseToStuTeaCou(String courseIds,int teaId,HttpServletRequest request, HttpServletResponse response,
+ 			HttpSession session) {
+		
+		//获取登录学生信息
+		Student student = (Student)session.getAttribute("CurrentLoginUserInfo");
+		int count =1;
+		StuTeaCou stuTeaCou = new StuTeaCou();
+		stuTeaCou.setCreater(student.getStuName());
+		stuTeaCou.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-mm-dd"));
+		stuTeaCou.setStatus(1);
+		
+		//将数据插入到数据库中
+		if(courseIds !=null && courseIds !="") {
+			String []courseId = courseIds.split(",");
+			for (String id : courseId) {
+				stuTeaCou.setCouId(Integer.parseInt(id));
+				count = count & stuTeaCouMapper.insert(stuTeaCou);
+				if(count ==0) {
+					break;
+				}
+			}
+		}
+		
+		//返回结果
+		JsonPrintUtil.printObjDataWithKey(response, count, "data");
+	}
+	
+	//将课程从课程表中移除
+	@RequestMapping("deleteCourseToStuTeaCou")
+	@ResponseBody
+	public void deleteCourseToStuTeaCou(String stuTeaCouIds,HttpServletRequest request, HttpServletResponse response
+			,HttpSession session) {
+		//获取登录学生信息
+		Student student = (Student)session.getAttribute("CurrentLoginUserInfo");
+		int count =1;
+		StuTeaCou stuTeaCou = new StuTeaCou();
+		stuTeaCou.setUpdater(student.getStuName());
+		stuTeaCou.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-mm-dd"));
+		//逻辑删除
+		stuTeaCou.setStatus(0);
+		
+		//更新课程状态
+		if(stuTeaCouIds !=null && stuTeaCouIds !="") {
+			String []stuTeaCouId = stuTeaCouIds.split(",");
+			for (String id : stuTeaCouId) {
+				stuTeaCou.setId(Integer.parseInt(id));
+				count = count & stuTeaCouMapper.updateByPrimaryKeySelective(stuTeaCou);
+				if(count ==0) {
+					break;
+				}
+			}
+		}
+		
+		//返回结果
+		JsonPrintUtil.printObjDataWithKey(response, count, "data");
+		
 	}
 	
 }
