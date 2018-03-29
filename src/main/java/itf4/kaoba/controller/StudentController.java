@@ -2,6 +2,7 @@ package itf4.kaoba.controller;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,8 +22,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import itf4.kaoba.common.ResponseJsonPageListBean;
+import itf4.kaoba.mapper.SingleDbMapper;
+import itf4.kaoba.mapper.StuErrorMapper;
 import itf4.kaoba.mapper.StuTeaCouMapper;
 import itf4.kaoba.mapper.StudentMapper;
+import itf4.kaoba.model.SingleDb;
+import itf4.kaoba.model.StuError;
+import itf4.kaoba.model.StuErrorExample;
 import itf4.kaoba.model.StuTeaCou;
 import itf4.kaoba.model.StuTeaCouExample;
 import itf4.kaoba.model.Student;
@@ -31,6 +37,7 @@ import itf4.kaoba.model.StudentExample.Criteria;
 import itf4.kaoba.service.StudentService;
 import itf4.kaoba.util.DateUtil;
 import itf4.kaoba.util.JsonPrintUtil;
+import itf4.kaoba.util.JsonUtils;
 /**
  * 学生管理
  * 
@@ -44,6 +51,10 @@ public class StudentController {
 	private StudentService studentService;
 	@Autowired
 	private StuTeaCouMapper stuTeaCouMapper;
+	@Autowired
+	private StuErrorMapper stuErrorMapper;
+	@Autowired
+	private SingleDbMapper singleDbMapper;
 	
 	@RequestMapping("list")
 	public void studentList(HttpServletRequest request, HttpServletResponse response, String keywords, int limit,
@@ -259,5 +270,64 @@ public class StudentController {
 		JsonPrintUtil.printObjDataWithKey(response, count, "data");
 		
 	}
+	
+	//插入错题本
+		@RequestMapping("/insertStuError")
+		@ResponseBody
+		public void insertStuError(HttpServletRequest request, HttpServletResponse response,StuError stuError) {
+			Student student = (Student) request.getSession().getAttribute("CurrentLoginUserInfo");
+			stuError.setStuId(student.getId());
+			stuError.setCreater(student.getStuName());
+			stuError.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
+			stuError.setStuErrorDbtype(0);
+			stuError.setStatus(1);
+			//课程主键
+			//题主键
+			//插入数据库
+			int result = stuErrorMapper.insert(stuError);
+			//返回1，添加成功
+			JsonPrintUtil.printObjDataWithKey(response, result, "data");
+		}
+		
+		// 查询错题本
+		@RequestMapping("/StuErrorList")
+		@ResponseBody
+		public String StuErrorList(HttpServletRequest request, HttpServletResponse response, int courseId) {
+			StuErrorExample example = new StuErrorExample();
+			itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
+			criteria.andCourseIdEqualTo(courseId);
+			List<StuError> list = stuErrorMapper.selectByExample(example);
+			
+			List<SingleDb> singleDbList = new ArrayList<SingleDb>();
+			for (int i = 0; i < list.size() ; i++) {
+				int dbId = list.get(i).getDbId();
+				SingleDb singleDb = singleDbMapper.selectByPrimaryKey(dbId);
+				singleDbList.add(singleDb);
+			}
+			
+			String singleDbListJson =JsonUtils.listToJson(singleDbList);
+			
+			//JsonPrintUtil.printObjDataWithKey(response, singleDbListJson, "data");
+			
+			return singleDbListJson;
+		}
+		
+		// 刪除错题
+		@RequestMapping("/deleteStuError")
+		@ResponseBody
+		public void deleteStuError(HttpServletRequest request, HttpServletResponse response, int dbId) {
+			Student student = (Student) request.getSession().getAttribute("CurrentLoginUserInfo");
+			StuErrorExample example = new StuErrorExample();
+			itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
+			criteria.andDbIdEqualTo(dbId);
+			StuError stuError = new StuError();
+			stuError.setStatus(0);
+			stuError.setUpdater(student.getStuName());
+			stuError.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
+			
+			int result = stuErrorMapper.updateByExample(stuError, example);
+			
+			JsonPrintUtil.printObjDataWithKey(response, result, "data");
+		}
 	
 }
