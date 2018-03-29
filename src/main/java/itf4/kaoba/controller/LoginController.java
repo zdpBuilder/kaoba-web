@@ -80,6 +80,7 @@ public class LoginController {
 				if(list.size()>0 && list !=null) {
 					CurrUserRoleFlag = "3";
 					object = list.get(0);
+					jsonObject.put("student", object);
 				}
 			}
 		}

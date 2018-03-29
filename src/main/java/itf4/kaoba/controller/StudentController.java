@@ -26,6 +26,8 @@ import itf4.kaoba.mapper.SingleDbMapper;
 import itf4.kaoba.mapper.StuErrorMapper;
 import itf4.kaoba.mapper.StuTeaCouMapper;
 import itf4.kaoba.mapper.StudentMapper;
+import itf4.kaoba.mapper.StudentMapperCustom;
+import itf4.kaoba.model.Course;
 import itf4.kaoba.model.SingleDb;
 import itf4.kaoba.model.StuError;
 import itf4.kaoba.model.StuErrorExample;
@@ -55,6 +57,8 @@ public class StudentController {
 	private StuErrorMapper stuErrorMapper;
 	@Autowired
 	private SingleDbMapper singleDbMapper;
+	@Autowired
+	private StudentMapperCustom studentMapperCustom;
 	
 	@RequestMapping("list")
 	public void studentList(HttpServletRequest request, HttpServletResponse response, String keywords, int limit,
@@ -269,6 +273,18 @@ public class StudentController {
 		//返回结果
 		JsonPrintUtil.printObjDataWithKey(response, count, "data");
 		
+	}
+	
+	//获取学生选择的所有科目
+	@RequestMapping("getSelectCourseByStudentId")
+	@ResponseBody
+	public void getSelectCourseByStudentId(HttpServletResponse response) {
+		List<Course> list = studentMapperCustom.getSelectCourseByStudentId(1);
+		if(list !=null && list.size()>0) {
+			JsonPrintUtil.printJsonArrayWithoutKey(response, list);
+		} else {
+			JsonPrintUtil.printJsonArrayWithoutKey(response, null);
+		}
 	}
 	
 	//插入错题本

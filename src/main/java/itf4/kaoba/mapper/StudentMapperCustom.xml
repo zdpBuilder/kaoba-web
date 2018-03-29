@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="itf4.kaoba.mapper.StudentMapperCustom">
+  <resultMap id="BaseResultMap" type="itf4.kaoba.model.Course">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="course_name" jdbcType="VARCHAR" property="courseName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+  </resultMap>
+  
+  <!-- 根据学生id，获取所选的课程 -->
+  <select id="getSelectCourseByStudentId" parameterType="Integer" resultMap="BaseResultMap">
+    SELECT c.id,c.course_name,c.pid FROM course c
+    INNER JOIN stu_tea_cou stc ON c.id = stc.cou_id
+    WHERE stc.stu_id = {#studentId} and stc.status = 1
+  </select>
+  
+</mapper>
