@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import com.google.gson.Gson;
-
 import itf4.kaoba.common.ResponseJsonPageListBean;
 import itf4.kaoba.mapper.AnswerDbMapper;
 import itf4.kaoba.mapper.CourseMapper;
@@ -609,7 +606,7 @@ public class QuestionBankController {
 		}
 	}
 
-	// 查询试题答案
+	// 编辑回显 试题 | 试题答案
 	@RequestMapping(value = "showSingleDb", method = RequestMethod.POST)
 	@ResponseBody
 	public void showSingleDb(String id, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
@@ -642,4 +639,32 @@ public class QuestionBankController {
 	     return result;  
 	 }
 	
+	/**************** START 专项练习(Special Exercise) AND 综合练习(Comprehensive Exercise) START *********************/
+	
+	
+	// 课程分类列表查询
+		@RequestMapping("SElist")
+		@ResponseBody
+		public void couseSE(HttpServletRequest request, HttpServletResponse response,Integer couseId,Integer pid) {
+			int count=0;
+			List<SelectCourseTreeJsonListPojo> list =null;
+					
+			if(pid!=null&&couseId==null) {
+				//综合练习
+			list =singleDbMapper.selectAllsingleDbMessageBypid(pid);
+			
+			}else {
+				//专项练习
+		    list = singleDbMapper.selectAllsingleDbMessageBycouseId(couseId);		
+			}
+		    count=list.size();
+			ResponseJsonPageListBean listBean = new ResponseJsonPageListBean();
+			listBean.setCode(0);
+			listBean.setCount(count);
+			listBean.setMsg("所选课程章节单项选择题所有信息列表");
+			listBean.setData(list);
+			JsonPrintUtil.printObjDataWithoutKey(response, listBean);
+		}
+		
+		/**************** END 专项练习(Special Exercise) AND 综合练习(Comprehensive Exercise) END *********************/
 }

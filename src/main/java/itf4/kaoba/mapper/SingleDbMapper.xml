@@ -333,4 +333,47 @@
       update_time = #{updateTime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+<!--  根据章节id专项查询该课程章节下的所有练习题 -->
+<select  id="selectAllsingleDbMessageBycouseId" parameterType="java.lang.Integer" resultType="itf4.kaoba.pojo.SingledbVSAnswerPojo">
+SELECT  
+    s.id As id,
+    s.course_id AS courseId,
+    s.singledb_optionA AS singledbOptiona,
+    s.singledb_optionB AS singledbOptionb,
+    s.singledb_optionC AS singledbOptionc,
+    s.singledb_optionD AS singledbOptiond,
+    s.singledb_title   AS singledbTitle,
+    a.answerdb_dbtype  AS answerdbDbtype,
+    a.answerdb_key     AS answerdbKey,
+    a.answerdb_detail  AS answerdbDetail,
+    a.answerdb_detail_pic_path AS answerdbDetailPicPath
+FROM single_db s,answer_db a 
+ WHERE s.id=a.db_id 
+ AND  s.status=1 
+ AND a.status=1 
+ AND s.course_id =#{courseId,jdbcType=INTEGER}
+
+</select >
+<!--  根据课程id综合查询该课程下的所有练习题 -->
+  <select  id="selectAllsingleDbMessageBypid" parameterType="java.lang.Integer" resultType="itf4.kaoba.pojo.SingledbVSAnswerPojo">
+SELECT  
+    s.id As id,
+    s.course_id AS courseId,
+    s.singledb_optionA AS singledbOptiona,
+    s.singledb_optionB AS singledbOptionb,
+    s.singledb_optionC AS singledbOptionc,
+    s.singledb_optionD AS singledbOptiond,
+    s.singledb_title   AS singledbTitle,
+    a.answerdb_dbtype  AS answerdbDbtype,
+    a.answerdb_key     AS answerdbKey,
+    a.answerdb_detail  AS answerdbDetail,
+    a.answerdb_detail_pic_path AS answerdbDetailPicPath
+FROM single_db s,answer_db a 
+ WHERE s.id=a.db_id 
+ AND  s.status=1 
+ AND a.status=1 
+ AND s.course_id  
+ IN (SELECT c.id FROM course c WHERE c.pid=#{courseId,jdbcType=INTEGER})
+</select >
 </mapper>

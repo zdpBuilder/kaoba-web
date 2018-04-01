@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import itf4.kaoba.model.SingleDb;
 import itf4.kaoba.model.SingleDbExample;
+import itf4.kaoba.pojo.SelectCourseTreeJsonListPojo;
 
 public interface SingleDbMapper {
     long countByExample(SingleDbExample example);
@@ -30,4 +31,8 @@ public interface SingleDbMapper {
     int updateByPrimaryKeySelective(SingleDb record);
 
     int updateByPrimaryKey(SingleDb record);
+    
+    List<SelectCourseTreeJsonListPojo> selectAllsingleDbMessageBycouseId(Integer couseId);
+   
+    List<SelectCourseTreeJsonListPojo> selectAllsingleDbMessageBypid(Integer pid);
 }
