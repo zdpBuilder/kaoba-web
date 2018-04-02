@@ -1,7 +1,7 @@
 [
   {
     "title": "系统管理",
-    "icon": "fa-cubes",
+    "icon": "fa fa-cogs",
     "spread": true,
     "children": [
       {
@@ -13,7 +13,7 @@
       ]
   },{
     "title": "用户管理",
-    "icon": "fa-cubes",
+    "icon": "fa fa-users",
     "spread": true,
     "children": [
       {
@@ -36,23 +36,9 @@
     "children": [
       {
         "title": "课程管理", 
-        "icon": "fa fa-user-circle-o",
+        "icon": "fa fa-map-o",
         "href": "admin/courseList.jsp",
         "spread": false
       }
     ]
-  },
-   {
-    "title": "题库管理",
-    "icon": "fa-cubes",
-    "spread": true,
-    "children": [
-      {
-        "title": "题库",
-        "icon": "fa fa-user-circle-o",
-        "href": "admin/tree_db_course.jsp",
-        "spread": false
-      }
-      ]
-  }
-  ]
+  }]
