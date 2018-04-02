@@ -642,7 +642,7 @@ public class QuestionBankController {
 	/**************** START 专项练习(Special Exercise) AND 综合练习(Comprehensive Exercise) START *********************/
 	
 	
-	// 课程分类列表查询
+	// 该课程下的各个章节对应的题以及该课程下的所有题
 		@RequestMapping("SElist")
 		@ResponseBody
 		public void couseSE(HttpServletRequest request, HttpServletResponse response,Integer couseId,Integer pid) {
