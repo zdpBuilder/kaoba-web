@@ -16,7 +16,7 @@
   <select id="getSelectCourseByStudentId" parameterType="Integer" resultMap="BaseResultMap">
     SELECT c.id,c.course_name,c.pid FROM course c
     INNER JOIN stu_tea_cou stc ON c.id = stc.cou_id
-    WHERE stc.stu_id = {#studentId} and stc.status = 1
+    WHERE stc.stu_id = #{studentId} and stc.status = 1
   </select>
   
 </mapper>
