@@ -376,4 +376,16 @@ FROM single_db s,answer_db a
  AND s.course_id  
  IN (SELECT c.id FROM course c WHERE c.pid=#{courseId,jdbcType=INTEGER})
 </select >
+
+<!-- 查询试题答案 -->
+	<select id="selectDbAnById" parameterType="java.lang.Integer"
+		resultType="itf4.kaoba.model.SingleDbCustom">
+		SELECT single_db.id id,single_db.course_id courseId,single_db.singledb_title singledbTitle,
+		single_db.singledb_optionA singledbOptiona,single_db.singledb_optionB singledbOptionb,
+		single_db.singledb_optionC singledbOptionc,single_db.singledb_optionD singledbOptiond,
+		answer_db.answerdb_key answerdbKey,answer_db.answerdb_detail answerdbDetail,answer_db.answerdb_detail_pic_path answerdbDetailPicPath
+		FROM single_db,answer_db WHERE single_db.status=1 AND
+		single_db.id=answer_db.db_id AND single_db.id=#{id,jdbcType=INTEGER}
+	</select>
+
 </mapper>

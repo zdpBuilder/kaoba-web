@@ -21,7 +21,7 @@ public class LoginInteceptor implements HandlerInterceptor {
 
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		String path = request.getServletPath();
+		/*String path = request.getServletPath();
 		if(path.matches(Const.NO_INTERCEPTOR_PATH)){
 			return true;
 		}else{
@@ -55,7 +55,8 @@ public class LoginInteceptor implements HandlerInterceptor {
 				return false;
 			}	
 			
-		}
+		}*/
+		return true;
 	}
 
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,

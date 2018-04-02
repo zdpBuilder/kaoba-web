@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import itf4.kaoba.common.ResponseJsonPageListBean;
+import itf4.kaoba.mapper.AnswerDbMapper;
 import itf4.kaoba.mapper.SingleDbMapper;
 import itf4.kaoba.mapper.StuErrorMapper;
 import itf4.kaoba.mapper.StuTeaCouMapper;
@@ -29,6 +30,7 @@ import itf4.kaoba.mapper.StudentMapper;
 import itf4.kaoba.mapper.StudentMapperCustom;
 import itf4.kaoba.model.Course;
 import itf4.kaoba.model.SingleDb;
+import itf4.kaoba.model.SingleDbCustom;
 import itf4.kaoba.model.StuError;
 import itf4.kaoba.model.StuErrorExample;
 import itf4.kaoba.model.StuTeaCou;
@@ -59,6 +61,9 @@ public class StudentController {
 	private SingleDbMapper singleDbMapper;
 	@Autowired
 	private StudentMapperCustom studentMapperCustom;
+	@Autowired
+	private AnswerDbMapper answerDbMapper;
+	
 	
 	@RequestMapping("list")
 	public void studentList(HttpServletRequest request, HttpServletResponse response, String keywords, int limit,
@@ -289,62 +294,62 @@ public class StudentController {
 	}
 	
 	//插入错题本
-		@RequestMapping("/insertStuError")
-		@ResponseBody
-		public void insertStuError(HttpServletRequest request, HttpServletResponse response,StuError stuError) {
-			Student student = (Student) request.getSession().getAttribute("CurrentLoginUserInfo");
-			stuError.setStuId(student.getId());
-			stuError.setCreater(student.getStuName());
-			stuError.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
-			stuError.setStuErrorDbtype(0);
-			stuError.setStatus(1);
-			//课程主键
-			//题主键
-			//插入数据库
-			int result = stuErrorMapper.insert(stuError);
-			//返回1，添加成功
-			JsonPrintUtil.printObjDataWithKey(response, result, "data");
-		}
-		
-		// 查询错题本
-		@RequestMapping("/StuErrorList")
-		@ResponseBody
-		public String StuErrorList(HttpServletRequest request, HttpServletResponse response, int courseId) {
-			StuErrorExample example = new StuErrorExample();
-			itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
-			criteria.andCourseIdEqualTo(courseId);
-			List<StuError> list = stuErrorMapper.selectByExample(example);
-			
-			List<SingleDb> singleDbList = new ArrayList<SingleDb>();
-			for (int i = 0; i < list.size() ; i++) {
-				int dbId = list.get(i).getDbId();
-				SingleDb singleDb = singleDbMapper.selectByPrimaryKey(dbId);
-				singleDbList.add(singleDb);
+			@RequestMapping(value = "insertStuError")
+			@ResponseBody
+			public void insertStuError(HttpServletRequest request, HttpServletResponse response,StuError stuError) {
+				Student student = (Student) request.getSession().getAttribute("CurrentLoginUserInfo");
+				stuError.setStuId(student.getId());
+				stuError.setCreater(student.getStuName());
+				stuError.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
+				stuError.setStuErrorDbtype(0);
+				stuError.setStatus(1);
+				//课程主键
+				//题主键
+				//插入数据库
+				int result = stuErrorMapper.insert(stuError);
+				//返回1，添加成功
+				JsonPrintUtil.printObjDataWithKey(response, result, "data");
 			}
 			
-			String singleDbListJson =JsonUtils.listToJson(singleDbList);
+			// 查询错题本
+			@RequestMapping(value = "StuErrorList")
+			@ResponseBody
+			public void StuErrorList(HttpServletRequest request, HttpServletResponse response, int courseId) {
+				StuErrorExample example = new StuErrorExample();
+				itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
+				criteria.andCourseIdEqualTo(courseId);
+				criteria.andStatusEqualTo(1);
+				List<StuError> list = stuErrorMapper.selectByExample(example);
+				
+				List<SingleDbCustom> singleDbList = new ArrayList<SingleDbCustom>();
+				for (int i = 0; i < list.size() ; i++) {
+					int dbId = list.get(i).getDbId();
+					SingleDbCustom singleDbCustom = singleDbMapper.selectDbAnById(dbId);
+					singleDbList.add(singleDbCustom);
+				}
+				
+				String singleDbListJson =JsonUtils.listToJson(singleDbList);
+				
+				JsonPrintUtil.printObjDataWithKey(response, singleDbListJson, "data");
+				
+			}
 			
-			//JsonPrintUtil.printObjDataWithKey(response, singleDbListJson, "data");
-			
-			return singleDbListJson;
-		}
-		
-		// 刪除错题
-		@RequestMapping("/deleteStuError")
-		@ResponseBody
-		public void deleteStuError(HttpServletRequest request, HttpServletResponse response, int dbId) {
-			Student student = (Student) request.getSession().getAttribute("CurrentLoginUserInfo");
-			StuErrorExample example = new StuErrorExample();
-			itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
-			criteria.andDbIdEqualTo(dbId);
-			StuError stuError = new StuError();
-			stuError.setStatus(0);
-			stuError.setUpdater(student.getStuName());
-			stuError.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
-			
-			int result = stuErrorMapper.updateByExample(stuError, example);
-			
-			JsonPrintUtil.printObjDataWithKey(response, result, "data");
-		}
+			// 刪除错题
+			@RequestMapping(value = "deleteStuError")
+			@ResponseBody
+			public void deleteStuError(HttpServletRequest request, HttpServletResponse response, int dbId,String name) {
+				//Student student = (Student) request.getSession().getAttribute("CurrentLoginUserInfo");
+				StuErrorExample example = new StuErrorExample();
+				itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
+				criteria.andDbIdEqualTo(dbId);
+				StuError stuError = new StuError();
+				stuError.setStatus(0);
+				stuError.setUpdater(name);
+				stuError.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
+				
+				int result = stuErrorMapper.updateByExampleSelective(stuError, example);
+				
+				JsonPrintUtil.printObjDataWithKey(response, result, "data");
+			}
 	
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import itf4.kaoba.model.SingleDb;
+import itf4.kaoba.model.SingleDbCustom;
 import itf4.kaoba.model.SingleDbExample;
 import itf4.kaoba.pojo.SelectCourseTreeJsonListPojo;
 
@@ -35,4 +36,6 @@ public interface SingleDbMapper {
     List<SelectCourseTreeJsonListPojo> selectAllsingleDbMessageBycouseId(Integer couseId);
    
     List<SelectCourseTreeJsonListPojo> selectAllsingleDbMessageBypid(Integer pid);
+    
+    SingleDbCustom selectDbAnById(Integer id);
 }
