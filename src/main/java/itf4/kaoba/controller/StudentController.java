@@ -257,6 +257,7 @@ public class StudentController {
 	public void deleteCourseToStuTeaCou(String courseIds,HttpServletRequest request, HttpServletResponse response
 			,Student student) {
 		int count =1;
+		
 		//ÉèÖÃÂß¼­É¾³ıĞÅÏ¢
 		StuTeaCou stuTeaCou = new StuTeaCou();
 		stuTeaCou.setUpdater(student.getStuName());
