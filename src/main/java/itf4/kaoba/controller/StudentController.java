@@ -249,25 +249,29 @@ public class StudentController {
 	}
 	
 	/*将课程从课程表中移除
+	 * 根据学生id和课程id
 	 * @yangfan
 	 */
 	@RequestMapping("deleteCourseToStuTeaCou")
 	@ResponseBody
-	public void deleteCourseToStuTeaCou(String stuTeaCouIds,HttpServletRequest request, HttpServletResponse response
+	public void deleteCourseToStuTeaCou(String courseIds,HttpServletRequest request, HttpServletResponse response
 			,Student student) {
 		int count =1;
+		//设置逻辑删除信息
 		StuTeaCou stuTeaCou = new StuTeaCou();
 		stuTeaCou.setUpdater(student.getStuName());
 		stuTeaCou.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-mm-dd"));
 		//逻辑删除
 		stuTeaCou.setStatus(0);
 		
-		//更新课程状态
-		if(stuTeaCouIds !=null && stuTeaCouIds !="") {
-			String []stuTeaCouId = stuTeaCouIds.split(",");
-			for (String id : stuTeaCouId) {
-				stuTeaCou.setId(Integer.parseInt(id));
-				count = count & stuTeaCouMapper.updateByPrimaryKeySelective(stuTeaCou);
+		//更新课程
+		if(courseIds !=null && courseIds !="") {
+			String []courseId = courseIds.split(",");
+			for (String couId : courseId) {
+				StuTeaCouExample example = new StuTeaCouExample();
+				itf4.kaoba.model.StuTeaCouExample.Criteria criteria = example.createCriteria();
+				criteria.andCouIdEqualTo(Integer.parseInt(couId)).andStuIdEqualTo(student.getId());
+				count = count & stuTeaCouMapper.updateByExampleSelective(stuTeaCou, example);
 				if(count ==0) {
 					break;
 				}
