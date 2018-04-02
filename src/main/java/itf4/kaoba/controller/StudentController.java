@@ -188,14 +188,13 @@ public class StudentController {
 	    return result;  
 	}
 	
-	//验证课程是否已经添加到课程表中
+	/*验证课程是否已经添加到课程表中
+	 * @yangfan
+	 */
 	@RequestMapping("validateCourse")
 	@ResponseBody
 	public void validateCourse(int courseId,HttpServletRequest request, HttpServletResponse response,
- 			HttpSession session) {
-		
-		//获取登录学生信息
-		Student student = (Student)session.getAttribute("CurrentLoginUserInfo");
+ 			Student student) {
 		
 		//拼装查询条件
 		StuTeaCouExample example = new StuTeaCouExample();
@@ -214,14 +213,14 @@ public class StudentController {
 		
 	}
 	
-	//将课程添加到学生课程表中
+	/*将课程添加到学生课程表中
+	 * @yangfa
+	 */
 	@RequestMapping("addCourseToStuTeaCou")
 	@ResponseBody
 	public void addCourseToStuTeaCou(String courseIds,int teaId,HttpServletRequest request, HttpServletResponse response,
- 			HttpSession session) {
+ 			Student student) {
 		
-		//获取登录学生信息
-		Student student = (Student)session.getAttribute("CurrentLoginUserInfo");
 		int count =1;
 		StuTeaCou stuTeaCou = new StuTeaCou();
 		stuTeaCou.setCreater(student.getStuName());
@@ -244,13 +243,13 @@ public class StudentController {
 		JsonPrintUtil.printObjDataWithKey(response, count, "data");
 	}
 	
-	//将课程从课程表中移除
+	/*将课程从课程表中移除
+	 * @yangfan
+	 */
 	@RequestMapping("deleteCourseToStuTeaCou")
 	@ResponseBody
 	public void deleteCourseToStuTeaCou(String stuTeaCouIds,HttpServletRequest request, HttpServletResponse response
-			,HttpSession session) {
-		//获取登录学生信息
-		Student student = (Student)session.getAttribute("CurrentLoginUserInfo");
+			,Student student) {
 		int count =1;
 		StuTeaCou stuTeaCou = new StuTeaCou();
 		stuTeaCou.setUpdater(student.getStuName());
@@ -275,11 +274,13 @@ public class StudentController {
 		
 	}
 	
-	//获取学生选择的所有科目
+	/*获取学生选择的所有科目
+	 * @yagnfan
+	 */
 	@RequestMapping("getSelectCourseByStudentId")
 	@ResponseBody
-	public void getSelectCourseByStudentId(HttpServletResponse response) {
-		List<Course> list = studentMapperCustom.getSelectCourseByStudentId(1);
+	public void getSelectCourseByStudentId(HttpServletResponse response,Student student) {
+		List<Course> list = studentMapperCustom.getSelectCourseByStudentId(student.getId());
 		if(list !=null && list.size()>0) {
 			JsonPrintUtil.printJsonArrayWithoutKey(response, list);
 		} else {
