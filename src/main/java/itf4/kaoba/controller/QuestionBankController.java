@@ -42,6 +42,7 @@ import itf4.kaoba.service.SingleDbService;
 import itf4.kaoba.util.Const;
 import itf4.kaoba.util.DateUtil;
 import itf4.kaoba.util.JsonPrintUtil;
+import itf4.kaoba.util.JsonUtils;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -57,10 +58,9 @@ public class QuestionBankController {
 	private SingleDbMapper singleDbMapper;
 	@Autowired
 	private AnswerDbMapper answerDbMapper;
-	
+
 	@Autowired
 	private SingleDbService singleDbService;
-	
 
 	/**************** START 课程分类树状菜单操作 START *********************/
 
@@ -503,7 +503,7 @@ public class QuestionBankController {
 			ee.setCreater(CurrentUserName);
 			ee.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
 			count = singleDbMapper.insert(ee);
-			//System.out.println(ee.getId());
+			// System.out.println(ee.getId());
 
 			answerDb.setDbId(ee.getId());
 			answerDb.setAnswerdbDbtype(0);
@@ -623,48 +623,53 @@ public class QuestionBankController {
 		JsonPrintUtil.printObjDataWithKey(response, map, "data");
 	}
 
-	//批量添加试题
+	// 批量添加试题
 	@RequestMapping("/insertDBsBatch")
-	 @ResponseBody
-	 public int impots(String courseId, HttpServletRequest request, Model model) throws Exception {
-		  //String courseId = request.getParameter("courseId");
-	      //获取上传的文件  
-	      MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) request;  
-	      MultipartFile file = multipart.getFile("upfile");       
-	      InputStream in = file.getInputStream();  
-	      //数据导入  
-	     int result= singleDbService.importUsersExcelInfo(request,in, file,courseId); 
-	     in.close();  
-	     System.out.println(result);
-	     return result;  
-	 }
-	
-	/**************** START 专项练习(Special Exercise) AND 综合练习(Comprehensive Exercise) START *********************/
-	
-	
-	// 该课程下的各个章节对应的题以及该课程下的所有题
-		@RequestMapping("SElist")
-		@ResponseBody
-		public void couseSE(HttpServletRequest request, HttpServletResponse response,Integer couseId,Integer pid) {
-			int count=0;
-			List<SelectCourseTreeJsonListPojo> list =null;
-					
-			if(pid!=null&&couseId==null) {
-				//综合练习
-			list =singleDbMapper.selectAllsingleDbMessageBypid(pid);
-			
-			}else {
-				//专项练习
-		    list = singleDbMapper.selectAllsingleDbMessageBycouseId(couseId);		
-			}
-		    count=list.size();
-			ResponseJsonPageListBean listBean = new ResponseJsonPageListBean();
-			listBean.setCode(0);
-			listBean.setCount(count);
-			listBean.setMsg("所选课程章节单项选择题所有信息列表");
-			listBean.setData(list);
-			JsonPrintUtil.printObjDataWithoutKey(response, listBean);
+	@ResponseBody
+	public int impots(String courseId, HttpServletRequest request, Model model) throws Exception {
+		// String courseId = request.getParameter("courseId");
+		// 获取上传的文件
+		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) request;
+		MultipartFile file = multipart.getFile("upfile");
+		InputStream in = file.getInputStream();
+		// 数据导入
+		int result = singleDbService.importUsersExcelInfo(request, in, file, courseId);
+		in.close();
+		System.out.println(result);
+		return result;
+	}
+
+	/****************
+	 * START 专项练习(Special Exercise) AND 综合练习(Comprehensive Exercise) START
+	 *********************/
+
+	// 课程分类列表查询
+	@RequestMapping("SElist")
+	@ResponseBody
+	public void couseSE(HttpServletRequest request, HttpServletResponse response, Integer couseId, Integer pid) {
+		int count = 0;
+		List<SelectCourseTreeJsonListPojo> list = null;
+
+		if (pid != null && couseId == null) {
+			// 综合练习
+			list = singleDbMapper.selectAllsingleDbMessageBypid(pid);
+
+		} else {
+			// 专项练习
+			list = singleDbMapper.selectAllsingleDbMessageBycouseId(couseId);
 		}
-		
-		/**************** END 专项练习(Special Exercise) AND 综合练习(Comprehensive Exercise) END *********************/
+		/*
+		 * count=list.size(); ResponseJsonPageListBean listBean = new
+		 * ResponseJsonPageListBean(); listBean.setCode(0); listBean.setCount(count);
+		 * listBean.setMsg("所选课程章节单项选择题所有信息列表"); listBean.setData(list);
+		 * JsonPrintUtil.printObjDataWithoutKey(response, listBean);
+		 */
+
+		String singleDbListJson = JsonUtils.listToJson(list);
+		JsonPrintUtil.printObjDataWithKey(response, singleDbListJson, "data");
+	}
+
+	/****************
+	 * END 专项练习(Special Exercise) AND 综合练习(Comprehensive Exercise) END
+	 *********************/
 }

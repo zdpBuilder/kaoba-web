@@ -42,6 +42,7 @@ import itf4.kaoba.service.StudentService;
 import itf4.kaoba.util.DateUtil;
 import itf4.kaoba.util.JsonPrintUtil;
 import itf4.kaoba.util.JsonUtils;
+
 /**
  * 学生管理
  * 
@@ -63,298 +64,312 @@ public class StudentController {
 	private StudentMapperCustom studentMapperCustom;
 	@Autowired
 	private AnswerDbMapper answerDbMapper;
-	
-	
+
 	@RequestMapping("list")
 	public void studentList(HttpServletRequest request, HttpServletResponse response, String keywords, int limit,
- 			int page) {
-		
+			int page) {
+
 		// limit 每页显示数量
- 		// page 当前页码
+		// page 当前页码
 		StudentExample example = new StudentExample();
 		// 设置分页查询参数
- 		example.setStartRow((page - 1) * limit);
- 		example.setPageSize(limit);
- 		example.setOrderByClause("create_time desc,update_time desc");
- 		Criteria criteria = example.createCriteria();
- 		
- 		if (keywords!=null&&keywords!="") {
- 			keywords = keywords.trim();
- 			keywords = "%" + keywords + "%";
- 			// and or联合查询
- 			example.or().andStuNameLike(keywords).andStatusEqualTo(1);
- 			example.or().andLoginIdLike(keywords).andStatusEqualTo(1);
- 		} else {
- 			criteria.andStatusEqualTo(1);// 正常状态
- 		}
- 		
- 		// 分页查询
- 		List<Student> sudentList = studentMapper.selectByExample(example);
- 		int count = (int) studentMapper.countByExample(example);
+		example.setStartRow((page - 1) * limit);
+		example.setPageSize(limit);
+		example.setOrderByClause("create_time desc,update_time desc");
+		Criteria criteria = example.createCriteria();
 
- 		ResponseJsonPageListBean listBean = new ResponseJsonPageListBean();
- 		listBean.setCode(0);
- 		listBean.setCount(count);
- 		listBean.setMsg("学生列表");
- 		listBean.setData(sudentList);
+		if (keywords != null && keywords != "") {
+			keywords = keywords.trim();
+			keywords = "%" + keywords + "%";
+			// and or联合查询
+			example.or().andStuNameLike(keywords).andStatusEqualTo(1);
+			example.or().andLoginIdLike(keywords).andStatusEqualTo(1);
+		} else {
+			criteria.andStatusEqualTo(1);// 正常状态
+		}
 
- 		if (null != sudentList && sudentList.size() > 0) {
- 			JsonPrintUtil.printObjDataWithoutKey(response, listBean);
- 		} else {
- 			JsonPrintUtil.printObjDataWithoutKey(response, null);
- 		}
+		// 分页查询
+		List<Student> sudentList = studentMapper.selectByExample(example);
+		int count = (int) studentMapper.countByExample(example);
+
+		ResponseJsonPageListBean listBean = new ResponseJsonPageListBean();
+		listBean.setCode(0);
+		listBean.setCount(count);
+		listBean.setMsg("学生列表");
+		listBean.setData(sudentList);
+
+		if (null != sudentList && sudentList.size() > 0) {
+			JsonPrintUtil.printObjDataWithoutKey(response, listBean);
+		} else {
+			JsonPrintUtil.printObjDataWithoutKey(response, null);
+		}
 	}
-	
+
 	@RequestMapping("save")
 	@ResponseBody
-	public void save(Student student,HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-		
+	public void save(Student student, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+
 		int count = 0;
-		//SysUser currentLoginUser = (SysUser) session.getAttribute("CurrentLoginUserInfo");
+		// SysUser currentLoginUser = (SysUser)
+		// session.getAttribute("CurrentLoginUserInfo");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		//编辑
-		if(student.getId()!=null &&student.getId()>0) {
-			//teacher.setUpdater(currentLoginUser.getUserId() + "");
+		// 编辑
+		if (student.getId() != null && student.getId() > 0) {
+			// teacher.setUpdater(currentLoginUser.getUserId() + "");
 			student.setUpdateTime(sdf.format(new Date()));
- 			if(student.getStuPassword() !=null) {
- 				student.setStuPassword(DigestUtils.md5DigestAsHex(student.getStuPassword().getBytes()));
- 			}
+			if (student.getStuPassword() != null) {
+				student.setStuPassword(DigestUtils.md5DigestAsHex(student.getStuPassword().getBytes()));
+			}
 			count = studentMapper.updateByPrimaryKeySelective(student);
-			//输出前台Json
+			// 输出前台Json
 			if (count > 0) {
 				JsonPrintUtil.printObjDataWithKey(response, student, "data");
 			}
-	    //保存
-		}else {
-			student.setStatus(1);//正常为1
+			// 保存
+		} else {
+			student.setStatus(1);// 正常为1
 			student.setStuPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
-			//teacher.setCreater(currentLoginUser.getUserId() + "");
+			// teacher.setCreater(currentLoginUser.getUserId() + "");
 			student.setCreateTime(sdf.format(new Date()));
- 			count = studentMapper.insert(student);
- 			
- 			if(count >0) {
- 				JsonPrintUtil.printObjDataWithKey(response, count, "data");
- 			}
-			
+			count = studentMapper.insert(student);
+
+			if (count > 0) {
+				JsonPrintUtil.printObjDataWithKey(response, count, "data");
+			}
+
 		}
-		
+
 	}
-	
-	//学生信息查看
+
+	// 学生信息查看
 	@RequestMapping(value = "show", method = RequestMethod.POST)
 	@ResponseBody
 	public void show(int id, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		Student student = studentMapper.selectByPrimaryKey(id);
-		if(student !=null) {
+		if (student != null) {
 			JsonPrintUtil.printObjDataWithKey(response, student, "data");
 		} else {
 			JsonPrintUtil.printObjDataWithKey(response, null, "data");
 		}
 	}
-	
-	//学生批量删除
+
+	// 学生批量删除
 	@RequestMapping(value = "deleteBatch", method = RequestMethod.POST)
- 	@ResponseBody
- 	public void deleteBatch(String idStr, HttpServletRequest request, HttpServletResponse response,
- 			HttpSession session) {
-		
-		//SysUser currentLoginUser = (SysUser) session.getAttribute("CurrentLoginUserInfo");
+	@ResponseBody
+	public void deleteBatch(String idStr, HttpServletRequest request, HttpServletResponse response,
+			HttpSession session) {
+
+		// SysUser currentLoginUser = (SysUser)
+		// session.getAttribute("CurrentLoginUserInfo");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		
+
 		if (StringUtils.isNotBlank(idStr)) {
- 			String[] idArr = idStr.split(",");
- 			for (int i = 0; i < idArr.length; i++) {
- 				// 更新老师为删除状态
- 				int id = Integer.parseInt(idArr[i]);
- 				Student student = studentMapper.selectByPrimaryKey(id);
- 				student.setStatus(3);// 1正常 3已删除
- 				student.setUpdateTime(sdf.format(new Date()));
- 				//teacher.setUpdater(currentLoginUser.getUserId() + "");
- 				studentMapper.updateByPrimaryKeySelective(student);
- 			}
- 			// 输出前台Json
- 			JsonPrintUtil.printObjDataWithKey(response, 1, "data");
- 		} else {
- 			JsonPrintUtil.printObjDataWithKey(response, 0, "data");
- 		}
+			String[] idArr = idStr.split(",");
+			for (int i = 0; i < idArr.length; i++) {
+				// 更新老师为删除状态
+				int id = Integer.parseInt(idArr[i]);
+				Student student = studentMapper.selectByPrimaryKey(id);
+				student.setStatus(3);// 1正常 3已删除
+				student.setUpdateTime(sdf.format(new Date()));
+				// teacher.setUpdater(currentLoginUser.getUserId() + "");
+				studentMapper.updateByPrimaryKeySelective(student);
+			}
+			// 输出前台Json
+			JsonPrintUtil.printObjDataWithKey(response, 1, "data");
+		} else {
+			JsonPrintUtil.printObjDataWithKey(response, 0, "data");
+		}
 	}
 
-	//批量导入学生
-	@RequestMapping("/insertStudentsBatch")  
+	// 批量导入学生
+	@RequestMapping("/insertStudentsBatch")
 	@ResponseBody
-	public int impots(HttpServletRequest request,HttpSession session, Model model) throws Exception{
-		//获取上传的文件  
-        MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) request;  
-        MultipartFile file = multipart.getFile("upfile");       
-        InputStream in = file.getInputStream(); 
-        //数据导入  
-	    int result= studentService.importUsersExcelInfo(session,in, file); 
-	    in.close();  
-	    return result;  
+	public int impots(HttpServletRequest request, HttpSession session, Model model) throws Exception {
+		// 获取上传的文件
+		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) request;
+		MultipartFile file = multipart.getFile("upfile");
+		InputStream in = file.getInputStream();
+		// 数据导入
+		int result = studentService.importUsersExcelInfo(session, in, file);
+		in.close();
+		return result;
 	}
-	
-	/*验证课程是否已经添加到课程表中
+
+	/*
+	 * 验证课程是否已经添加到课程表中
+	 * 
 	 * @yangfan
 	 */
 	@RequestMapping("validateCourse")
 	@ResponseBody
-	public void validateCourse(int courseId,HttpServletRequest request, HttpServletResponse response,
- 			Student student) {
-		
-		//拼装查询条件
+	public void validateCourse(int courseId, HttpServletRequest request, HttpServletResponse response,
+			Student student) {
+
+		// 拼装查询条件
 		StuTeaCouExample example = new StuTeaCouExample();
 		itf4.kaoba.model.StuTeaCouExample.Criteria criteria = example.createCriteria();
 		criteria.andCouIdEqualTo(courseId).andStuIdEqualTo(student.getId()).andStatusEqualTo(1);
-		
-		//查询
+
+		// 查询
 		List<StuTeaCou> list = stuTeaCouMapper.selectByExample(example);
-		
+
 		// 输出前台Json
-		if(list.size()>0 && list !=null) {
- 			JsonPrintUtil.printObjDataWithKey(response, 1, "data");
+		if (list.size() > 0 && list != null) {
+			JsonPrintUtil.printObjDataWithKey(response, 1, "data");
 		} else {
 			JsonPrintUtil.printObjDataWithKey(response, 0, "data");
 		}
-		
+
 	}
-	
-	/*将课程添加到学生课程表中
+
+	/*
+	 * 将课程添加到学生课程表中
+	 * 
 	 * @yangfa
 	 */
 	@RequestMapping("addCourseToStuTeaCou")
 	@ResponseBody
-	public void addCourseToStuTeaCou(String courseIds,int teaId,HttpServletRequest request, HttpServletResponse response,
- 			Student student) {
-		
-		int count =1;
+	public void addCourseToStuTeaCou(String courseIds, int teaId, HttpServletRequest request,
+			HttpServletResponse response, Student student) {
+
+		int count = 1;
 		StuTeaCou stuTeaCou = new StuTeaCou();
 		stuTeaCou.setCreater(student.getStuName());
 		stuTeaCou.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-mm-dd"));
 		stuTeaCou.setStatus(1);
-		
-		//将数据插入到数据库中
-		if(courseIds !=null && courseIds !="") {
-			String []courseId = courseIds.split(",");
+
+		// 将数据插入到数据库中
+		if (courseIds != null && courseIds != "") {
+			String[] courseId = courseIds.split(",");
 			for (String id : courseId) {
 				stuTeaCou.setCouId(Integer.parseInt(id));
 				count = count & stuTeaCouMapper.insert(stuTeaCou);
-				if(count ==0) {
+				if (count == 0) {
 					break;
 				}
 			}
 		}
-		
-		//返回结果
+
+		// 返回结果
 		JsonPrintUtil.printObjDataWithKey(response, count, "data");
 	}
-	
-	/*将课程从课程表中移除
-	 * 根据学生id和课程id
+
+	/*
+	 * 将课程从课程表中移除 根据学生id和课程id
+	 * 
 	 * @yangfan
 	 */
 	@RequestMapping("deleteCourseToStuTeaCou")
 	@ResponseBody
-	public void deleteCourseToStuTeaCou(String courseIds,HttpServletRequest request, HttpServletResponse response
-			,Student student) {
-		int count =1;
-		
-		//设置逻辑删除信息
+	public void deleteCourseToStuTeaCou(String courseIds, HttpServletRequest request, HttpServletResponse response,
+			Student student) {
+		int count = 1;
+
+		// 设置逻辑删除信息
 		StuTeaCou stuTeaCou = new StuTeaCou();
 		stuTeaCou.setUpdater(student.getStuName());
 		stuTeaCou.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-mm-dd"));
-		//逻辑删除
+		// 逻辑删除
 		stuTeaCou.setStatus(0);
-		
-		//更新课程
-		if(courseIds !=null && courseIds !="") {
-			String []courseId = courseIds.split(",");
+
+		// 更新课程
+		if (courseIds != null && courseIds != "") {
+			String[] courseId = courseIds.split(",");
 			for (String couId : courseId) {
 				StuTeaCouExample example = new StuTeaCouExample();
 				itf4.kaoba.model.StuTeaCouExample.Criteria criteria = example.createCriteria();
 				criteria.andCouIdEqualTo(Integer.parseInt(couId)).andStuIdEqualTo(student.getId());
 				count = count & stuTeaCouMapper.updateByExampleSelective(stuTeaCou, example);
-				if(count ==0) {
+				if (count == 0) {
 					break;
 				}
 			}
 		}
-		
-		//返回结果
+
+		// 返回结果
 		JsonPrintUtil.printObjDataWithKey(response, count, "data");
-		
+
 	}
-	
-	/*获取学生选择的所有科目
+
+	/*
+	 * 获取学生选择的所有科目
+	 * 
 	 * @yagnfan
 	 */
 	@RequestMapping("getSelectCourseByStudentId")
 	@ResponseBody
-	public void getSelectCourseByStudentId(HttpServletResponse response,Student student) {
+	public void getSelectCourseByStudentId(HttpServletResponse response, Student student) {
 		List<Course> list = studentMapperCustom.getSelectCourseByStudentId(student.getId());
-		if(list !=null && list.size()>0) {
+		if (list != null && list.size() > 0) {
 			JsonPrintUtil.printJsonArrayWithoutKey(response, list);
 		} else {
 			JsonPrintUtil.printJsonArrayWithoutKey(response, null);
 		}
 	}
-	
-	//插入错题本
-			@RequestMapping(value = "insertStuError")
-			@ResponseBody
-			public void insertStuError(HttpServletRequest request, HttpServletResponse response,StuError stuError) {
-				Student student = (Student) request.getSession().getAttribute("CurrentLoginUserInfo");
-				stuError.setStuId(student.getId());
-				stuError.setCreater(student.getStuName());
-				stuError.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
-				stuError.setStuErrorDbtype(0);
-				stuError.setStatus(1);
-				//课程主键
-				//题主键
-				//插入数据库
-				int result = stuErrorMapper.insert(stuError);
-				//返回1，添加成功
-				JsonPrintUtil.printObjDataWithKey(response, result, "data");
-			}
-			
-			// 查询错题本
-			@RequestMapping(value = "StuErrorList")
-			@ResponseBody
-			public void StuErrorList(HttpServletRequest request, HttpServletResponse response, int courseId) {
-				StuErrorExample example = new StuErrorExample();
-				itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
-				criteria.andCourseIdEqualTo(courseId);
-				criteria.andStatusEqualTo(1);
-				List<StuError> list = stuErrorMapper.selectByExample(example);
-				
-				List<SingleDbCustom> singleDbList = new ArrayList<SingleDbCustom>();
-				for (int i = 0; i < list.size() ; i++) {
-					int dbId = list.get(i).getDbId();
-					SingleDbCustom singleDbCustom = singleDbMapper.selectDbAnById(dbId);
-					singleDbList.add(singleDbCustom);
-				}
-				
-				String singleDbListJson =JsonUtils.listToJson(singleDbList);
-				
-				JsonPrintUtil.printObjDataWithKey(response, singleDbListJson, "data");
-				
-			}
-			
-			// 刪除错题
-			@RequestMapping(value = "deleteStuError")
-			@ResponseBody
-			public void deleteStuError(HttpServletRequest request, HttpServletResponse response, int dbId,String name) {
-				//Student student = (Student) request.getSession().getAttribute("CurrentLoginUserInfo");
-				StuErrorExample example = new StuErrorExample();
-				itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
-				criteria.andDbIdEqualTo(dbId);
-				StuError stuError = new StuError();
-				stuError.setStatus(0);
-				stuError.setUpdater(name);
-				stuError.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
-				
-				int result = stuErrorMapper.updateByExampleSelective(stuError, example);
-				
-				JsonPrintUtil.printObjDataWithKey(response, result, "data");
-			}
-	
+
+	// 插入错题本
+	@RequestMapping(value = "insertStuError")
+	@ResponseBody
+	public void insertStuError(HttpServletRequest request, HttpServletResponse response, StuError stuError) {
+		int result = 0;
+		StuErrorExample example = new StuErrorExample();
+		itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
+		criteria.andDbIdEqualTo(stuError.getDbId());
+		List<StuError> list = stuErrorMapper.selectByExample(example);
+		if (list != null && list.size() > 0) {
+			// 已有此错题
+			result = 2;
+		} else {
+			stuError.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
+			stuError.setStuErrorDbtype(0);
+			stuError.setStatus(1);
+			// 插入数据库
+			result = stuErrorMapper.insert(stuError);
+		}
+		// 返回1，添加成功
+		JsonPrintUtil.printObjDataWithKey(response, result, "data");
+	}
+
+	// 查询错题本
+	@RequestMapping(value = "StuErrorList")
+	@ResponseBody
+	public void StuErrorList(HttpServletRequest request, HttpServletResponse response, int courseId) {
+		StuErrorExample example = new StuErrorExample();
+		itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
+		criteria.andCourseIdEqualTo(courseId);
+		criteria.andStatusEqualTo(1);
+		List<StuError> list = stuErrorMapper.selectByExample(example);
+
+		List<SingleDbCustom> singleDbList = new ArrayList<SingleDbCustom>();
+		for (int i = 0; i < list.size(); i++) {
+			int dbId = list.get(i).getDbId();
+			SingleDbCustom singleDbCustom = singleDbMapper.selectDbAnById(dbId);
+			singleDbList.add(singleDbCustom);
+		}
+
+		String singleDbListJson = JsonUtils.listToJson(singleDbList);
+
+		JsonPrintUtil.printObjDataWithKey(response, singleDbListJson, "data");
+
+	}
+
+	// 刪除错题
+	@RequestMapping(value = "deleteStuError")
+	@ResponseBody
+	public void deleteStuError(HttpServletRequest request, HttpServletResponse response, int dbId, String name) {
+		// Student student = (Student)
+		// request.getSession().getAttribute("CurrentLoginUserInfo");
+		StuErrorExample example = new StuErrorExample();
+		itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
+		criteria.andDbIdEqualTo(dbId);
+		StuError stuError = new StuError();
+		stuError.setStatus(0);
+		stuError.setUpdater(name);
+		stuError.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
+
+		int result = stuErrorMapper.updateByExampleSelective(stuError, example);
+
+		JsonPrintUtil.printObjDataWithKey(response, result, "data");
+	}
+
 }
