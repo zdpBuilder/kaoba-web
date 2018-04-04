@@ -25,6 +25,7 @@ import itf4.kaoba.common.ResponseJsonPageListBean;
 import itf4.kaoba.mapper.AnswerDbMapper;
 import itf4.kaoba.mapper.SingleDbMapper;
 import itf4.kaoba.mapper.StuErrorMapper;
+import itf4.kaoba.mapper.StuProMapper;
 import itf4.kaoba.mapper.StuTeaCouMapper;
 import itf4.kaoba.mapper.StudentMapper;
 import itf4.kaoba.mapper.StudentMapperCustom;
@@ -33,6 +34,8 @@ import itf4.kaoba.model.SingleDb;
 import itf4.kaoba.model.SingleDbCustom;
 import itf4.kaoba.model.StuError;
 import itf4.kaoba.model.StuErrorExample;
+import itf4.kaoba.model.StuPro;
+import itf4.kaoba.model.StuProExample;
 import itf4.kaoba.model.StuTeaCou;
 import itf4.kaoba.model.StuTeaCouExample;
 import itf4.kaoba.model.Student;
@@ -64,6 +67,9 @@ public class StudentController {
 	private StudentMapperCustom studentMapperCustom;
 	@Autowired
 	private AnswerDbMapper answerDbMapper;
+	@Autowired
+	private StuProMapper stuProMapper;
+	
 
 	@RequestMapping("list")
 	public void studentList(HttpServletRequest request, HttpServletResponse response, String keywords, int limit,
@@ -370,6 +376,59 @@ public class StudentController {
 		int result = stuErrorMapper.updateByExampleSelective(stuError, example);
 
 		JsonPrintUtil.printObjDataWithKey(response, result, "data");
+	}
+	
+//	保存做题进度
+	@RequestMapping(value = "insertStuPro")
+	@ResponseBody
+	public void insertStuPro(HttpServletRequest request, HttpServletResponse response,StuPro stuPro) {
+		int result = 0 ;
+		StuProExample example = new StuProExample();
+		itf4.kaoba.model.StuProExample.Criteria criteria = example.createCriteria();
+		criteria.andStuIdEqualTo(stuPro.getStuId());
+		criteria.andCourseIdEqualTo(stuPro.getCourseId());
+		criteria.andStuProDbtypeEqualTo(stuPro.getStuProDbtype());
+		criteria.andStuProTypeEqualTo(stuPro.getStuProType());
+		criteria.andStatusEqualTo(stuPro.getStatus());
+		List<StuPro> list = stuProMapper.selectByExample(example);
+		if (list != null && list.size()>0) {
+			//已有进度，更新
+			stuPro.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
+			result = stuProMapper.updateByExampleSelective(stuPro, example);
+			if (result == 1) {
+				result=2;
+			}
+		} else {
+			//插入进度
+			stuPro.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
+			result = stuProMapper.insert(stuPro);
+		}
+		
+		JsonPrintUtil.printObjDataWithKey(response, result, "data");
+	}
+	
+//	查看做题进度
+	@RequestMapping(value = "selectStuPro")
+	@ResponseBody
+	public void selectStuPro(HttpServletRequest request, HttpServletResponse response,StuPro stuPro) {
+
+		StuProExample example = new StuProExample();
+		itf4.kaoba.model.StuProExample.Criteria criteria = example.createCriteria();
+		criteria.andStuIdEqualTo(stuPro.getStuId());
+		criteria.andCourseIdEqualTo(stuPro.getCourseId());
+		criteria.andStuProDbtypeEqualTo(stuPro.getStuProDbtype());
+		criteria.andStuProTypeEqualTo(stuPro.getStuProType());
+		criteria.andStatusEqualTo(stuPro.getStatus());
+		List<StuPro> list = stuProMapper.selectByExample(example);
+		if (list != null && list.size()>0) {
+			StuPro stuProNow = list.get(0);
+			int dbId = stuProNow.getDbId();
+			JsonPrintUtil.printObjDataWithKey(response,dbId, "data");
+		}else {
+			JsonPrintUtil.printObjDataWithKey(response,null, "data");
+		} 
+		
+		
 	}
 
 }
