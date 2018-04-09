@@ -321,6 +321,7 @@ public class StudentController {
 		StuErrorExample example = new StuErrorExample();
 		itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
 		criteria.andDbIdEqualTo(stuError.getDbId());
+		criteria.andStatusEqualTo(1);
 		List<StuError> list = stuErrorMapper.selectByExample(example);
 		if (list != null && list.size() > 0) {
 			// 已有此错题
