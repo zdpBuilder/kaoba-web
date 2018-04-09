@@ -70,6 +70,7 @@
 var table;
 var currPageNum = 1;//当前页码
 var leftNodeId = 1;//左侧选中的节点id
+var pId =-1;
 
 function reloadTable(currPageNum){
 	//刷新表格内容
@@ -135,6 +136,11 @@ function reloadTable(currPageNum){
         
       	//添加
       	$("#btn-add").click(function(){
+      		//根节点不允许添加题库
+      		if(pId == 0){
+      			layer.msg('课程下不能添加题库！', {time: 1000}); //1s后自动关闭
+      			return;
+      		}
       		layer.open({
       		  type: 2 //Page层类型
       		  ,area: ['680px', '388px']
@@ -219,6 +225,11 @@ function reloadTable(currPageNum){
 		
       //批量添加 
       	$("#btn-add-batch").click(function(){
+      	    //根节点不允许添加题库
+      		if(pId == 0){
+      			layer.msg('课程下不能添加题库！', {time: 1000}); //1s后自动关闭
+      			return;
+      		}
       		layer.open({
       		  type: 2 //Page层类型
       		  ,area: ['200px', '100px']
@@ -465,6 +476,7 @@ $(document).ready(function(){
 		//$("#nodeName").val(treeNode.name);
 		//刷新表格内容
 		leftNodeId = treeNode.id;
+		pId = treeNode.pid;
         table.reload('equipmentTypeTable', {
           page: {
             curr: 1 //重新从第 1 页开始

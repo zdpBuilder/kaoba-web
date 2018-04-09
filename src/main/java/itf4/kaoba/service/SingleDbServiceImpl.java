@@ -54,7 +54,7 @@ public class SingleDbServiceImpl implements SingleDbService{
 	        SingleDb singleDb = new SingleDb();
 	        AnswerDb answerDb = new AnswerDb();
 	        
-	        singleDb.setCourseId(Integer.parseInt("19"));
+	        singleDb.setCourseId(Integer.parseInt(courseId));
 	        singleDb.setSingledbTitle(String.valueOf(ob.get(0)));
 	        singleDb.setSingledbOptiona(String.valueOf(ob.get(1)));
 	        singleDb.setSingledbOptionb(String.valueOf(ob.get(2)));
