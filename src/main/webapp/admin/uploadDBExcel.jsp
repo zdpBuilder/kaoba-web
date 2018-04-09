@@ -17,7 +17,7 @@ String courseId = request.getParameter("pid");
 <body>
 <div style="margin:8px auto;text-align:center">
 <input type="hidden" name="courseId" id="courseId" value="<%=courseId %>">
-<input type="file" value="" id="upfile" name="upfile" lay-type="file" class="layui-upload-file">上传文件</input> 
+<input type="file" value="" id="upfile" name="upfile" lay-type="file"  class="layui-upload-file">上传文件</input> 
 </div>	
 <script type="text/javascript" src="../plugins/layui2.x/layui.js"></script>
 <script type="text/javascript">
