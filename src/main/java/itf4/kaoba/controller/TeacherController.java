@@ -106,6 +106,9 @@ public class TeacherController {
  			Teacher userOld = teacherMapper.selectByPrimaryKey(teacher.getId());
 			teacher.setUpdater(rolePojo.getLoginName());
  			teacher.setUpdateTime(sdf.format(new Date()));
+ 			if(teacher.getTeaPassword() !=null) {
+ 				teacher.setTeaPassword(DigestUtils.md5DigestAsHex(teacher.getTeaPassword().getBytes()));
+ 			}
 			count = teacherMapper.updateByPrimaryKeySelective(teacher);
 			//Êä³öÇ°Ì¨Json
 			if (count > 0) {
