@@ -38,7 +38,7 @@ String id = request.getParameter("id");
         <div class="layui-form-item" style="font-size:12px;line-height:10px;">
             <label class="layui-form-label" style="font-size:12px;line-height:10px;">确认密码</label>
             <div class="layui-input-inline">
-                <input id="newPassSecond" type="password" name="userPassword" value="" placeholder="确认新密码" lay-verify="required|password" class="layui-input pwd" style="width:160px;">
+                <input id="newPassSecond" type="password" name="stuPassword" value="" placeholder="确认新密码" lay-verify="required|password" class="layui-input pwd" style="width:160px;">
             </div>
         </div> 
      
