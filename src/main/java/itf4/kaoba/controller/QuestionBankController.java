@@ -174,7 +174,7 @@ public class QuestionBankController {
 	// 添加节点
 	@RequestMapping("addTreeNode")
 	@ResponseBody
-	public void addTreeNode(HttpServletRequest request, HttpServletResponse response, Integer pid, String nodeName) {
+	public void addTreeNode(HttpServletRequest request, HttpServletResponse response, Course record) {
 		String CurrentUserName = "";
 		if (request.getSession().getAttribute(Const.SESSION_USER_STATUS).equals("1")) {
 			SysUser user = (SysUser) request.getSession().getAttribute(Const.SESSION_USER);
@@ -184,9 +184,6 @@ public class QuestionBankController {
 			CurrentUserName = teacher.getTeaName();
 		}
 
-		Course record = new Course();
-		record.setPid(pid);
-		record.setCourseName(nodeName);
 		record.setStatus(1);// 正常状态
 		record.setCreater(CurrentUserName);
 		record.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));

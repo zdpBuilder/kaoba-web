@@ -105,7 +105,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="itf4.kaoba.model.Course">
+  <insert id="insert" parameterType="itf4.kaoba.model.Course" useGeneratedKeys="true" keyProperty="id">
     insert into course (id, course_name, status, 
       creater, create_time, updater, 
       update_time, pid)

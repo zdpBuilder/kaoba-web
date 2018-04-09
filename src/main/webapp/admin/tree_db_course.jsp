@@ -490,21 +490,20 @@ $(document).ready(function(){
 		var nodeNameToAdd = $("#nodeName").val();
 		if($.trim(nodeNameToAdd)==""){
 			$("#nodeName").focus();
-			layer.tips('设备分类名称不能为空！', '#nodeName', {
+			layer.tips('章节名称不能为空！', '#nodeName', {
 				  tips: [1, '#F90'], //还可配置颜色
 				  time: 1000
 			});
 			return false;
 		}
-		$.post("${pageContext.request.contextPath}/courseVsSingleDb/addTreeNode", { "pid": typeId, "nodeName": nodeNameToAdd },
+		$.post("${pageContext.request.contextPath}/courseVsSingleDb/addTreeNode", { "pid": typeId, "courseName": nodeNameToAdd },
 			   function(data){
 			     if(data!=""){
 			    	 var record = data.data;
 			    	 //增加新增的节点
-			    	 //console.info(record.id);
+			    	 console.info(record.id);
 			    	 var newAddNode = [{"id":record.id, "pid":record.pid,"name":nodeNameToAdd}];
 					 zTreeObj.addNodes(nodes[0], newAddNode, true);
-			    	 
 			    	 //异步刷新后选中当前选择节点
 			    	 //zTreeObj.reAsyncChildNodes(null, "refresh");
 					 $("#nodeName").val("");
