@@ -21,8 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import itf4.kaoba.common.ResponseJsonPageListBean;
+import itf4.kaoba.mapper.HomeworkMapper;
 import itf4.kaoba.mapper.TeacherCourseMapper;
 import itf4.kaoba.mapper.TeacherMapper;
+import itf4.kaoba.model.Homework;
+import itf4.kaoba.model.HomeworkExample;
 import itf4.kaoba.model.SysUser;
 import itf4.kaoba.model.Teacher;
 import itf4.kaoba.model.TeacherCourse;
@@ -32,6 +35,7 @@ import itf4.kaoba.model.TeacherExample.Criteria;
 import itf4.kaoba.pojo.RolePojo;
 import itf4.kaoba.service.TeacherService;
 import itf4.kaoba.util.Const;
+import itf4.kaoba.util.DateUtil;
 import itf4.kaoba.util.GetSessionRoleUtil;
 import itf4.kaoba.util.JsonPrintUtil;
 /**
@@ -41,13 +45,15 @@ import itf4.kaoba.util.JsonPrintUtil;
  */
 @Controller
 @RequestMapping("/teacher")
-public class TeacherController {
+public class TeacherController extends UploadController {
 	@Autowired
 	private TeacherMapper teacherMapper;
 	@Autowired
 	private TeacherService teacherService;
 	@Autowired
 	private TeacherCourseMapper teacherCourseMapper;
+	@Autowired
+	private HomeworkMapper homeworkMapper;
 	
 	//获取老师列表
 	@RequestMapping("list")
@@ -241,4 +247,63 @@ public class TeacherController {
 		TeacherCourse teacherCourse = showTeacherCourse(teacherId);
 		JsonPrintUtil.printObjDataWithKey(response, teacherCourse, "data");
 	}
+	
+	/**
+	 * 作业上传
+	 * @param courseId
+	 * @param request
+	 * @param response
+	 * @param file
+	 */
+    @RequestMapping("uploadHomeworkPhoto")
+    @ResponseBody
+    public void uploadPhoto(String courseId, HttpServletRequest request, HttpServletResponse response,
+                    MultipartFile file) {
+        Teacher currentLoginUser = (Teacher) request.getSession().getAttribute("CurrentLoginUserInfo");
+        Homework homework = new Homework();
+        int result = 0;
+        // 照片保存目录
+        String photoUrl = "";
+        if(courseId !="" && courseId !=null) {
+        	photoUrl = super.uploadToFileUrl("homework_photo", file, request);
+            homework.setTeacherId(currentLoginUser.getId());
+            homework.setCourseId(Integer.parseInt(courseId));
+            homework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-mm-dd"));
+            homework.setPhotoUrl(photoUrl);
+            homework.setStatus(1);
+            result = homeworkMapper.insert(homework);
+        } else {
+        	result = 2;
+        }
+        if(result == 1) {
+        	JsonPrintUtil.printObjDataWithKey(response, photoUrl, "data");
+        } else {
+        	JsonPrintUtil.printObjDataWithKey(response, result, "data");
+        }
+        
+    }
+    /**
+     * 根据课程id和老师id查相应的作业
+     * @param courseId
+     * @param request
+     * @param response
+     */
+    @RequestMapping("getHomeworkPhoto")
+    @ResponseBody
+    public void getHomeworkPhoto(int courseId, HttpServletRequest request, HttpServletResponse response) {
+    	Teacher currentLoginUser = (Teacher) request.getSession().getAttribute("CurrentLoginUserInfo");
+    	
+    	HomeworkExample example = new HomeworkExample();
+    	example.setOrderByClause("create_time desc");
+    	itf4.kaoba.model.HomeworkExample.Criteria criteria = example.createCriteria();
+    	criteria.andTeacherIdEqualTo(currentLoginUser.getId()).andCourseIdEqualTo(courseId).andStatusEqualTo(1);
+    	
+    	List<Homework> homeworkList = homeworkMapper.selectByExample(example);
+    	
+    	if(homeworkList !=null && homeworkList.size()>0) {
+    		JsonPrintUtil.printJsonArrayWithoutKey(response, homeworkList);
+    	} else {
+    		JsonPrintUtil.printJsonArrayWithoutKey(response, null);
+    	}
+    }
 }
