@@ -57,7 +57,19 @@
 <!-- <script src="../plugins/layui2.x/layer/layer.min.js" type="text/javascript"></script> -->
 <!--  课程导航树-->
 <script type="text/javascript">
+  //声明全局变量
+  //选择的章节id
   var courseId = null;
+  //从后台获取的图片数据
+  var pagePhoto = null;
+  //本章节下，所有作业的总数
+  var pageCount = 0;
+  //当前显示的页码
+  var pageCurr = 1;
+  //当前页面的图片总数
+  var pageSize = -1;
+  //每页显示多少张图片
+  var pageLimit = 4;
   $(document).ready(function(){
 	//ZTree树      
 		var setting = {
@@ -106,85 +118,140 @@
 		function zTreeOnClick(event, treeId, treeNode) {
 			courseId = treeNode.id;
 			$('#courseId').val(courseId);
-			//显示作业图片
-			reloadPhoto(courseId);
+			//每次从新选择章节的时候，当前页码需要置为1
+			pageCurr = 1 ;
+			//重新渲染图片数据
+			reloadPhoto();
 		}
 		
 		//设备分类树初始化
 		var zTreeObj = $.fn.zTree.init($("#tree"), setting, []);
   });
   
-     //显示作业图片
-	function reloadPhoto(courseId){
-		$('#homeworkPhoto').html('');
-		$.post('${pageContext.request.contextPath}/teacher/getHomeworkPhoto',
-				{'courseId':courseId,'page':0,'limit':0},
-				function(res){
-					var result = res.data;
-					if(result !=null){
-						var count = res.data.count;
-						result = result.data;
-						var preffix = '${pageContext.request.contextPath}/upload_files/homework_photo/';
-						var string ='';
-						var image= '';
-						var photoUrl='';
-						var operationButton = '';
-						var j =1;
-						for(var i=0;i<result.length;i++){
-							if(i %2 ==0){
-								string = '<div id="photo'+j+'" style="margin-top:20px"></div>';
-								$('#homeworkPhoto').append(string);
-								j++;
-							}
-							operationButton ='<div>'
-				                +'<span><a onclick="editPhoto('+result[i].id+',this)" class="layui-btn style="font-size:10px;"><i class="layui-icon">&#xe642;</i>编辑</a></span>'
-				                +'<span><a onclick="delPhoto('+result[i].id+',this)" class="layui-btn style="font-size:10px;"><i class="layui-icon">&#xe640;</i>删除</a></span>'
-				                +'</div>';
-							photoUrl = preffix + result[i].photoUrl;
-							string ='<div style="margin-right:10px;display:inline">';
-							image = '<img width="40%" height="35%" src='+photoUrl+' />';
-							string = string + image + operationButton +'</div>';
-							$('#photo'+(j-1)).append(string);
-						}
-						page(res); 
-					}
-		});
+	//重新渲染图片数据
+	function reloadPhoto(){
+	  	//得到照片信息
+	  	getPhoto();
+	  	//分页
+	  	pageList();
 	}
+	
+    //请求分页数据
+    function getPhoto(){
+    	
+    	//删除图片后，页码的变化
+    	if(pageSize == 0){
+    		if(pageCurr !=1){
+    			pageCurr--;
+    		} 
+    		//如果第一页的数据被删空，说明此章节下午作业，pagePhoto置空
+    		if(pageCurr == 1){
+    			pagePhoto = null;
+    			$('#homeworkPhoto').html("暂无数据");
+    			return;
+    		}
+    	}
+    	
+    	//向后台请求数据
+    	$.ajax({
+    		url:'${pageContext.request.contextPath}/teacher/getHomeworkPhoto',
+    		method:'post',
+    		data:{
+    			'courseId':courseId,
+    			'page':pageCurr,
+    			'limit':pageLimit
+    		},
+    		async:false,
+    		success:function(res){
+				var result = res.data;
+				if(result !=null){
+					//给分页数据总量赋值
+					pageCount = res.data.count;
+					pagePhoto = result.data;
+				}
+    		}
+    	});
+    }
+    
+    //生成分页数据
+    function renderPhoto(){
+    	var preffix = '${pageContext.request.contextPath}/upload_files/homework_photo/';
+		var string ='';
+		var image= '';
+		var photoUrl='';
+		var operationButton = '';
+		var j =1;
+		if(pagePhoto !=null){
+			for(var i=0;i<pagePhoto.length;i++){
+				pageSize = pagePhoto.length;
+				
+				if(i %2 ==0){
+					string = '<div id="photo'+j+'" style="margin-top:20px"></div>';
+					$('#homeworkPhoto').append(string);
+					j++;
+				}
+				operationButton ='<div style="display:inline">'
+	                +'<span><a onclick="delPhoto('+pagePhoto[i].id+')" class="layui-btn style="font-size:10px;"><i class="layui-icon">&#xe640;</i>删除</a></span>'
+	                +'</div>';
+				photoUrl = preffix + pagePhoto[i].photoUrl;
+				string ='<div style="margin-right:10px;display:inline">';
+				image = '<img width="40%" height="35%" src='+photoUrl+' />';
+				string = string + image + operationButton +'</div>';
+				$('#photo'+(j-1)).append(string);
+			}
+		} 
+		
+    }
+    
   //分页
-  function page(res){
-	  var result = res.data;
-	  //数据总数
-	  var count = result.count;
-	  //分页数据
-	  result = result.data;
+  function pageList(){
 	  layui.use(['laypage', 'layer'], function(){
 		  var laypage = layui.laypage
 		  ,layer = layui.layer;
 		  
-		  //总页数大于页码总数
-		  laypage.render({
-		    elem: 'homeworkPhoto'
-		    ,count: count //数据总数
-		    ,limit:4  //每页数据
-		    ,jump: function(obj){
-		      console.log(obj);
-		    }
-		  })
+		  if(pagePhoto !=null){
+			//调用layui分页
+			  laypage.render({
+			    elem: 'homeworkPhoto' //绑定元素
+			    ,count: pageCount //数据总数
+			    ,limit:pageLimit  //每页数据
+			    ,curr:pageCurr  //当前页码
+			    ,layout: ['count', 'prev', 'page', 'next', 'limit', 'skip'] //使用的模板
+			    ,limits:[4,8,16]  //设置每页显示的条数
+			    ,pre:'上一页'  //设置上一页按钮
+			    ,next:'下一页' //设置下一页按钮
+			    ,jump: function(obj,first){
+			    	//如果不是初始渲染数据，则需向后台请求分页数据
+			    	if(!first){
+			    		pageCurr = obj.curr;
+			    		pageLimit = obj.limit;
+			    		getPhoto();
+			    	}
+			    	//生成数据
+			    	renderPhoto();
+			    }
+			  });
+		  }
+		  
 	  });
   }
      
-     
-  //编辑照片
-  function editPhoto(id,obj){
-	  
-  }
-  
   //删除照片
-  function delPhoto(id,obj){
-	  
+  function delPhoto(id){
+	  $.post('${pageContext.request.contextPath}/teacher/deleteHomework',
+			{'homeworkId':id},
+			function(res){
+				if(res.data == 1){
+					layer.msg('删除成功！', {time: 1000}); //1s后自动关闭
+					pageSize--;
+					reloadPhoto();
+				} else{
+					layer.msg('删除失败！', {time: 1000}); //1s后自动关闭
+				}
+			
+			}
+			);
   }
-  
-   
   
 
 </script>
@@ -213,7 +280,6 @@ layui.use('upload',function(){
 			  //请求成功的回调函数
 			  //"${pageContext.request.contextPath}/upload_files/supplier_photo/"+url
 			  var result = res.data;
-			  console.info(result);
 			  if(result == 2){
 				  layer.msg('请选择章节！', {time: 1000}); //1s后自动关闭
 			  } else if(result ==0){
@@ -246,7 +312,6 @@ layui.use('upload',function(){
 			  //请求成功的回调函数
 			  //"${pageContext.request.contextPath}/upload_files/supplier_photo/"+url
 			  var result = res.data;
-			  console.info(result);
 			  if(result == 2){
 				  layer.msg('请选择章节！', {time: 1000}); //1s后自动关闭
 			  } else if(result ==0){

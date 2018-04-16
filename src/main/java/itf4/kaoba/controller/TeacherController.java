@@ -317,4 +317,20 @@ public class TeacherController extends UploadController {
     		JsonPrintUtil.printObjDataWithKey(response, null, "data");
     	}
     }
+    
+    //É¾³ý×÷Òµ
+    @RequestMapping("deleteHomework")
+    @ResponseBody
+    public void deleteHomework(int homeworkId, HttpServletRequest request, HttpServletResponse response) {
+    	Homework homework = new Homework();
+    	int result = 0;
+    	
+    	homework.setId(homeworkId);
+    	homework.setStatus(0);
+    	homework.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-mm-dd"));
+    	
+    	result = homeworkMapper.updateByPrimaryKeySelective(homework);
+    	
+    	JsonPrintUtil.printObjDataWithKey(response, result, "data");
+    }
 }
