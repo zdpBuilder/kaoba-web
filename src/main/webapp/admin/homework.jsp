@@ -46,12 +46,15 @@
 			    </div>
 			  </div>
 		</fieldset>
+        
     </div>
   </div>
 </div>
 
 <script type="text/javascript" src="../plugins/ztree/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="../plugins/ztree/js/jquery.ztree.all.min.js"></script>
+<script type="text/javascript" src="../plugins/layui2.x/layui.js"></script>
+<!-- <script src="../plugins/layui2.x/layer/layer.min.js" type="text/javascript"></script> -->
 <!--  课程导航树-->
 <script type="text/javascript">
   var courseId = null;
@@ -107,35 +110,84 @@
 			reloadPhoto(courseId);
 		}
 		
-		//显示作业图片
-		function reloadPhoto(courseId){
-			$('#homeworkPhoto').html('');
-			$.post('${pageContext.request.contextPath}/teacher/getHomeworkPhoto',
-					{'courseId':courseId},
-					function(res){
-						var result = res;
-						if(result !=null){
-							var preffix = '${pageContext.request.contextPath}/upload_files/homework_photo/';
-							var string ='';
-							var image= '';
-							var photoUrl='';
-							for(var i=0;i<result.length;i++){
-								photoUrl = preffix + result[i].photoUrl;
-								image = '<img width="40%" height="40%" src='+photoUrl+' />'
-								$('#homeworkPhoto').append(image);
-							}
-						}
-			});
-		}
-		
 		//设备分类树初始化
 		var zTreeObj = $.fn.zTree.init($("#tree"), setting, []);
   });
   
+     //显示作业图片
+	function reloadPhoto(courseId){
+		$('#homeworkPhoto').html('');
+		$.post('${pageContext.request.contextPath}/teacher/getHomeworkPhoto',
+				{'courseId':courseId,'page':0,'limit':0},
+				function(res){
+					var result = res.data;
+					if(result !=null){
+						var count = res.data.count;
+						result = result.data;
+						var preffix = '${pageContext.request.contextPath}/upload_files/homework_photo/';
+						var string ='';
+						var image= '';
+						var photoUrl='';
+						var operationButton = '';
+						var j =1;
+						for(var i=0;i<result.length;i++){
+							if(i %2 ==0){
+								string = '<div id="photo'+j+'" style="margin-top:20px"></div>';
+								$('#homeworkPhoto').append(string);
+								j++;
+							}
+							operationButton ='<div>'
+				                +'<span><a onclick="editPhoto('+result[i].id+',this)" class="layui-btn style="font-size:10px;"><i class="layui-icon">&#xe642;</i>编辑</a></span>'
+				                +'<span><a onclick="delPhoto('+result[i].id+',this)" class="layui-btn style="font-size:10px;"><i class="layui-icon">&#xe640;</i>删除</a></span>'
+				                +'</div>';
+							photoUrl = preffix + result[i].photoUrl;
+							string ='<div style="margin-right:10px;display:inline">';
+							image = '<img width="40%" height="35%" src='+photoUrl+' />';
+							string = string + image + operationButton +'</div>';
+							$('#photo'+(j-1)).append(string);
+						}
+						page(res); 
+					}
+		});
+	}
+  //分页
+  function page(res){
+	  var result = res.data;
+	  //数据总数
+	  var count = result.count;
+	  //分页数据
+	  result = result.data;
+	  layui.use(['laypage', 'layer'], function(){
+		  var laypage = layui.laypage
+		  ,layer = layui.layer;
+		  
+		  //总页数大于页码总数
+		  laypage.render({
+		    elem: 'homeworkPhoto'
+		    ,count: count //数据总数
+		    ,limit:4  //每页数据
+		    ,jump: function(obj){
+		      console.log(obj);
+		    }
+		  })
+	  });
+  }
+     
+     
+  //编辑照片
+  function editPhoto(id,obj){
+	  
+  }
+  
+  //删除照片
+  function delPhoto(id,obj){
+	  
+  }
+  
+   
+  
 
 </script>
-<script type="text/javascript" src="../plugins/layui2.x/layui.js"></script>
-<script src="../plugins/layui2.x/layer/layer.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 
 </script>
@@ -161,13 +213,13 @@ layui.use('upload',function(){
 			  //请求成功的回调函数
 			  //"${pageContext.request.contextPath}/upload_files/supplier_photo/"+url
 			  var result = res.data;
+			  console.info(result);
 			  if(result == 2){
 				  layer.msg('请选择章节！', {time: 1000}); //1s后自动关闭
 			  } else if(result ==0){
 				  layer.msg('上传失败！', {time: 1000}); //1s后自动关闭
 			  } else{
-				  //homeworkPhoto
-				  console.info(result);
+				  layer.msg('上传成功！', {time: 1000}); //1s后自动关闭
 			  }
 		  },
 		  error:function(){
@@ -176,6 +228,38 @@ layui.use('upload',function(){
 		  
 	  });
 	  
+	  
+	  //上传多个照片
+	  upload.render({
+		  elem:'#btn-add-photo-batch',  //绑定元素
+		  url:'${pageContext.request.contextPath}/teacher/uploadHomeworkPhoto',  //请求地址
+		  method:'post',  //请求方法
+		  accept: 'images', //允许上传的文件类型 图片
+		  size: 10000, //最大允许上传的文件大小KB
+		  multiple:true,//开启多个文件上传
+		  before:function(){
+			  if(courseId !="" && courseId !=null){
+				  this.data = {'courseId':courseId}; //设置上传参数
+			  }
+		  },
+		  done:function(res){
+			  //请求成功的回调函数
+			  //"${pageContext.request.contextPath}/upload_files/supplier_photo/"+url
+			  var result = res.data;
+			  console.info(result);
+			  if(result == 2){
+				  layer.msg('请选择章节！', {time: 1000}); //1s后自动关闭
+			  } else if(result ==0){
+				  layer.msg('上传失败！', {time: 1000}); //1s后自动关闭
+			  } else{
+				  layer.msg('上传成功！', {time: 1000}); //1s后自动关闭
+			  }
+		  },
+		  error:function(){
+			  
+		  }
+		  
+	  });
 });
 </script>
 </body>

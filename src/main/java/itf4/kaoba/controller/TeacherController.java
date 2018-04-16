@@ -257,21 +257,22 @@ public class TeacherController extends UploadController {
 	 */
     @RequestMapping("uploadHomeworkPhoto")
     @ResponseBody
-    public void uploadPhoto(String courseId, HttpServletRequest request, HttpServletResponse response,
-                    MultipartFile file) {
+    public void uploadPhoto(String courseId, HttpServletRequest request, HttpServletResponse response
+                    ,MultipartFile file) {
         Teacher currentLoginUser = (Teacher) request.getSession().getAttribute("CurrentLoginUserInfo");
         Homework homework = new Homework();
-        int result = 0;
+        int result = 1;
         // 照片保存目录
         String photoUrl = "";
         if(courseId !="" && courseId !=null) {
-        	photoUrl = super.uploadToFileUrl("homework_photo", file, request);
-            homework.setTeacherId(currentLoginUser.getId());
+        	homework.setTeacherId(currentLoginUser.getId());
             homework.setCourseId(Integer.parseInt(courseId));
             homework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-mm-dd"));
+            photoUrl = super.uploadToFileUrl("homework_photo", file, request);
             homework.setPhotoUrl(photoUrl);
             homework.setStatus(1);
-            result = homeworkMapper.insert(homework);
+        	result =  homeworkMapper.insert(homework);
+            
         } else {
         	result = 2;
         }
@@ -283,27 +284,37 @@ public class TeacherController extends UploadController {
         
     }
     /**
-     * 根据课程id和老师id查相应的作业
+     * 
      * @param courseId
      * @param request
      * @param response
+     * @param limit
+     * @param page
      */
     @RequestMapping("getHomeworkPhoto")
     @ResponseBody
-    public void getHomeworkPhoto(int courseId, HttpServletRequest request, HttpServletResponse response) {
+    public void getHomeworkPhoto(int courseId, HttpServletRequest request, HttpServletResponse response,
+    		int limit,int page) {
     	Teacher currentLoginUser = (Teacher) request.getSession().getAttribute("CurrentLoginUserInfo");
-    	
     	HomeworkExample example = new HomeworkExample();
     	example.setOrderByClause("create_time desc");
+    	example.setStartRow((page - 1) * limit);
+ 		example.setPageSize(limit);
     	itf4.kaoba.model.HomeworkExample.Criteria criteria = example.createCriteria();
     	criteria.andTeacherIdEqualTo(currentLoginUser.getId()).andCourseIdEqualTo(courseId).andStatusEqualTo(1);
     	
     	List<Homework> homeworkList = homeworkMapper.selectByExample(example);
-    	
+    	int count = (int)homeworkMapper.countByExample(example);
+ 		
     	if(homeworkList !=null && homeworkList.size()>0) {
-    		JsonPrintUtil.printJsonArrayWithoutKey(response, homeworkList);
+    		ResponseJsonPageListBean listBean = new ResponseJsonPageListBean();
+        	listBean.setCode(0);
+     		listBean.setCount(count);
+     		listBean.setMsg("作业列表");
+        	listBean.setData(homeworkList);
+    		JsonPrintUtil.printObjDataWithKey(response, listBean, "data");
     	} else {
-    		JsonPrintUtil.printJsonArrayWithoutKey(response, null);
+    		JsonPrintUtil.printObjDataWithKey(response, null, "data");
     	}
     }
 }

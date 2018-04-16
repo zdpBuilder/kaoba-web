@@ -3,7 +3,7 @@ package itf4.kaoba.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeworkExample {
+public class HomeworkExample extends BaseExample {
     protected String orderByClause;
 
     protected boolean distinct;
