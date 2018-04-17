@@ -116,10 +116,22 @@
 		
 		//树节点点击事件
 		function zTreeOnClick(event, treeId, treeNode) {
+			
 			courseId = treeNode.id;
 			$('#courseId').val(courseId);
+			//将数据清空
+			$('#homeworkPhoto').html("");
 			//每次从新选择章节的时候，当前页码需要置为1
 			pageCurr = 1 ;
+		    pagePhoto = null;
+		    //本章节下，所有作业的总数
+		    pageCount = 0;
+		    //当前显示的页码
+		    pageCurr = 1;
+		    //当前页面的图片总数
+		    pageSize = -1;
+		    //每页显示多少张图片
+		    pageLimit = 4;
 			//重新渲染图片数据
 			reloadPhoto();
 		}
@@ -138,7 +150,6 @@
 	
     //请求分页数据
     function getPhoto(){
-    	
     	//删除图片后，页码的变化
     	if(pageSize == 0){
     		if(pageCurr !=1){
