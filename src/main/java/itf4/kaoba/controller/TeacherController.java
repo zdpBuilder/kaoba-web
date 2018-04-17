@@ -267,7 +267,7 @@ public class TeacherController extends UploadController {
         if(courseId !="" && courseId !=null) {
         	homework.setTeacherId(currentLoginUser.getId());
             homework.setCourseId(Integer.parseInt(courseId));
-            homework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-mm-dd"));
+            homework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd"));
             photoUrl = super.uploadToFileUrl("homework_photo", file, request);
             homework.setPhotoUrl(photoUrl);
             homework.setStatus(1);
@@ -283,25 +283,32 @@ public class TeacherController extends UploadController {
         }
         
     }
+
     /**
-     * 
+     * 得到作业列表
      * @param courseId
      * @param request
      * @param response
      * @param limit
      * @param page
+     * @param startDate
+     * @param endDate
      */
     @RequestMapping("getHomeworkPhoto")
     @ResponseBody
     public void getHomeworkPhoto(int courseId, HttpServletRequest request, HttpServletResponse response,
-    		int limit,int page) {
+    		int limit,int page,String startDate,String endDate) {
     	Teacher currentLoginUser = (Teacher) request.getSession().getAttribute("CurrentLoginUserInfo");
+    	
     	HomeworkExample example = new HomeworkExample();
     	example.setOrderByClause("create_time desc");
     	example.setStartRow((page - 1) * limit);
  		example.setPageSize(limit);
     	itf4.kaoba.model.HomeworkExample.Criteria criteria = example.createCriteria();
     	criteria.andTeacherIdEqualTo(currentLoginUser.getId()).andCourseIdEqualTo(courseId).andStatusEqualTo(1);
+    	if(StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
+    		criteria.andCreateTimeBetween(startDate, endDate);
+    	}
     	
     	List<Homework> homeworkList = homeworkMapper.selectByExample(example);
     	int count = (int)homeworkMapper.countByExample(example);
@@ -327,7 +334,7 @@ public class TeacherController extends UploadController {
     	
     	homework.setId(homeworkId);
     	homework.setStatus(0);
-    	homework.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-mm-dd"));
+    	homework.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd"));
     	
     	result = homeworkMapper.updateByPrimaryKeySelective(homework);
     	
