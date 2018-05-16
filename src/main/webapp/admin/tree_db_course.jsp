@@ -368,7 +368,7 @@ $(document).ready(function(){
 			showRenameBtn: showRenameBtn,
 			renameTitle: "编辑分类",
 			removeTitle: "删除分类",
-			showRemoveBtn: showRemoveBtn
+			showRemoveBtn: showRemoveBtn,
 		},
 		callback:{
 			beforeRemove: zTreeBeforeRemove,

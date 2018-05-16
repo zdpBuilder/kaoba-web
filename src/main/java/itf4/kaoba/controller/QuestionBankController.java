@@ -639,6 +639,20 @@ public class QuestionBankController {
 	/****************
 	 * START 专项练习(Special Exercise) AND 综合练习(Comprehensive Exercise) START
 	 *********************/
+//	根据课程id查询第一层章
+	@RequestMapping("Chaptorlist")
+	@ResponseBody
+	public void Chaptor(HttpServletRequest request, HttpServletResponse response, Integer couseId) {
+
+		CourseExample example = new CourseExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPidEqualTo(couseId);
+		criteria.andStatusEqualTo(1);
+		List<Course> list = courseMapper.selectByExample(example);
+
+		String courseListJson = JsonUtils.listToJson(list);
+		JsonPrintUtil.printObjDataWithKey(response, courseListJson, "data");
+	}
 
 	// 课程分类列表查询
 	@RequestMapping("SElist")

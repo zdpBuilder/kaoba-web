@@ -82,7 +82,6 @@ public class CourseController {
 	 		}
 	 	}
 	 	
-	 	
 	 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	 	@ResponseBody
 	 	public void save(Course course, HttpServletRequest request, HttpServletResponse response, HttpSession session)  throws Exception{
@@ -120,7 +119,6 @@ public class CourseController {
 	 		}
 	 	}
 	 	
-	 	
 	 	@RequestMapping(value = "show", method = RequestMethod.POST)
 	 	@ResponseBody
 	 	public void showWH(int id, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
@@ -131,9 +129,6 @@ public class CourseController {
 	 			JsonPrintUtil.printObjDataWithKey(response, null, "data");
 	 		}
 	 	}	
-	 	
-	 	
-	 	
 	 	
 	 	@RequestMapping(value = "deleteBatch", method = RequestMethod.POST)
 	 	@ResponseBody
@@ -163,8 +158,8 @@ public class CourseController {
 	 	}
 	
 	 	@RequestMapping("/insertCourseBatch")  
-		 @ResponseBody
-		 public int impots(HttpServletRequest request, Model model) throws Exception {  
+		@ResponseBody
+		public int impots(HttpServletRequest request, Model model) throws Exception {  
 		      //获取上传的文件  
 		      MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) request;  
 		      MultipartFile file = multipart.getFile("upfile");       
@@ -174,5 +169,20 @@ public class CourseController {
 		      in.close();  
 		      return result;  
 		 }
+
+	 //根据课程查询老师
+	 	@RequestMapping(value = "selectTeacherByCourse", method = RequestMethod.POST)
+	 	@ResponseBody
+	 	public void selectTeacherByCourse(HttpServletRequest request, HttpServletResponse response,
+	 			int courseId) {
+	 		
+	 		
+	 		
+	 		
+	 		
+	 		// 输出前台Json
+	 		JsonPrintUtil.printObjDataWithKey(response, 1, "data");
+	 	}
+	 	
 	 	
 }

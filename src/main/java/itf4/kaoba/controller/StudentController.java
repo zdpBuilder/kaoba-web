@@ -23,13 +23,17 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import itf4.kaoba.common.ResponseJsonPageListBean;
 import itf4.kaoba.mapper.AnswerDbMapper;
+import itf4.kaoba.mapper.HomeworkMapper;
 import itf4.kaoba.mapper.SingleDbMapper;
 import itf4.kaoba.mapper.StuErrorMapper;
 import itf4.kaoba.mapper.StuProMapper;
 import itf4.kaoba.mapper.StuTeaCouMapper;
 import itf4.kaoba.mapper.StudentMapper;
 import itf4.kaoba.mapper.StudentMapperCustom;
+import itf4.kaoba.mapper.SubmitHomeworkMapper;
 import itf4.kaoba.model.Course;
+import itf4.kaoba.model.Homework;
+import itf4.kaoba.model.HomeworkExample;
 import itf4.kaoba.model.SingleDb;
 import itf4.kaoba.model.SingleDbCustom;
 import itf4.kaoba.model.StuError;
@@ -40,7 +44,9 @@ import itf4.kaoba.model.StuTeaCou;
 import itf4.kaoba.model.StuTeaCouExample;
 import itf4.kaoba.model.Student;
 import itf4.kaoba.model.StudentExample;
+import itf4.kaoba.model.Teacher;
 import itf4.kaoba.model.StudentExample.Criteria;
+import itf4.kaoba.model.SubmitHomework;
 import itf4.kaoba.service.StudentService;
 import itf4.kaoba.util.DateUtil;
 import itf4.kaoba.util.JsonPrintUtil;
@@ -52,7 +58,7 @@ import itf4.kaoba.util.JsonUtils;
  */
 @Controller
 @RequestMapping("/student")
-public class StudentController {
+public class StudentController extends UploadController {
 	@Autowired
 	private StudentMapper studentMapper;
 	@Autowired
@@ -69,7 +75,10 @@ public class StudentController {
 	private AnswerDbMapper answerDbMapper;
 	@Autowired
 	private StuProMapper stuProMapper;
-	
+	@Autowired
+	private HomeworkMapper homeworkMapper;
+	@Autowired
+	private SubmitHomeworkMapper submitHomeworkMapper;
 
 	@RequestMapping("list")
 	public void studentList(HttpServletRequest request, HttpServletResponse response, String keywords, int limit,
@@ -321,10 +330,14 @@ public class StudentController {
 		StuErrorExample example = new StuErrorExample();
 		itf4.kaoba.model.StuErrorExample.Criteria criteria = example.createCriteria();
 		criteria.andDbIdEqualTo(stuError.getDbId());
-		criteria.andStatusEqualTo(1);
+		// criteria.andStatusEqualTo(1);
 		List<StuError> list = stuErrorMapper.selectByExample(example);
 		if (list != null && list.size() > 0) {
-			// 已有此错题
+			// 已存在此错题
+			if (list.get(0).getStatus() == 0) {
+				stuError.setStatus(1);
+				stuErrorMapper.updateByExampleSelective(stuError, example);
+			}
 			result = 2;
 		} else {
 			stuError.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
@@ -378,12 +391,12 @@ public class StudentController {
 
 		JsonPrintUtil.printObjDataWithKey(response, result, "data");
 	}
-	
-//	保存做题进度
+
+	// 保存做题进度
 	@RequestMapping(value = "insertStuPro")
 	@ResponseBody
-	public void insertStuPro(HttpServletRequest request, HttpServletResponse response,StuPro stuPro) {
-		int result = 0 ;
+	public void insertStuPro(HttpServletRequest request, HttpServletResponse response, StuPro stuPro) {
+		int result = 0;
 		StuProExample example = new StuProExample();
 		itf4.kaoba.model.StuProExample.Criteria criteria = example.createCriteria();
 		criteria.andStuIdEqualTo(stuPro.getStuId());
@@ -392,26 +405,26 @@ public class StudentController {
 		criteria.andStuProTypeEqualTo(stuPro.getStuProType());
 		criteria.andStatusEqualTo(stuPro.getStatus());
 		List<StuPro> list = stuProMapper.selectByExample(example);
-		if (list != null && list.size()>0) {
-			//已有进度，更新
+		if (list != null && list.size() > 0) {
+			// 已有进度，更新
 			stuPro.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
 			result = stuProMapper.updateByExampleSelective(stuPro, example);
 			if (result == 1) {
-				result=2;
+				result = 2;
 			}
 		} else {
-			//插入进度
+			// 插入进度
 			stuPro.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
 			result = stuProMapper.insert(stuPro);
 		}
-		
+
 		JsonPrintUtil.printObjDataWithKey(response, result, "data");
 	}
-	
-//	查看做题进度
+
+	// 查看做题进度
 	@RequestMapping(value = "selectStuPro")
 	@ResponseBody
-	public void selectStuPro(HttpServletRequest request, HttpServletResponse response,StuPro stuPro) {
+	public void selectStuPro(HttpServletRequest request, HttpServletResponse response, StuPro stuPro) {
 
 		StuProExample example = new StuProExample();
 		itf4.kaoba.model.StuProExample.Criteria criteria = example.createCriteria();
@@ -421,15 +434,77 @@ public class StudentController {
 		criteria.andStuProTypeEqualTo(stuPro.getStuProType());
 		criteria.andStatusEqualTo(stuPro.getStatus());
 		List<StuPro> list = stuProMapper.selectByExample(example);
-		if (list != null && list.size()>0) {
+		if (list != null && list.size() > 0) {
 			StuPro stuProNow = list.get(0);
 			int dbId = stuProNow.getDbId();
-			JsonPrintUtil.printObjDataWithKey(response,dbId, "data");
-		}else {
-			JsonPrintUtil.printObjDataWithKey(response,null, "data");
-		} 
-		
-		
+			JsonPrintUtil.printObjDataWithKey(response, dbId, "data");
+		} else {
+			JsonPrintUtil.printObjDataWithKey(response, null, "data");
+		}
 	}
+
+	//获取作业
+	@RequestMapping(value = "getHouseWork")
+	@ResponseBody
+	public void getHouseWork(HttpServletRequest request, HttpServletResponse response, 
+			HttpSession session,int courseId,int studentId,String createTime) {
+//		查询老师id
+		Integer teaId=null;
+		StuTeaCouExample stuTeaCouExample = new StuTeaCouExample();
+		itf4.kaoba.model.StuTeaCouExample.Criteria criteria = stuTeaCouExample.createCriteria();
+		criteria.andCouIdEqualTo(courseId);
+		criteria.andStuIdEqualTo(studentId);
+		List<StuTeaCou> stuTeaCous = stuTeaCouMapper.selectByExample(stuTeaCouExample);
+		if (stuTeaCous!=null && stuTeaCous.size()>0) {
+			StuTeaCou stuTeaCou = stuTeaCous.get(0);
+			teaId=stuTeaCou.getTeaId();
+		}
+		if (teaId!=null) {
+			//查询作业
+			HomeworkExample homeworkExample = new HomeworkExample();
+			itf4.kaoba.model.HomeworkExample.Criteria criteria2 = homeworkExample.createCriteria();
+			criteria2.andTeacherIdEqualTo(teaId);
+			criteria2.andCourseIdEqualTo(courseId);
+			criteria2.andStatusEqualTo(1);
+			criteria2.andCreateTimeEqualTo(createTime);
+			List<Homework> homeworks = homeworkMapper.selectByExample(homeworkExample);
+			
+			if(homeworks!=null && homeworks.size()>0) {
+				JsonPrintUtil.printObjDataWithKey(response,homeworks, "data");
+			}else {
+				JsonPrintUtil.printObjDataWithKey(response,-1, "data");
+			}
+		}else {
+			JsonPrintUtil.printObjDataWithKey(response,-1, "data");
+		}
+	}
+	
+	@RequestMapping("submitHomeworkPhoto")
+    @ResponseBody
+    public void uploadPhoto(String courseId, HttpServletRequest request, HttpServletResponse response
+                    ,MultipartFile file) {
+        SubmitHomework submitHomework = new SubmitHomework();
+        int result = 1;
+        // 照片保存目录
+        String photoUrl = "";
+        if(courseId !="" && courseId !=null) {
+//        	submitHomework.setTeacherId();
+//        	submitHomework.setCourseId();
+//            submitHomework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd"));
+//            photoUrl = super.uploadToFileUrl("submitHomework_photo", file, request);
+//            submitHomework.setPhotoUrl(photoUrl);
+//            submitHomework.setStatus(1);
+//        	result =  submitHomeworkMapper.insert(submitHomework);
+            
+        } else {
+        	result = 2;
+        }
+        if(result == 1) {
+        	JsonPrintUtil.printObjDataWithKey(response, photoUrl, "data");
+        } else {
+        	JsonPrintUtil.printObjDataWithKey(response, result, "data");
+        }
+        
+    }
 
 }

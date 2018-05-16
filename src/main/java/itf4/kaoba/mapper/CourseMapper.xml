@@ -261,13 +261,13 @@
   
   <insert id="insertCourseBatch" parameterType="java.util.List">  
   insert into course ( id, course_name, 
-      status, creater, create_time
+      status, creater, create_time ,pid
       )
     values 
    <foreach collection="list" item="item" index="index" separator=",">  
      (
      #{item.id,jdbcType=INTEGER}, #{item.courseName,jdbcType=VARCHAR}, 
-     #{item.status,jdbcType=INTEGER}, #{item.creater,jdbcType=VARCHAR}, #{item.createTime,jdbcType=VARCHAR}
+     #{item.status,jdbcType=INTEGER}, #{item.creater,jdbcType=VARCHAR}, #{item.createTime,jdbcType=VARCHAR},#{item.pid,jdbcType=INTEGER}
      ) 
    </foreach>  
 </insert>
