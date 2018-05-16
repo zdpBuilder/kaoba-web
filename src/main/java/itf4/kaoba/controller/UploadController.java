@@ -130,7 +130,7 @@ public class UploadController {
 			}
 
 			// 格式化的年月日
-			String nowDateTimeDir = DateUtil.DateToString(new Date(), "yyyy-mm-dd");
+			String nowDateTimeDir = DateUtil.DateToString(new Date(), "yyyy-MM-dd");
 			// 根据年月日和taskId创建文件夹
 			String path = serverUploadFilePath + nowDateTimeDir + "/";
 
@@ -171,7 +171,7 @@ public class UploadController {
 			}
 
 			// 格式化的年月日
-			String nowDateTimeDir = DateUtil.DateToString(new Date(), "yyyy-mm-dd");
+			String nowDateTimeDir = DateUtil.DateToString(new Date(), "yyyy-MM-dd");
 			// 根据年月日和taskId创建文件夹
 			String path = serverUploadFilePath + nowDateTimeDir + "/";
 
