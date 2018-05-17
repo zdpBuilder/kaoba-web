@@ -447,7 +447,7 @@ public class StudentController extends UploadController {
 	@RequestMapping(value = "getHouseWork")
 	@ResponseBody
 	public void getHouseWork(HttpServletRequest request, HttpServletResponse response, 
-			HttpSession session,int courseId,int studentId,String createTime) {
+			int courseId,int studentId,String createTime) {
 //		查询老师id
 		Integer teaId=null;
 		StuTeaCouExample stuTeaCouExample = new StuTeaCouExample();
@@ -479,32 +479,122 @@ public class StudentController extends UploadController {
 		}
 	}
 	
+	List<String> submitImageUrl = new ArrayList<String>();
+	Integer imageCount = null;
 	@RequestMapping("submitHomeworkPhoto")
     @ResponseBody
-    public void uploadPhoto(String courseId, HttpServletRequest request, HttpServletResponse response
-                    ,MultipartFile file) {
-        SubmitHomework submitHomework = new SubmitHomework();
-        int result = 1;
-        // 照片保存目录
-        String photoUrl = "";
-        if(courseId !="" && courseId !=null) {
-//        	submitHomework.setTeacherId();
-//        	submitHomework.setCourseId();
-//            submitHomework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd"));
-//            photoUrl = super.uploadToFileUrl("submitHomework_photo", file, request);
-//            submitHomework.setPhotoUrl(photoUrl);
-//            submitHomework.setStatus(1);
-//        	result =  submitHomeworkMapper.insert(submitHomework);
-            
-        } else {
-        	result = 2;
-        }
-        if(result == 1) {
-        	JsonPrintUtil.printObjDataWithKey(response, photoUrl, "data");
-        } else {
-        	JsonPrintUtil.printObjDataWithKey(response, result, "data");
-        }
-        
+    public void uploadPhoto(HttpServletRequest request, HttpServletResponse response,MultipartFile file,String imageSum) {
+			String photoUrl = super.uploadToFileUrl("submitHomework_photo", file, request);
+			System.out.println(photoUrl);
+			submitImageUrl.add(photoUrl);
+			imageCount = Integer.parseInt(imageSum);
     }
+	
+	@RequestMapping("submitHomework")
+    @ResponseBody
+    public void submitHomework(HttpServletRequest request, HttpServletResponse response,int courseId,int stuId,String createTime) {
+		int result = 0;
+        SubmitHomework submitHomework = new SubmitHomework();
+        if(submitImageUrl.size()<imageCount) {
+        	JsonPrintUtil.printObjDataWithKey(response,"-1", "flag");
+        	return;
+        }
+//		查询老师id
+		Integer teaId=null;
+		StuTeaCouExample stuTeaCouExample = new StuTeaCouExample();
+		itf4.kaoba.model.StuTeaCouExample.Criteria criteria = stuTeaCouExample.createCriteria();
+		criteria.andCouIdEqualTo(courseId);
+		criteria.andStuIdEqualTo(stuId);
+		List<StuTeaCou> stuTeaCous = stuTeaCouMapper.selectByExample(stuTeaCouExample);
+		if (stuTeaCous!=null && stuTeaCous.size()>0) {
+			StuTeaCou stuTeaCou = stuTeaCous.get(0);
+			teaId=stuTeaCou.getTeaId();
+		}
+		if (teaId!=null) {
+//			查询作业
+			HomeworkExample homeworkExample = new HomeworkExample();
+			itf4.kaoba.model.HomeworkExample.Criteria criteria2 = homeworkExample.createCriteria();
+			criteria2.andTeacherIdEqualTo(teaId);
+			criteria2.andCourseIdEqualTo(courseId);
+			criteria2.andStatusEqualTo(1);
+			criteria2.andCreateTimeEqualTo(createTime);
+			List<Homework> homeworks = homeworkMapper.selectByExample(homeworkExample);
+			
+			//存一个作业id
+			if(homeworks!=null && homeworks.size()>0) {
+				Homework homework = homeworks.get(0);
+				submitHomework.setTeacherId(homework.getTeacherId());
+				submitHomework.setCourseId(courseId);
+				submitHomework.setStuId(stuId);
+				submitHomework.setHomeworkId(homework.getId());
+				submitHomework.setStatus(1);
+				submitHomework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
+				//String photoUrl = super.uploadToFileUrl("submitHomework_photo", file, request);
+				StringBuilder csvBuilder = new StringBuilder();
+				for(String submitImageurl : submitImageUrl){
+				  csvBuilder.append(submitImageurl);
+				  csvBuilder.append(",");
+				}
+				String photoUrl = csvBuilder.toString();
+				//String photoUrl = JsonUtils.listToJson(submitImageUrl);
+				submitHomework.setPhotoUrl(photoUrl);
+				result = submitHomeworkMapper.insert(submitHomework);
+				submitImageUrl.clear();
+			}
+		}
+		if (result>0) {
+			JsonPrintUtil.printObjDataWithKey(response,"1", "flag");
+		} else {
+			JsonPrintUtil.printObjDataWithKey(response,"-1", "flag");
+		}
+    }
+	
+	/*@RequestMapping("submitHomeworkPhoto")
+    @ResponseBody
+    public void uploadPhoto(HttpServletRequest request, HttpServletResponse response
+                    ,MultipartFile file,int courseId,int stuId,String createTime) {
+		int result = 0;
+        SubmitHomework submitHomework = new SubmitHomework();
+//		查询老师id
+		Integer teaId=null;
+		StuTeaCouExample stuTeaCouExample = new StuTeaCouExample();
+		itf4.kaoba.model.StuTeaCouExample.Criteria criteria = stuTeaCouExample.createCriteria();
+		criteria.andCouIdEqualTo(courseId);
+		criteria.andStuIdEqualTo(stuId);
+		List<StuTeaCou> stuTeaCous = stuTeaCouMapper.selectByExample(stuTeaCouExample);
+		if (stuTeaCous!=null && stuTeaCous.size()>0) {
+			StuTeaCou stuTeaCou = stuTeaCous.get(0);
+			teaId=stuTeaCou.getTeaId();
+		}
+		if (teaId!=null) {
+//			查询作业
+			HomeworkExample homeworkExample = new HomeworkExample();
+			itf4.kaoba.model.HomeworkExample.Criteria criteria2 = homeworkExample.createCriteria();
+			criteria2.andTeacherIdEqualTo(teaId);
+			criteria2.andCourseIdEqualTo(courseId);
+			criteria2.andStatusEqualTo(1);
+			criteria2.andCreateTimeEqualTo(createTime);
+			List<Homework> homeworks = homeworkMapper.selectByExample(homeworkExample);
+			
+			//存一个作业id
+			if(homeworks!=null && homeworks.size()>0) {
+				Homework homework = homeworks.get(0);
+				submitHomework.setTeacherId(homework.getTeacherId());
+				submitHomework.setCourseId(courseId);
+				submitHomework.setStuId(stuId);
+				submitHomework.setHomeworkId(homework.getId());
+				submitHomework.setStatus(1);
+				submitHomework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
+				String photoUrl = super.uploadToFileUrl("submitHomework_photo", file, request);
+				submitHomework.setPhotoUrl(photoUrl);
+				result = submitHomeworkMapper.insert(submitHomework);
+			}
+		}
+		if (result>0) {
+			JsonPrintUtil.printObjDataWithKey(response,"1", "flag");
+		} else {
+			JsonPrintUtil.printObjDataWithKey(response,"-1", "flag");
+		}
+    }*/
 
 }
