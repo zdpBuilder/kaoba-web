@@ -538,6 +538,7 @@ public class StudentController extends UploadController {
 				String photoUrl = csvBuilder.toString();
 				//String photoUrl = JsonUtils.listToJson(submitImageUrl);
 				submitHomework.setPhotoUrl(photoUrl);
+				submitHomework.setGrade(0);
 				result = submitHomeworkMapper.insert(submitHomework);
 				submitImageUrl.clear();
 			}
