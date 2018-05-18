@@ -9,7 +9,6 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="create_time" jdbcType="VARCHAR" property="createTime" />
     <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
-    <result column="pid" jdbcType="INTEGER" property="pid" />
     <result column="name" jdbcType="VARCHAR" property="name" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -71,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, teacher_id, course_id, photo_url, status, create_time, update_time, pid, name
+    id, teacher_id, course_id, photo_url, status, create_time, update_time, name
   </sql>
   <select id="selectByExample" parameterType="itf4.kaoba.model.HomeworkExample" resultMap="BaseResultMap">
     select
@@ -109,12 +108,10 @@
   <insert id="insert" parameterType="itf4.kaoba.model.Homework">
     insert into homework (id, teacher_id, course_id, 
       photo_url, status, create_time, 
-      update_time, pid, name
-      )
+      update_time, name)
     values (#{id,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, 
       #{photoUrl,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createTime,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}
-      )
+      #{updateTime,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="itf4.kaoba.model.Homework">
     insert into homework
@@ -139,9 +136,6 @@
       </if>
       <if test="updateTime != null">
         update_time,
-      </if>
-      <if test="pid != null">
-        pid,
       </if>
       <if test="name != null">
         name,
@@ -168,9 +162,6 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=VARCHAR},
-      </if>
-      <if test="pid != null">
-        #{pid,jdbcType=INTEGER},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -207,9 +198,6 @@
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=VARCHAR},
       </if>
-      <if test="record.pid != null">
-        pid = #{record.pid,jdbcType=INTEGER},
-      </if>
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
@@ -227,7 +215,6 @@
       status = #{record.status,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=VARCHAR},
       update_time = #{record.updateTime,jdbcType=VARCHAR},
-      pid = #{record.pid,jdbcType=INTEGER},
       name = #{record.name,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -254,9 +241,6 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=VARCHAR},
       </if>
-      <if test="pid != null">
-        pid = #{pid,jdbcType=INTEGER},
-      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
@@ -271,7 +255,6 @@
       status = #{status,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=VARCHAR},
-      pid = #{pid,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
