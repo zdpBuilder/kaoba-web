@@ -61,7 +61,7 @@ public class QuestionBankController {
 
 	@Autowired
 	private SingleDbService singleDbService;
-
+  
 	/**************** START 课程分类树状菜单操作 START *********************/
 
 	// 树状菜单查询
@@ -133,7 +133,35 @@ public class QuestionBankController {
 
 		JsonPrintUtil.printJsonArrayWithoutKey(response, treePojos);
 	}
+    
+	// 每名教师的课程列表
+		@RequestMapping("teaCouTreeList")
+		@ResponseBody
+		public void teaCouTreeList(HttpServletRequest request, HttpServletResponse response) {
+			Teacher teacher = (Teacher) request.getSession().getAttribute("CurrentLoginUserInfo");
+			List<TreePojo> treePojos = new ArrayList<TreePojo>();
+		   List<Course> courses=new ArrayList<Course>();
+		   
+			TeacherCourseExample example=new TeacherCourseExample();
+		   TeacherCourseExample.Criteria criteria=example.createCriteria();
+		   criteria.andTeaIdEqualTo(teacher.getId());
+		List<TeacherCourse> teacherCourseList=teacherCourseMapper.selectByExample(example);
+        if(teacherCourseList.size()>0) {
+          String[] coIdStrings=  teacherCourseList.get(0).getCourseId().split(",");
+         for (String id : coIdStrings) {
+        	 courses.add(courseMapper.selectByPrimaryKey(Integer.parseInt(id)));
+		   }     
+         for (Course course : courses) {
+        	 TreePojo treePojo=new TreePojo();
+        	 treePojo.setId(course.getId());
+        	 treePojo.setPid(course.getPid());
+        	 treePojo.setName(course.getCourseName());
+        	 treePojos.add(treePojo);
+		}       
+       }
 
+			JsonPrintUtil.printJsonArrayWithoutKey(response, treePojos);
+		}
 	// 递归查出章节
 	public List<Course> getCourseTree(int pid) {
 		List<Course> list = new ArrayList();

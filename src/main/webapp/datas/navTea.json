@@ -18,9 +18,14 @@
     "spread": true,
     "children": [
       {
-        "title": "作业",
+        "title": "上传作业",
         "icon": "fa fa-user-circle-o",
         "href": "admin/homework.jsp",
+        "spread": false
+      },{
+        "title": "查看作业",
+        "icon": "fa fa-user-circle-o",
+        "href": "admin/stuHomework.jsp",
         "spread": false
       }
       ]

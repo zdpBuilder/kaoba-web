@@ -3,7 +3,7 @@ package itf4.kaoba.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StuTeaCouExample {
+public class StuTeaCouExample extends BaseExample {
     protected String orderByClause;
 
     protected boolean distinct;
