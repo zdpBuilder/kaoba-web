@@ -3,7 +3,7 @@ package itf4.kaoba.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubmitHomeworkExample extends BaseExample{
+public class SubmitHomeworkExample {
     protected String orderByClause;
 
     protected boolean distinct;
@@ -161,126 +161,6 @@ public class SubmitHomeworkExample extends BaseExample{
 
         public Criteria andIdNotBetween(Integer value1, Integer value2) {
             addCriterion("id not between", value1, value2, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdIsNull() {
-            addCriterion("teacher_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdIsNotNull() {
-            addCriterion("teacher_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdEqualTo(Integer value) {
-            addCriterion("teacher_id =", value, "teacherId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdNotEqualTo(Integer value) {
-            addCriterion("teacher_id <>", value, "teacherId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdGreaterThan(Integer value) {
-            addCriterion("teacher_id >", value, "teacherId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("teacher_id >=", value, "teacherId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdLessThan(Integer value) {
-            addCriterion("teacher_id <", value, "teacherId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdLessThanOrEqualTo(Integer value) {
-            addCriterion("teacher_id <=", value, "teacherId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdIn(List<Integer> values) {
-            addCriterion("teacher_id in", values, "teacherId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdNotIn(List<Integer> values) {
-            addCriterion("teacher_id not in", values, "teacherId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdBetween(Integer value1, Integer value2) {
-            addCriterion("teacher_id between", value1, value2, "teacherId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTeacherIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("teacher_id not between", value1, value2, "teacherId");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdIsNull() {
-            addCriterion("course_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdIsNotNull() {
-            addCriterion("course_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdEqualTo(Integer value) {
-            addCriterion("course_id =", value, "courseId");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdNotEqualTo(Integer value) {
-            addCriterion("course_id <>", value, "courseId");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdGreaterThan(Integer value) {
-            addCriterion("course_id >", value, "courseId");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("course_id >=", value, "courseId");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdLessThan(Integer value) {
-            addCriterion("course_id <", value, "courseId");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdLessThanOrEqualTo(Integer value) {
-            addCriterion("course_id <=", value, "courseId");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdIn(List<Integer> values) {
-            addCriterion("course_id in", values, "courseId");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdNotIn(List<Integer> values) {
-            addCriterion("course_id not in", values, "courseId");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdBetween(Integer value1, Integer value2) {
-            addCriterion("course_id between", value1, value2, "courseId");
-            return (Criteria) this;
-        }
-
-        public Criteria andCourseIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("course_id not between", value1, value2, "courseId");
             return (Criteria) this;
         }
 

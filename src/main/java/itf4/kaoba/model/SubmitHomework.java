@@ -3,10 +3,6 @@ package itf4.kaoba.model;
 public class SubmitHomework {
     private Integer id;
 
-    private Integer teacherId;
-
-    private Integer courseId;
-
     private Integer stuId;
 
     private String photoUrl;
@@ -27,22 +23,6 @@ public class SubmitHomework {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getTeacherId() {
-        return teacherId;
-    }
-
-    public void setTeacherId(Integer teacherId) {
-        this.teacherId = teacherId;
-    }
-
-    public Integer getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(Integer courseId) {
-        this.courseId = courseId;
     }
 
     public Integer getStuId() {

@@ -1,6 +1,7 @@
 package itf4.kaoba.controller;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -443,159 +445,130 @@ public class StudentController extends UploadController {
 		}
 	}
 
-	//获取作业
-	@RequestMapping(value = "getHouseWork")
+	// 查询老师留作的列表
+	@RequestMapping("getHouseWorks")
 	@ResponseBody
-	public void getHouseWork(HttpServletRequest request, HttpServletResponse response, 
-			int courseId,int studentId,String createTime) {
-//		查询老师id
-		Integer teaId=null;
+	public void getHouseWorks(HttpServletRequest request, HttpServletResponse response, int courseId, int studentId) {
+		// 查询老师id
+		Integer teaId = null;
 		StuTeaCouExample stuTeaCouExample = new StuTeaCouExample();
 		itf4.kaoba.model.StuTeaCouExample.Criteria criteria = stuTeaCouExample.createCriteria();
 		criteria.andCouIdEqualTo(courseId);
 		criteria.andStuIdEqualTo(studentId);
 		List<StuTeaCou> stuTeaCous = stuTeaCouMapper.selectByExample(stuTeaCouExample);
-		if (stuTeaCous!=null && stuTeaCous.size()>0) {
+		if (stuTeaCous != null && stuTeaCous.size() > 0) {
 			StuTeaCou stuTeaCou = stuTeaCous.get(0);
-			teaId=stuTeaCou.getTeaId();
+			teaId = stuTeaCou.getTeaId();
 		}
-		if (teaId!=null) {
-			//查询作业
+		if (teaId != null) {
+			// 查询作业
 			HomeworkExample homeworkExample = new HomeworkExample();
 			itf4.kaoba.model.HomeworkExample.Criteria criteria2 = homeworkExample.createCriteria();
 			criteria2.andTeacherIdEqualTo(teaId);
 			criteria2.andCourseIdEqualTo(courseId);
 			criteria2.andStatusEqualTo(1);
-			criteria2.andCreateTimeEqualTo(createTime);
 			List<Homework> homeworks = homeworkMapper.selectByExample(homeworkExample);
-			
-			if(homeworks!=null && homeworks.size()>0) {
-				JsonPrintUtil.printObjDataWithKey(response,homeworks, "data");
-			}else {
-				JsonPrintUtil.printObjDataWithKey(response,-1, "data");
+
+			if (homeworks != null && homeworks.size() > 0) {
+				JsonPrintUtil.printObjDataWithKey(response, homeworks, "data");
+			} else {
+				JsonPrintUtil.printObjDataWithKey(response, -1, "data");
 			}
-		}else {
-			JsonPrintUtil.printObjDataWithKey(response,-1, "data");
+		} else {
+			JsonPrintUtil.printObjDataWithKey(response, -1, "data");
 		}
+
 	}
-	
+
 	List<String> submitImageUrl = new ArrayList<String>();
 	Integer imageCount = null;
+	Integer HouseWorkId = null;
+
+	// 获取作业
+	@RequestMapping(value = "getHouseWork")
+	@ResponseBody
+	public void getHouseWork(HttpServletRequest request, HttpServletResponse response, int courseId, int studentId,
+			String name) {
+		// 查询老师id
+		Integer teaId = null;
+		StuTeaCouExample stuTeaCouExample = new StuTeaCouExample();
+		itf4.kaoba.model.StuTeaCouExample.Criteria criteria = stuTeaCouExample.createCriteria();
+		criteria.andCouIdEqualTo(courseId);
+		criteria.andStuIdEqualTo(studentId);
+		List<StuTeaCou> stuTeaCous = stuTeaCouMapper.selectByExample(stuTeaCouExample);
+		if (stuTeaCous != null && stuTeaCous.size() > 0) {
+			StuTeaCou stuTeaCou = stuTeaCous.get(0);
+			teaId = stuTeaCou.getTeaId();
+		}
+		if (teaId != null) {
+			// 查询作业
+			HomeworkExample homeworkExample = new HomeworkExample();
+			itf4.kaoba.model.HomeworkExample.Criteria criteria2 = homeworkExample.createCriteria();
+			criteria2.andTeacherIdEqualTo(teaId);
+			criteria2.andCourseIdEqualTo(courseId);
+			criteria2.andStatusEqualTo(1);
+			try {
+				name = new String(name.getBytes("iso8859-1"), "utf-8");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			criteria2.andNameEqualTo(name);
+			List<Homework> homeworks = homeworkMapper.selectByExample(homeworkExample);
+
+			if (homeworks != null && homeworks.size() > 0) {
+				Homework homework = homeworks.get(0);
+				HouseWorkId = homework.getId();
+				String ImageUrl = homework.getPhotoUrl();
+				String[] imageArray = null;
+				imageArray = ImageUrl.split(",");
+				JsonPrintUtil.printObjDataWithKey(response, imageArray, "data");
+			} else {
+				JsonPrintUtil.printObjDataWithKey(response, -1, "data");
+			}
+		} else {
+			JsonPrintUtil.printObjDataWithKey(response, -1, "data");
+		}
+	}
+
 	@RequestMapping("submitHomeworkPhoto")
-    @ResponseBody
-    public void uploadPhoto(HttpServletRequest request, HttpServletResponse response,MultipartFile file,String imageSum) {
-			String photoUrl = super.uploadToFileUrl("submitHomework_photo", file, request);
-			System.out.println(photoUrl);
-			submitImageUrl.add(photoUrl);
-			imageCount = Integer.parseInt(imageSum);
-    }
-	
+	@ResponseBody
+	public void uploadPhoto(HttpServletRequest request, HttpServletResponse response, MultipartFile file,
+			String imageSum) {
+		String photoUrl = super.uploadToFileUrl("submitHomework_photo", file, request);
+		System.out.println(photoUrl);
+		submitImageUrl.add(photoUrl);
+		imageCount = Integer.parseInt(imageSum);
+	}
+
 	@RequestMapping("submitHomework")
-    @ResponseBody
-    public void submitHomework(HttpServletRequest request, HttpServletResponse response,int courseId,int stuId,String createTime) {
+	@ResponseBody
+	public void submitHomework(HttpServletRequest request, HttpServletResponse response, int stuId) {
 		int result = 0;
-        SubmitHomework submitHomework = new SubmitHomework();
-        if(submitImageUrl.size()<imageCount) {
-        	JsonPrintUtil.printObjDataWithKey(response,"-1", "flag");
-        	return;
-        }
-//		查询老师id
-		Integer teaId=null;
-		StuTeaCouExample stuTeaCouExample = new StuTeaCouExample();
-		itf4.kaoba.model.StuTeaCouExample.Criteria criteria = stuTeaCouExample.createCriteria();
-		criteria.andCouIdEqualTo(courseId);
-		criteria.andStuIdEqualTo(stuId);
-		List<StuTeaCou> stuTeaCous = stuTeaCouMapper.selectByExample(stuTeaCouExample);
-		if (stuTeaCous!=null && stuTeaCous.size()>0) {
-			StuTeaCou stuTeaCou = stuTeaCous.get(0);
-			teaId=stuTeaCou.getTeaId();
+		SubmitHomework submitHomework = new SubmitHomework();
+		if (submitImageUrl.size() < imageCount) {
+			JsonPrintUtil.printObjDataWithKey(response, "-1", "flag");
+			return;
 		}
-		if (teaId!=null) {
-//			查询作业
-			HomeworkExample homeworkExample = new HomeworkExample();
-			itf4.kaoba.model.HomeworkExample.Criteria criteria2 = homeworkExample.createCriteria();
-			criteria2.andTeacherIdEqualTo(teaId);
-			criteria2.andCourseIdEqualTo(courseId);
-			criteria2.andStatusEqualTo(1);
-			criteria2.andCreateTimeEqualTo(createTime);
-			List<Homework> homeworks = homeworkMapper.selectByExample(homeworkExample);
-			
-			//存一个作业id
-			if(homeworks!=null && homeworks.size()>0) {
-				Homework homework = homeworks.get(0);
-				submitHomework.setTeacherId(homework.getTeacherId());
-				submitHomework.setCourseId(courseId);
-				submitHomework.setStuId(stuId);
-				submitHomework.setHomeworkId(homework.getId());
-				submitHomework.setStatus(1);
-				submitHomework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
-				//String photoUrl = super.uploadToFileUrl("submitHomework_photo", file, request);
-				StringBuilder csvBuilder = new StringBuilder();
-				for(String submitImageurl : submitImageUrl){
-				  csvBuilder.append(submitImageurl);
-				  csvBuilder.append(",");
-				}
-				String photoUrl = csvBuilder.toString();
-				//String photoUrl = JsonUtils.listToJson(submitImageUrl);
-				submitHomework.setPhotoUrl(photoUrl);
-				submitHomework.setGrade(0);
-				result = submitHomeworkMapper.insert(submitHomework);
-				submitImageUrl.clear();
-			}
+		submitHomework.setStuId(stuId);
+		submitHomework.setHomeworkId(HouseWorkId);
+		submitHomework.setStatus(1);
+		submitHomework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
+		StringBuilder csvBuilder = new StringBuilder();
+		for (String submitImageurl : submitImageUrl) {
+			csvBuilder.append(submitImageurl);
+			csvBuilder.append(",");
 		}
-		if (result>0) {
-			JsonPrintUtil.printObjDataWithKey(response,"1", "flag");
+		String photoUrl = csvBuilder.toString();
+		submitHomework.setPhotoUrl(photoUrl);
+		submitHomework.setGrade(0);
+		result = submitHomeworkMapper.insert(submitHomework);
+		submitImageUrl.clear();
+		if (result > 0) {
+			JsonPrintUtil.printObjDataWithKey(response, "1", "flag");
 		} else {
-			JsonPrintUtil.printObjDataWithKey(response,"-1", "flag");
+			JsonPrintUtil.printObjDataWithKey(response, "-1", "flag");
 		}
-    }
-	
-	/*@RequestMapping("submitHomeworkPhoto")
-    @ResponseBody
-    public void uploadPhoto(HttpServletRequest request, HttpServletResponse response
-                    ,MultipartFile file,int courseId,int stuId,String createTime) {
-		int result = 0;
-        SubmitHomework submitHomework = new SubmitHomework();
-//		查询老师id
-		Integer teaId=null;
-		StuTeaCouExample stuTeaCouExample = new StuTeaCouExample();
-		itf4.kaoba.model.StuTeaCouExample.Criteria criteria = stuTeaCouExample.createCriteria();
-		criteria.andCouIdEqualTo(courseId);
-		criteria.andStuIdEqualTo(stuId);
-		List<StuTeaCou> stuTeaCous = stuTeaCouMapper.selectByExample(stuTeaCouExample);
-		if (stuTeaCous!=null && stuTeaCous.size()>0) {
-			StuTeaCou stuTeaCou = stuTeaCous.get(0);
-			teaId=stuTeaCou.getTeaId();
-		}
-		if (teaId!=null) {
-//			查询作业
-			HomeworkExample homeworkExample = new HomeworkExample();
-			itf4.kaoba.model.HomeworkExample.Criteria criteria2 = homeworkExample.createCriteria();
-			criteria2.andTeacherIdEqualTo(teaId);
-			criteria2.andCourseIdEqualTo(courseId);
-			criteria2.andStatusEqualTo(1);
-			criteria2.andCreateTimeEqualTo(createTime);
-			List<Homework> homeworks = homeworkMapper.selectByExample(homeworkExample);
-			
-			//存一个作业id
-			if(homeworks!=null && homeworks.size()>0) {
-				Homework homework = homeworks.get(0);
-				submitHomework.setTeacherId(homework.getTeacherId());
-				submitHomework.setCourseId(courseId);
-				submitHomework.setStuId(stuId);
-				submitHomework.setHomeworkId(homework.getId());
-				submitHomework.setStatus(1);
-				submitHomework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd "));
-				String photoUrl = super.uploadToFileUrl("submitHomework_photo", file, request);
-				submitHomework.setPhotoUrl(photoUrl);
-				result = submitHomeworkMapper.insert(submitHomework);
-			}
-		}
-		if (result>0) {
-			JsonPrintUtil.printObjDataWithKey(response,"1", "flag");
-		} else {
-			JsonPrintUtil.printObjDataWithKey(response,"-1", "flag");
-		}
-    }*/
+	}
 
 }
