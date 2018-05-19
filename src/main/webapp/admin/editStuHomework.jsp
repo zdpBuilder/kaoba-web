@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%
 //课程id
-String courseId= request.getParameter("courseId");
+String homeworkId= request.getParameter("homeworkId");
 //学生id
 String stuId= request.getParameter("stuId");
 String stuGrade=request.getParameter("stuGrade");
@@ -25,22 +25,7 @@ String stuGrade=request.getParameter("stuGrade");
 			<div class=" layui-col-md10"  style="margin-left:-5px;" >
 			<fieldset id="menu_func_div" class="layui-elem-field">
 								<legend style="font-size: 12px;">作业</legend>
-								<div class="layui-field-box">
-									<!-- 操作按钮区域 -->
-									<div class="my-btn-box" style="margin-bottom: -10px; text-align:center;">									
-										<div class="layui-input-inline">
-											<label style="height: 26px; font-size: 15px;">上传日期</label> 
-											<input
-												readonly="readonly" name="startDate" id="startDate"
-												style="height: 22px; font-size: 12px;" /> <input
-												readonly="readonly" name="endDate" id="endDate"
-												style="height: 22px; font-size: 12px;" />
-										</div>
-										<button class="layui-btn layui-btn-sm" id="btn-search"
-											style="vertical-align: top; font-size: 10px;">
-											<i class="layui-icon" style="font-size: 14px;">&#xe615;</i>&nbsp;查询
-										</button>
-									</div>
+								<div class="layui-field-box">		
 									<!-- 表格内容区域 -->
 							 	 <div class="layui-col-md12 layui-col-space1" style="margin-top:30px">
 									  <ul id="imagesList" style="float:left;" ></ul>
@@ -52,7 +37,7 @@ String stuGrade=request.getParameter("stuGrade");
 				<fieldset class="layui-elem-field">
 					<legend style="font-size: 12px;">学生成绩</legend>
 				<form class="layui-form" action="">
-				<input type="hidden" name="courseId" value="<%=courseId %>" id="courseId"/>
+				<input type="hidden" name="homeworkId" value="<%=homeworkId %>" id="homeworkId"/>
                 <input type="hidden" name="stuId" value="<%=stuId %>" id="stuId"/>
   		<div class="layui-form-item" style="margin-bottom:3px;">
 	        <label class="layui-form-label" style="font-size:12px;line-height:10px;">学生成绩</label>
@@ -71,35 +56,32 @@ String stuGrade=request.getParameter("stuGrade");
 			</div>
 		</div>
 	</div>
-
+<img alt="" style="display:none" id="displayimg" src="" />
 <script type="text/javascript" src="../plugins/ztree/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="../plugins/ztree/js/jquery.ztree.all.min.js"></script>
 <script type="text/javascript" src="../plugins/layui2.x/layui.js"></script>
 <script type="text/javascript" src="../js/index.js"></script>
 <!--  课程导航树-->
 <script type="text/javascript">
-  //声明全局变量
-  //搜索条件开始时间
-  var startDate = '';
-  //结束时间
-  var endDate = '';
-  function renderPhotoData(){
-	    //将数据清空
-		$('#imagesList').html("");
-		//分页参数初始化
-		initPageParam();
-		//重新渲染图片数据
-		getPhoto();
-  }
-  //分页参数初始化
-  function initPageParam(){
-      //搜索条件开始时间
-      var startDate = '';
-      //结束时间
-      var endDate = '';
-      $('#startDate').val('');
-	  $('#endDate').val('');
-  }
+//图片放大查看 
+function ZoomPhoto(name, url) {
+		layui.use('layer', function(){
+			var $ = layui.jquery
+			, layer = layui.layer;
+    $("#displayimg").attr("src", url);
+    var height = $("#displayimg").height();
+    var width = $("#displayimg").width();
+    layer.open({
+        type: 1,
+        title: false,
+        closeBtn: 1,
+        shadeClose: true,
+        area: [width + 'px', height + 'px'], //宽高
+        content: "<img alt=" + name + " title=" + name + " src=" + url + " />"
+    });
+		
+		});
+}
     //请求分页数据
     function getPhoto(){
     	
@@ -117,11 +99,10 @@ String stuGrade=request.getParameter("stuGrade");
     			      $.ajax({
     	    		url:'${pageContext.request.contextPath}/homework/getStuHomeworkPhoto',
     	    		method:'post',
+    	    		async:false,
     	    		data:{
-    	    			'courseId':$("#courseId").val(),  
-    	    			'studentId':$("#stuId").val(),
-    	    			'startDate':startDate,
-    	    			'endDate':endDate
+    	    			'homeworkId':$("#homeworkId").val(),  
+    	    			'studentId':$("#stuId").val()
     	    		},  
     	    		success:function(res){
     	
@@ -131,7 +112,7 @@ String stuGrade=request.getParameter("stuGrade");
     							var preffix = '${pageContext.request.contextPath}/upload_files/homework_photo/'; 			   				    	
       						    layui.each(resData, function(index, item){				
       	    			           lis.push(
-					      	    			'<li style="display:inline; margin:10px;">'+ '<img src="'+preffix+item+'" width="150" height="150" style="margin:20px;"/>'
+					      	    			'<li style="display:inline; margin:10px;">'+ '<a href="javascript:ZoomPhoto('+index+',\''+preffix+item+'\')"><img src="'+preffix+item+'" width="150" height="150" style="margin:20px;"/></a>'
 					      	    			+'</li>');
       	    			                    }); 
       						  
@@ -157,42 +138,16 @@ String stuGrade=request.getParameter("stuGrade");
 	  var laydate = layui.laydate;
 	 var  form = layui.form;
 	  var $ = layui.jquery;
-	  //日期插件加载
-      laydate.render({ 
-         elem: '#startDate' 
-      });
-      laydate.render({ 
-          elem: '#endDate' 
-       });
-       
-      
-      
-    //页面刷新
-    	$("#btn-refresh").click(function(){ 		
-    		renderPhotoData();
-  	});
-      //搜索
-      $('#btn-search').click(function(){
-    	  startDate = $('#startDate').val();
-    	  endDate = $('#endDate').val();
-    	  if(startDate !='' && endDate !=''){
-    		  if(startDate<endDate){
-    			//将数据清空
-    			$('#imagesList').html("");
-    			  getPhoto();
-    			  startDate='';
-    			  endDate='';	
-    		  } else{
-    			  layer.msg('请输入合法日期范围！', {time: 1000}); //1s后自动关闭
-    			  $('#startDate').val('');
-    			  $('#endDate').val('');
-    		  }
-    	  } else{
-    		  layer.msg('请输入日期！', {time: 1000}); //1s后自动关闭
-    	  }
-      });	
-      
-      //保存按钮
+      //加载图片
+	  getPhoto();
+       //页面刷新
+       $("#btn-refresh").click(function(){ 		
+    		//将数据清空
+    		$('#imagesList').html("");
+    		//重新渲染图片数据
+    		getPhoto();
+  	    });  
+     //保存按钮
       form.on('submit(addForm)', function (data) {
         var formJson = data.field;
         	$.ajax({

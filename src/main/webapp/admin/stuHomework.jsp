@@ -37,15 +37,8 @@
 		            <span class="fl">
 		                <a class="layui-btn layui-btn-sm" id="btn-refresh" data-type="refresh"><i class="layui-icon">&#x1002;</i>刷新</a>
 		            </span>
-		             <div class="fr">
-		                <span class="layui-form-label" style="font-size: 12px;line-height:12px;">时间段</span>
-		                <div class="layui-input-inline">
-		                   <input readonly="readonly" name="startDate" id="startDate" style="height: 26px; font-size: 12px;" />
-		                </div>——
-		                <div class="layui-input-inline">
-		                   <input readonly="readonly" name="endDate" id="endDate" style="height: 26px; font-size: 12px;" />
-		                </div>
-		                <button class="layui-btn layui-btn-sm" id="btn-search" style="font-size: 10px;"><i class="layui-icon" style="font-size: 16px;"></i>&nbsp;成绩导出</button>
+		             <div class="fr">        
+		                <button class="layui-btn layui-btn-sm" id="btn-export" style="font-size: 10px;"><i class="layui-icon" style="font-size: 16px;"></i>&nbsp;成绩导出</button>
 		            </div>
 		        </div>
 		        <!-- 表格内容区域 -->
@@ -65,7 +58,7 @@
 <script type="text/javascript">
 var table;
 var currPageNum = 1;//当前页码
-var leftNodeId = 1;//左侧选中的节点id
+var leftNodeId = 0;//左侧选中的节点id
 var pId =-1;
 
 function reloadTable(currPageNum){
@@ -76,8 +69,7 @@ function reloadTable(currPageNum){
 	  }
 	  ,where: {
 		//传参
-	    pid: leftNodeId ,
-	    keywords: $("#keywords").val()
+	    homeworkId: leftNodeId,
 	  }
 	});
 }
@@ -111,7 +103,7 @@ function reloadTable(currPageNum){
         	,url:'${pageContext.request.contextPath}/homework/getStuList'
         	,id: 'equipmentTypeTable'
         	,where: { 
-        		courseId:1 
+        		homeworkId:1 
         		}//查询传参
 		    //,skin: 'line' //表格风格
 		    ,even: true  //隔行换色
@@ -146,9 +138,32 @@ function reloadTable(currPageNum){
 		
      
       	 //成绩导出
-      	$("#btn-search").click(function(){
-      	
-      		location.href ="${pageContext.request.contextPath}/homework/export?courseId="+leftNodeId+"&startDate="+$("#startDate").val()+"&endDate="+$("#endDate").val();
+      	$("#btn-export").click(function(){
+      		if(leftNodeId>0){
+      			//验证是否选中子节点
+      			var checkFalg=0;
+      		$.ajax({
+    			method: "post",
+    			url:"../courseVsSingleDb/teaCouTreeList",
+    			async:false,
+    			success:function(result){				
+                	if(result.length>0){
+                		for(var i=0; i<result.length;i++){
+                				if(result[i].id==leftNodeId){
+                					checkFalg=1;
+                				}
+                			}
+                		} 
+                	} ,             
+            }); 
+      		if(checkFalg==1){
+      		  layer.msg('请选择要导出的作业！', {time: 1000}); //1s后自动关闭
+      		  return;
+      		}
+    		location.href ="${pageContext.request.contextPath}/homework/export?homeworkId="+leftNodeId;		
+      	  }else{
+    		  layer.msg('请选择要导出的作业！', {time: 1000}); //1s后自动关闭
+      	  }
       	});
       	 
       	//toolBar操作列监听
@@ -166,7 +181,7 @@ function reloadTable(currPageNum){
         		  ,fixed: true //位置固定
         		  ,maxmin: false //开启最大化最小化按钮 
         		  ,anim: 5 //0-6的动画形式，-1不开启
-        		  ,content: 'editStuHomework.jsp?courseId='+data.courseId+'&stuId='+data.stuId+'&stuGrade='+data.stuGrade
+        		  ,content: 'editStuHomework.jsp?homeworkId='+data.homeworkId+'&stuId='+data.stuId+'&stuGrade='+data.stuGrade
         	   });
       	         
       	    }
@@ -203,7 +218,7 @@ $(document).ready(function(){
 		async:{
 			enable: true,
 			type: "post",
-			url : "${pageContext.request.contextPath}/courseVsSingleDb/teaCouTreeList",
+			url : "${pageContext.request.contextPath}/homework/homeworkTreeList",
             autoParam : [ "id" ],
 			dataFilter: ajaxDataFilter
 		}
@@ -246,7 +261,7 @@ $(document).ready(function(){
           }
           ,where: {
         	//传参
-            courseId: leftNodeId,     
+            homeworkId: leftNodeId,     
           }
         });
 	}	

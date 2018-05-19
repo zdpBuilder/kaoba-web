@@ -1,16 +1,20 @@
 package itf4.kaoba.pojo;
 
 public class StuHomworkPojo {
-   private Integer courseId;
+   private Integer homeworkId;
    private Integer stuId;
    private String  stuName;
    private Integer  stuGrade;
    private String  loginId;
-public Integer getCourseId() {
-	return courseId;
+
+   
+   
+
+public Integer getHomeworkId() {
+	return homeworkId;
 }
-public void setCourseId(Integer courseId) {
-	this.courseId = courseId;
+public void setHomeworkId(Integer homeworkId) {
+	this.homeworkId = homeworkId;
 }
 public Integer getStuId() {
 	return stuId;
