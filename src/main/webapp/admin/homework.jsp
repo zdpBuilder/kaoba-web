@@ -22,6 +22,10 @@
 						<div class="layui-row layui-col-space10">
 							<div class="layui-col-md12">
 								<div id="tree" class="ztree"></div>
+								  <div style="margin:10px">
+						            <input type="text" id="nodeName" name="nodeName" maxlength="30" style="font-size:12px;width:120px;height:22px;border:1px solid #e2e2e2" />
+						            <button title="添加节点" id="addNode" class="layui-btn layui-btn-xs layui-btn-normal">添加</button>
+					              </div>
 							</div>
 						</div>
 					</div>
@@ -41,7 +45,7 @@
 												class="layui-icon">&#x1002;</i>刷新</a>
 										</span>
 
-										<div class="layui-input-inline">
+										<!-- <div class="layui-input-inline">
 											<label style="height: 26px; font-size: 15px;">上传日期</label> <input
 												readonly="readonly" name="startDate" id="startDate"
 												style="height: 22px; font-size: 12px;" /> <input
@@ -51,7 +55,7 @@
 										<button class="layui-btn layui-btn-sm" id="btn-search"
 											style="vertical-align: top; font-size: 10px;">
 											<i class="layui-icon" style="font-size: 14px;">&#xe615;</i>&nbsp;查询
-										</button>
+										</button> -->
 									</div>
 									<!-- 表格内容区域 -->
 							 	 <div class="layui-col-md12 layui-col-space1" style="margin-top:30px">
@@ -73,14 +77,18 @@
 
 
   //声明全局变量
-  //选择的章节id
-  var courseId = null; 
-  //每页显示多少张图片
+  //选择作业的id
+  var homeworkId = null;
+  //选择作业的课程id
+  var courseId = null;
+  //作业照片数组
+  var photoUrls =null;
+/*   //每页显示多少张图片
   var pageLimit = 4;
   //搜索条件开始时间
   var startDate = '';
   //结束时间
-  var endDate = '';
+  var endDate = ''; */
   $(document).ready(function(){
 	//ZTree树      
 		var setting = {
@@ -92,13 +100,24 @@
 					rootPId: 0
 				}
 			},
+			edit:{
+				enable: true,
+				editNameSelectAll: true,
+				showRenameBtn: showRenameBtn,
+				renameTitle: "编辑分类",
+				removeTitle: "删除分类",
+				showRemoveBtn: showRemoveBtn,
+			},
 			callback:{
+				beforeRemove: zTreeBeforeRemove,
+				onRemove: zTreeOnRemove,
+				onRename: zTreeOnRename,
 				onClick: zTreeOnClick
 			},
 			async:{
 				enable: true,
 				type: "post",
-				url : "${pageContext.request.contextPath}/courseVsSingleDb/treeList",
+				url : "${pageContext.request.contextPath}/homework/homeworkTreeList",
 	            autoParam : [ "id" ],
 				dataFilter: ajaxDataFilter
 			}
@@ -107,6 +126,26 @@
 				fontCss : {color:"#000"}
 			}
 		}; 
+	
+		//是否显示编辑按钮
+		function showRenameBtn(treeId, treeNode){
+			//根节点不允许编辑
+			if(treeNode.id=="1"){
+				return false;
+			}else{
+				return true;
+			}
+		}
+		//是否显示删除按钮
+		function showRemoveBtn(treeId, treeNode){
+			//根节点不允许删除
+			if(treeNode.id=="0"){
+				return false;
+			}else{
+				return true;
+			}
+		} 
+	   
 		//异步加载数据过滤
 		function ajaxDataFilter(treeId, parentNode, responseData) {
 		    if (responseData) {
@@ -125,28 +164,119 @@
 		    return responseData;
 		};
 		
+		//删除前判断
+		function zTreeBeforeRemove(treeId, treeNode) {
+			
+			var isP = treeNode.isParent;
+			if(isP){
+				//alert(treeNode.tId);
+				layer.tips('不能删除父节点！', '#tree', {
+					  tips: [1, '#F90'],
+					  time: 1000
+					});
+				return false;
+			}else{
+				return confirm("确认删除作业 -- " + treeNode.name + " 吗？");
+			}
+		}
+		
+		//删除节点
+		function zTreeOnRemove(event, treeId, treeNode) {
+			$.post("${pageContext.request.contextPath}/homework/deleteHomeworkNode", { "id": treeNode.id },
+			   		function(data){
+				      if(data !=null){
+				    	  if(data.data=="ok"){
+				    	 		layer.msg('删除成功！', {icon: 1,time: 1000});
+				    	 		//异步刷新
+				    	 		//zTreeObj.reAsyncChildNodes(null, "refresh");
+				     	}
+				      }
+			     		
+				});
+		}
+		
+		//修改节点名称
+		function zTreeOnRename(event, treeId, treeNode, isCancel) {
+			if(!isCancel){
+				$.post("${pageContext.request.contextPath}/homework/editHomeworkNode", { "id": treeNode.id,"name":treeNode.name },
+						   function(data){
+					       if(data !=null){
+					    	   if(data.data=="ok"){
+							    	 //异步刷新
+							    	 //zTreeObj.reAsyncChildNodes(null, "refresh");
+							     }
+					       }
+						     
+				});
+			}
+		}
+		
+		
 		//树节点点击事件
 		function zTreeOnClick(event, treeId, treeNode) {
 			
-			courseId = treeNode.id;
-			$('#courseId').val(courseId);
+			homeworkId = treeNode.id;
+			courseId = treeNode.pid;
 			renderPhotoData();
 		}
 		
 		//设备分类树初始化
 		var zTreeObj = $.fn.zTree.init($("#tree"), setting, []);
+		
+		//添加节点
+		$("#addNode").click(function(){
+			var nodes = zTreeObj.getSelectedNodes();
+			var courseId = "0";//被增加节点的父pId
+			
+			var nodeNameToAdd = $("#nodeName").val();
+			if($.trim(nodeNameToAdd)==""){
+				$("#nodeName").focus();
+				layer.tips('作业名称不能为空！', '#nodeName', {
+					  tips: [1, '#F90'], //还可配置颜色
+					  time: 1000
+				});
+				return false;
+			}
+			
+			if(nodes[0]){
+				if(nodes[0].pid == "0"){
+					courseId = nodes[0].id;
+				}else{
+					layer.msg('请正确选择科目！', {time: 1000}); //1s后自动关闭
+					return;
+				}
+				
+			} else{
+				layer.msg('请正确选择科目！', {time: 1000}); //1s后自动关闭
+				return;
+			}
+			
+			$.post("${pageContext.request.contextPath}/homework/addHomeworkNode", { "courseId": courseId, "name": nodeNameToAdd },
+				   function(data){
+				     if(data!=""){
+				    	 var record = data.data;
+				    	 //增加新增的节点
+				    	 var newAddNode = [{"id":record.id, "pid":record.pid,"name":nodeNameToAdd}];
+						 zTreeObj.addNodes(nodes[0], newAddNode, true);
+				    	 //异步刷新后选中当前选择节点
+				    	 //zTreeObj.reAsyncChildNodes(null, "refresh");
+						 $("#nodeName").val("");
+						 $("#nodeName").focus();
+				     }
+			});
+		});
   });
 
   function renderPhotoData(){
 	    //将数据清空
 		$('#imagesList').html("");
 		//分页参数初始化
-		initPageParam();
+		//initPageParam();
 		//重新渲染图片数据
 		getPhoto();
   }
   //分页参数初始化
-  function initPageParam(){
+ /*  function initPageParam(){
       //每页显示多少张图片
       pageLimit = 6;
       //搜索条件开始时间
@@ -155,9 +285,41 @@
       var endDate = '';
       $('#startDate').val('');
 	  $('#endDate').val('');
+  } */
+  
+  //请求照片数据
+  function getPhoto(){
+	  $.ajax({
+  		url:'${pageContext.request.contextPath}/homework/getHomeworkPhoto',
+  		method:'post',
+  		data:{
+  			'homeworkId':homeworkId
+  		},
+  		success:function(res){
+  			var result = res.data;
+  			if(result !=null){
+  			    photoUrls = result.photoUrl.split(",");
+  				var photoUrl="";
+  				var htmlString="";
+  				$('#imagesList').html("");
+  				var preffix = '${pageContext.request.contextPath}/upload_files/homework_photo/'; 
+  				for(var i=0;i<photoUrls.length;i++){
+  					photoUrl = photoUrls[i];
+  					htmlString='<li style="display:inline; margin:10px;">'
+  					+ '<img src="'+preffix+photoUrls[i]+'" width="150" height="150" style="margin:20px;"/>'
+  	    			+' <button  class="layui-btn layui-btn-sm" onclick="delPhoto('+i+','+result.id+')" >'
+   	    			+'   <i class="layui-icon">&#xe640;</i>'
+   	    			+'</button>'      	    
+  	    			+'</li>';
+  	    			$('#imagesList').append(htmlString);
+  				}
+  			}
+  		}
+	  });
   }
+  
     //请求分页数据
-    function getPhoto(){
+    /* function getPhotoFlow(){
     	
     	layui.use('flow', function(){
     		  var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
@@ -171,10 +333,10 @@
     			      var lis = [];
     			      //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）   			   
     			      $.ajax({
-    	    		url:'${pageContext.request.contextPath}/teacher/getHomeworkPhoto',
+    	    		url:'${pageContext.request.contextPath}/homework/getHomeworkPhoto',
     	    		method:'post',
     	    		data:{
-    	    			'courseId':courseId,
+    	    			'homeworkId':homeworkId,
     	    			'page':page,
     	    			'limit':pageLimit,
     	    			'startDate':startDate,
@@ -185,15 +347,16 @@
     					if(result !=null){
     						var resData = result.data;
     						if(resData!=null){		
-    							var preffix = '${pageContext.request.contextPath}/upload_files/homework_photo/'; 			   				    	
-      						    layui.each(resData, function(index, item){				
-      	    			           lis.push(
-					      	    			'<li style="display:inline; margin:10px;">'+ '<img src="'+preffix+item.photoUrl+'" width="150" height="150" style="margin:20px;"/>'
-					      	    			+' <button  class="layui-btn layui-btn-sm" onclick="delPhoto('+item.id+')" >'
+    							var preffix = '${pageContext.request.contextPath}/upload_files/homework_photo/'; 
+    							var photoUrls = resData[0].photoUrl.split(",");
+    							for(var i=0;i<photoUrls.length;i++){
+    								lis.push(
+					      	    			'<li style="display:inline; margin:10px;">'+ '<img src="'+preffix+photoUrls[i]+'" width="150" height="150" style="margin:20px;"/>'
+					      	    			+' <button  class="layui-btn layui-btn-sm" onclick="delPhoto('+photoUrls[i]+','+resData[0].id+')" >'
 					       	    			+'   <i class="layui-icon">&#xe640;</i>'
 					       	    			+'</button>'      	    
 					      	    			+'</li>');
-      	    			                    }); 
+    							}
       						  
       						  //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
       	    			        //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多   	    			
@@ -210,13 +373,14 @@
     		});  	    
     	}); 		  
     	
-    }
+    } */
     
 
   //删除照片
-  function delPhoto(id){
-	  $.post('${pageContext.request.contextPath}/teacher/deleteHomework',
-			{'homeworkId':id},
+  function delPhoto(photoUrlsIndex,id){
+      var photoUrl = photoUrls[photoUrlsIndex];
+	  $.post('${pageContext.request.contextPath}/homework/deleteHomeworkPhoto',
+			{'homeworkId':id,'photoUrl':photoUrl},
 			function(res){
 				if(res.data == 1){
 					layer.msg('删除成功！', {time: 1000}); //1s后自动关闭			
@@ -270,14 +434,14 @@
 	  //上传单个照片
 	  upload.render({
 		  elem:'#btn-add-photo',  //绑定元素
-		  url:'${pageContext.request.contextPath}/teacher/uploadHomeworkPhoto',  //请求地址
+		  url:'${pageContext.request.contextPath}/homework/uploadHomeworkPhoto',  //请求地址
 		  method:'post',  //请求方法
 		  accept: 'images', //允许上传的文件类型 图片
 		  size: 10000, //最大允许上传的文件大小KB
 		  multiple: true,
 		  before:function(){
-			  if(courseId !="" && courseId !=null){
-				  this.data = {'courseId':courseId}; //设置上传参数
+			  if(homeworkId !="" && homeworkId !=null){
+				  this.data = {'homeworkId':homeworkId}; //设置上传参数
 			  }
 		  },
 		  done:function(res){

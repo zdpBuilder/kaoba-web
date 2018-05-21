@@ -105,7 +105,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="itf4.kaoba.model.Homework">
+  <insert id="insert" parameterType="itf4.kaoba.model.Homework" useGeneratedKeys="true" keyProperty="id">
     insert into homework (id, teacher_id, course_id, 
       photo_url, status, create_time, 
       update_time, name)

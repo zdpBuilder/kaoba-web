@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import itf4.kaoba.common.ResponseJsonPageListBean;
 import itf4.kaoba.mapper.CourseMapper;
@@ -38,12 +39,13 @@ import itf4.kaoba.model.TeacherCourseExample;
 import itf4.kaoba.pojo.ExportHomeworkPojo;
 import itf4.kaoba.pojo.StuHomworkPojo;
 import itf4.kaoba.pojo.TreePojo;
+import itf4.kaoba.util.DateUtil;
 import itf4.kaoba.util.ExcelUtil;
 import itf4.kaoba.util.JsonPrintUtil;
 
 @Controller
 @RequestMapping("homework")
-public class HomeWorkController {
+public class HomeWorkController extends UploadController {
 	@Autowired
 	private SubmitHomeworkMapper submitHomeworkMapper;
 	@Autowired
@@ -123,7 +125,8 @@ public class HomeWorkController {
 		SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SubmitHomeworkExample example = new SubmitHomeworkExample();
 		SubmitHomeworkExample.Criteria criteria = example.createCriteria();
-		criteria.andStuIdEqualTo(stuHomworkPojo.getStuId()).andHomeworkIdEqualTo(stuHomworkPojo.getHomeworkId()).andStatusEqualTo(1);
+		criteria.andStuIdEqualTo(stuHomworkPojo.getStuId()).andHomeworkIdEqualTo(stuHomworkPojo.getHomeworkId())
+				.andStatusEqualTo(1);
 		SubmitHomework submitHomework = new SubmitHomework();
 		submitHomework.setGrade(stuHomworkPojo.getStuGrade());
 		submitHomework.setUpdateTime(time.format(new Date()));
@@ -131,13 +134,15 @@ public class HomeWorkController {
 		// 输出前台Json
 		JsonPrintUtil.printObjDataWithKey(response, count, "data");
 	}
-/**
- *得到该学生的作业
- * @param request
- * @param response
- * @param homeworkId
- * @param studentId
- */
+
+	/**
+	 * 得到该学生的作业
+	 * 
+	 * @param request
+	 * @param response
+	 * @param homeworkId
+	 * @param studentId
+	 */
 	@RequestMapping("getStuHomeworkPhoto")
 	@ResponseBody
 	public void getHomeworkPhoto(HttpServletRequest request, HttpServletResponse response, Integer homeworkId,
@@ -168,7 +173,7 @@ public class HomeWorkController {
 	@RequestMapping(value = "/export", method = RequestMethod.GET)
 	public void export(HttpServletRequest request, HttpServletResponse response, HttpSession session,
 			Integer homeworkId) {
-		
+
 		SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SubmitHomeworkExample example = new SubmitHomeworkExample();
 		SubmitHomeworkExample.Criteria criteria = example.createCriteria();
@@ -201,7 +206,7 @@ public class HomeWorkController {
 	@RequestMapping("homeworkTreeList")
 	@ResponseBody
 	public void teaCouTreeList(HttpServletRequest request, HttpServletResponse response) {
-		//得到老师教的课程
+		// 得到老师教的课程
 		Teacher teacher = (Teacher) request.getSession().getAttribute("CurrentLoginUserInfo");
 		List<TreePojo> treePojos = new ArrayList<TreePojo>();
 		List<Course> courses = new ArrayList<Course>();
@@ -222,12 +227,12 @@ public class HomeWorkController {
 				treePojos.add(treePojo);
 			}
 		}
-		//得到该课程下的作业
-		for (Course course : courses) {	
-			HomeworkExample example2=new HomeworkExample();
-			HomeworkExample.Criteria  criteria2= example2.createCriteria();
-			 criteria2.andCourseIdEqualTo(course.getId()).andTeacherIdEqualTo(teacher.getId()).andStatusEqualTo(1);
-			List<Homework> homeworks= homeworkMapper.selectByExample(example2);
+		// 得到该课程下的作业
+		for (Course course : courses) {
+			HomeworkExample example2 = new HomeworkExample();
+			HomeworkExample.Criteria criteria2 = example2.createCriteria();
+			criteria2.andCourseIdEqualTo(course.getId()).andTeacherIdEqualTo(teacher.getId()).andStatusEqualTo(1);
+			List<Homework> homeworks = homeworkMapper.selectByExample(example2);
 			for (Homework homework : homeworks) {
 				TreePojo treePojo = new TreePojo();
 				treePojo.setId(homework.getId());
@@ -235,9 +240,186 @@ public class HomeWorkController {
 				treePojo.setName(homework.getName());
 				treePojos.add(treePojo);
 			}
-			
+
 		}
 
 		JsonPrintUtil.printJsonArrayWithoutKey(response, treePojos);
 	}
+	
+	/**
+	 * 老师添加作业
+	 * @param request
+	 * @param response
+	 * @param homework
+	 */
+	@RequestMapping("addHomeworkNode")
+	@ResponseBody
+	public void addHomework(HttpServletRequest request, HttpServletResponse response,
+			Homework homework) {
+		//判空处理
+		if(StringUtils.isNotBlank(homework.getName()) && homework.getCourseId() !=null) {
+			Teacher currentLoginUser = (Teacher) request.getSession().getAttribute("CurrentLoginUserInfo");
+			
+			homework.setStatus(1);
+			homework.setTeacherId(currentLoginUser.getId());
+			homework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd"));
+			
+			int result = homeworkMapper.insert(homework);
+			
+			if(result > 0) {
+				JsonPrintUtil.printObjDataWithKey(response, homework, "data");
+			}
+		}
+		
+	}
+	
+	/**
+	 * 修改作业名称
+	 * @param request
+	 * @param response
+	 * @param homework
+	 */
+	@RequestMapping("editHomeworkNode")
+	@ResponseBody
+	public void editHomework(HttpServletRequest request, HttpServletResponse response, Homework homework) {
+		//判空处理
+		if(homework.getId() !=null && StringUtils.isNotBlank(homework.getName())) {
+			homework.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd"));
+			
+			int result = homeworkMapper.updateByPrimaryKeySelective(homework);
+			
+			if(result >0) {
+				JsonPrintUtil.printObjDataWithKey(response, "ok", "data");
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param request
+	 * @param response
+	 * @param homework
+	 */
+	@RequestMapping("deleteHomeworkNode")
+	@ResponseBody
+	public void deleteHomework(HttpServletRequest request, HttpServletResponse response, Homework homework) {
+		//判空处理
+		if(homework.getId() !=null) {
+			homework.setStatus(0);
+			homework.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd"));
+			
+			int result = homeworkMapper.updateByPrimaryKeySelective(homework);
+			
+			if(result >0) {
+				JsonPrintUtil.printObjDataWithKey(response, "ok", "data");
+			}
+		}
+	}
+	
+	/**
+	 * 作业上传
+	 * @param courseId
+	 * @param request
+	 * @param response
+	 * @param file
+	 */
+    @RequestMapping("uploadHomeworkPhoto")
+    @ResponseBody
+    public void uploadPhoto(String homeworkId, HttpServletRequest request, HttpServletResponse response
+                    ,MultipartFile file) {
+        Teacher currentLoginUser = (Teacher) request.getSession().getAttribute("CurrentLoginUserInfo");
+        int result = 1;
+        // 照片保存目录
+        String photoUrl = "";
+        if(StringUtils.isNotBlank(homeworkId)) {
+        	//正则校验
+        	Homework homework = homeworkMapper.selectByPrimaryKey(Integer.parseInt(homeworkId));
+        	photoUrl = super.uploadToFileUrl("homework_photo", file, request);
+        	homework.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd"));
+        	if(StringUtils.isNotBlank(homework.getPhotoUrl())) {
+        		photoUrl = homework.getPhotoUrl() +","+photoUrl;
+        	}
+        	homework.setPhotoUrl(photoUrl);
+        	result = homeworkMapper.updateByPrimaryKeySelective(homework);
+            
+        } else {
+        	result = 2;
+        }
+        if(result == 1) {
+        	JsonPrintUtil.printObjDataWithKey(response, photoUrl, "data");
+        } else {
+        	JsonPrintUtil.printObjDataWithKey(response, result, "data");
+        }
+        
+    }
+
+    /**
+     * 得到作业的照片
+     * @param homeworkId
+     * @param request
+     * @param response
+     */
+    @RequestMapping("getHomeworkPhoto")
+    @ResponseBody
+    public void getHomeworkPhoto(String homeworkId, HttpServletRequest request, HttpServletResponse response) {
+    	
+    	boolean flag = false;
+    	Homework homework=null;
+    	//判空处理
+    	if(StringUtils.isNotBlank(homeworkId)) {
+    		//正则校验?
+    	    homework = homeworkMapper.selectByPrimaryKey(Integer.parseInt(homeworkId));
+    		if(homework!=null && StringUtils.isNotBlank(homework.getPhotoUrl())) {
+    			flag = true;
+    		}
+    	}
+    	
+    	if(flag) {
+    		JsonPrintUtil.printObjDataWithKey(response, homework, "data");
+    	}else {
+    		JsonPrintUtil.printObjDataWithKey(response, null, "data");
+    	}
+    }
+    
+    /**
+     * 删除作业照片
+     * @param homeworkId
+     * @param request
+     * @param response
+     */
+    @RequestMapping("deleteHomeworkPhoto")
+    @ResponseBody
+    public void deleteHomework(HttpServletRequest request, HttpServletResponse response,
+    		String homeworkId,String photoUrl) {
+    	int result = 0;
+    	
+    	//判空
+    	if(StringUtils.isNotBlank(photoUrl) && StringUtils.isNotBlank(homeworkId)) {
+    		//正则校验？
+    		Homework homework = homeworkMapper.selectByPrimaryKey(Integer.parseInt(homeworkId));
+    		
+    		if(homework !=null && StringUtils.isNotBlank(homework.getPhotoUrl())) {
+    			String[] photoUrls = homework.getPhotoUrl().split(",");
+    			String homeworkUrl = "";
+    			for(int i=0;i<photoUrls.length;i++) {
+    				if(photoUrls[i].equals(photoUrl)) {
+    					continue;
+    				}
+    				homeworkUrl+=photoUrls[i]+",";
+    			}
+    			
+    			if(StringUtils.isNotBlank(homeworkUrl)) {
+    				homeworkUrl = homeworkUrl.substring(0, homeworkUrl.length()-1);
+    			}
+    			
+    			homework.setPhotoUrl(homeworkUrl);
+    		}
+    		homework.setId(Integer.parseInt(homeworkId));
+    		homework.setUpdateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd"));
+        	
+    		result = homeworkMapper.updateByPrimaryKeySelective(homework);
+    	}
+    	
+    	JsonPrintUtil.printObjDataWithKey(response, result, "data");
+    }
 }
