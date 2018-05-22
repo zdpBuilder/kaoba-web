@@ -539,6 +539,11 @@ public class StudentController extends UploadController {
 		System.out.println(photoUrl);
 		submitImageUrl.add(photoUrl);
 		imageCount = Integer.parseInt(imageSum);
+		/*if (submitImageUrl.size() < imageCount) {
+			JsonPrintUtil.printObjDataWithKey(response, "-1", "flag");
+		}else {
+			JsonPrintUtil.printObjDataWithKey(response, "1", "flag");
+		}*/
 	}
 
 	@RequestMapping("submitHomework")
