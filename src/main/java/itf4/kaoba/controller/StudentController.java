@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import itf4.kaoba.common.ResponseJsonPageListBean;
 import itf4.kaoba.mapper.AnswerDbMapper;
+import itf4.kaoba.mapper.CourseMapper;
 import itf4.kaoba.mapper.HomeworkMapper;
 import itf4.kaoba.mapper.SingleDbMapper;
 import itf4.kaoba.mapper.StuErrorMapper;
@@ -33,6 +34,7 @@ import itf4.kaoba.mapper.StuTeaCouMapper;
 import itf4.kaoba.mapper.StudentMapper;
 import itf4.kaoba.mapper.StudentMapperCustom;
 import itf4.kaoba.mapper.SubmitHomeworkMapper;
+import itf4.kaoba.mapper.TeacherCourseMapper;
 import itf4.kaoba.model.Course;
 import itf4.kaoba.model.Homework;
 import itf4.kaoba.model.HomeworkExample;
@@ -47,6 +49,8 @@ import itf4.kaoba.model.StuTeaCouExample;
 import itf4.kaoba.model.Student;
 import itf4.kaoba.model.StudentExample;
 import itf4.kaoba.model.Teacher;
+import itf4.kaoba.model.TeacherCourse;
+import itf4.kaoba.model.TeacherCourseExample;
 import itf4.kaoba.model.StudentExample.Criteria;
 import itf4.kaoba.model.SubmitHomework;
 import itf4.kaoba.service.StudentService;
@@ -81,6 +85,10 @@ public class StudentController extends UploadController {
 	private HomeworkMapper homeworkMapper;
 	@Autowired
 	private SubmitHomeworkMapper submitHomeworkMapper;
+	@Autowired
+	private TeacherCourseMapper teacherCourseMapper;
+	@Autowired
+	private CourseMapper courseMapper;
 
 	@RequestMapping("list")
 	public void studentList(HttpServletRequest request, HttpServletResponse response, String keywords, int limit,
@@ -576,4 +584,67 @@ public class StudentController extends UploadController {
 		}
 	}
 
+//	根据老师id查询旗下课程
+	@RequestMapping("getCourseByTeacherId")
+	@ResponseBody
+	public void getCourseByTeacherId(HttpServletRequest request, HttpServletResponse response,int teacherId) {
+		List<Course> list = new ArrayList<Course>();
+		//根据老师id查询所有课程id
+		TeacherCourseExample example = new TeacherCourseExample();
+		itf4.kaoba.model.TeacherCourseExample.Criteria criteria = example.createCriteria();
+		criteria.andTeaIdEqualTo(teacherId);
+		List<TeacherCourse> teacherCourses = teacherCourseMapper.selectByExample(example);
+		if (teacherCourses!=null && teacherCourses.size()>0) {
+			TeacherCourse teacherCourse = teacherCourses.get(0);
+			String courseIdString = teacherCourse.getCourseId();
+			String[] courseIds = courseIdString.split(",");
+//			根据课程id查询课程
+			for (int i = 0; i < courseIds.length; i++) {
+				Integer courseId = Integer.parseInt(courseIds[i]);
+				Course course = courseMapper.selectByPrimaryKey(courseId);
+				list.add(course);
+			}
+			JsonPrintUtil.printObjDataWithKey(response,list, "data");
+		}else {
+			JsonPrintUtil.printObjDataWithKey(response,null, "data");
+		}
+	}
+	
+//	根据老师id查询旗下课程
+	@RequestMapping("studentAddCourse")
+	@ResponseBody
+	public void studentAddCourse(HttpServletRequest request, HttpServletResponse response
+			,int teaId,int couId,int stuId) {
+		StuTeaCouExample stuTeaCouExample = new StuTeaCouExample();
+		itf4.kaoba.model.StuTeaCouExample.Criteria criteria = stuTeaCouExample.createCriteria();
+		criteria.andCouIdEqualTo(couId);
+		criteria.andStuIdEqualTo(stuId);
+		criteria.andTeaIdEqualTo(teaId);
+		criteria.andStatusEqualTo(1);
+		List<StuTeaCou> stuTeaCous = stuTeaCouMapper.selectByExample(stuTeaCouExample);
+		if (stuTeaCous!=null && stuTeaCous.size()>0) {
+			//已添加此课程
+			JsonPrintUtil.printObjDataWithKey(response,-1, "data");
+		} else {
+			//添加学习课程
+			StuTeaCou stuTeaCou = new StuTeaCou();
+			stuTeaCou.setStuId(stuId);
+			stuTeaCou.setTeaId(teaId);
+			stuTeaCou.setCouId(couId);
+			stuTeaCou.setStatus(1);
+			stuTeaCou.setCreater(String.valueOf(stuId));
+			stuTeaCou.setCreateTime(DateUtil.DateToString(new Date(), "yyyy-MM-dd"));
+			int result = stuTeaCouMapper.insertSelective(stuTeaCou);
+			if (result>0) {
+				//成功
+				JsonPrintUtil.printObjDataWithKey(response,1, "data");
+			} else {
+				//失败
+				JsonPrintUtil.printObjDataWithKey(response,-2, "data");
+			}
+
+		}
+	}
+	
+	
 }
